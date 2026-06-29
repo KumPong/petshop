@@ -1,3 +1,4 @@
+Markdown
 # PetStop (เพ็ทสต็อป)
 **Domain:** e-Commerce (ระบบร้านค้าออนไลน์สำหรับสัตว์เลี้ยงแบบครบวงจร)
 
@@ -10,10 +11,10 @@
 6. [UI/UX Design & Prototype](#-uiux-design--prototype)
 7. [Tech Stack (เครื่องมือและเทคโนโลยีที่ใช้)](#-tech-stack-เครื่องมือและเทคโนโลยีที่ใช้)
 8. [แผนการดำเนินงาน (Work Plan)](#-แผนการดำเนินงาน-work-plan)
-9. [Use Case Diagram](#1-use-case-diagram)
-10. [Class Diagram](#2-class-diagram)
-11. [Sequence Diagrams](#3-sequence-diagrams)
-12. [System Architecture](#-system-architecture)
+9. [Use Case Diagram](#️-use-case-diagram)
+10. [Class Diagram](#️-class-diagram)
+11. [Sequence Diagrams](#️-sequence-diagrams)
+12. [System Architecture](#️-system-architecture)
 
 ---
 
