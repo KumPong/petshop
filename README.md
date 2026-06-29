@@ -1,43 +1,42 @@
-Markdown
 # PetStop (เพ็ทสต็อป)
 **Domain:** e-Commerce (ระบบร้านค้าออนไลน์สำหรับสัตว์เลี้ยงแบบครบวงจร)
 
 ## 📑 สารบัญ (Table of Contents)
-1. [สมาชิกในกลุ่ม (Group Members)](#-สมาชิกในกลุ่ม-group-members)
-2. [หลักการและเหตุผล (Rationale)](#-หลักการและเหตุผล-rationale)
-3. [วัตถุประสงค์ของโครงงาน (Objectives)](#-วัตถุประสงค์ของโครงงาน-objectives)
-4. [ขอบเขตของระบบ (System Scope)](#-ขอบเขตของระบบ-system-scope)
-5. [User Personas (กลุ่มผู้ใช้งานเป้าหมาย)](#-user-personas-กลุ่มผู้ใช้งานเป้าหมาย)
-6. [UI/UX Design & Prototype](#-uiux-design--prototype)
-7. [Tech Stack (เครื่องมือและเทคโนโลยีที่ใช้)](#-tech-stack-เครื่องมือและเทคโนโลยีที่ใช้)
-8. [แผนการดำเนินงาน (Work Plan)](#-แผนการดำเนินงาน-work-plan)
-9. [Use Case Diagram](#️-use-case-diagram)
-10. [Class Diagram](#️-class-diagram)
-11. [Sequence Diagrams](#️-sequence-diagrams)
-12. [System Architecture](#️-system-architecture)
+1. [สมาชิกในกลุ่ม (Group Members)](#group-members)
+2. [หลักการและเหตุผล (Rationale)](#rationale)
+3. [วัตถุประสงค์ของโครงงาน (Objectives)](#objectives)
+4. [ขอบเขตของระบบ (System Scope)](#system-scope)
+5. [User Personas (กลุ่มผู้ใช้งานเป้าหมาย)](#user-personas)
+6. [UI/UX Design & Prototype](#ui-ux)
+7. [Tech Stack (เครื่องมือและเทคโนโลยีที่ใช้)](#tech-stack)
+8. [แผนการดำเนินงาน (Work Plan)](#work-plan)
+9. [Use Case Diagram](#use-case)
+10. [Class Diagram](#class-diagram)
+11. [Sequence Diagrams](#sequence-diagrams)
+12. [System Architecture](#system-architecture)
 
 ---
 
-## 👥 สมาชิกในกลุ่ม (Group Members)
+## <a id="group-members"></a>👥 สมาชิกในกลุ่ม (Group Members)
 * **67097950** อนันยศ ชัยชนะ (ปลานัย) - Project Manager, Infrastructure
 * **67107433** ณัชพล วงศาจันทร์ (บอน) - Frontend, Backend
 * **67115588** ธนกฤต เพ็ชรกำจัด (พี่นอร์ท) - Frontend, Backend
 
 ---
 
-## 💡 หลักการและเหตุผล (Rationale)
+## <a id="rationale"></a>💡 หลักการและเหตุผล (Rationale)
 ในปัจจุบัน ผู้คนนิยมเลี้ยงสัตว์เลี้ยงเพื่อเป็นเพื่อนคลายเหงามากขึ้น อย่างไรก็ตามผู้เลี้ยงสัตว์จำนวนมากมักประสบปัญหาข้อจำกัดด้านเวลาในการเดินทางไปซื้อสินค้าที่ร้านค้าโดยตรง หรือร้านค้าในพื้นที่อาจมีสินค้าไม่ครอบคลุมความต้องการ จากปัญหาดังกล่าว จึงมีแนวคิดที่จะพัฒนาเว็บไซต์สำหรับสินค้าพื้นฐานแบบครบวงจร
 
 ---
 
-## 🎯 วัตถุประสงค์ของโครงงาน (Objectives)
+## <a id="objectives"></a>🎯 วัตถุประสงค์ของโครงงาน (Objectives)
 1. เพื่อพัฒนาเว็บไซต์ที่เป็นศูนย์รวมสินค้าและอุปกรณ์สำหรับสัตว์เลี้ยงครบวงจร
 2. เพื่อพัฒนาระบบจัดการข้อมูลสินค้าและระบบค้นหาที่ช่วยให้ผู้ใช้งานสามารถหาสินค้าที่ต้องการได้อย่างรวดเร็ว
 3. เพื่ออำนวยความสะดวกและเพิ่มช่องทางในการเลือกสินค้าสำหรับสัตว์เลี้ยงให้แก่ผู้บริโภค
 
 ---
 
-## ⚙️ ขอบเขตของระบบ (System Scope)
+## <a id="system-scope"></a>⚙️ ขอบเขตของระบบ (System Scope)
 
 ### ผู้ใช้งาน (Actors)
 * ลูกค้า (Customer)
@@ -53,7 +52,7 @@ Markdown
 
 ---
 
-## 🧑‍🤝‍🧑 User Personas (กลุ่มผู้ใช้งานเป้าหมาย)
+## <a id="user-personas"></a>🧑‍🤝‍🧑 User Personas (กลุ่มผู้ใช้งานเป้าหมาย)
 
 ### 1. ลูกค้า (Customer) - คุณสมชาย ใจดี
 * **อายุ:** 32 ปี | **อาชีพ:** พนักงานบริษัท | **รายได้:** 35,000 บาท/เดือน
@@ -78,7 +77,7 @@ Markdown
 
 ---
 
-## 🎨 UI/UX Design & Prototype
+## <a id="ui-ux"></a>🎨 UI/UX Design & Prototype
 
 🔗 **Figma Prototype:** [คลิกเพื่อดูการออกแบบ PetStop บน Figma](https://www.figma.com/design/By0aa0Ia9NAwNOilaYCD85/PetStop?node-id=135-411&t=6x1Jdpxown9icMEu-1)
 
@@ -93,7 +92,7 @@ Markdown
 
 ---
 
-## 🧰 Tech Stack (เครื่องมือและเทคโนโลยีที่ใช้)
+## <a id="tech-stack"></a>🧰 Tech Stack (เครื่องมือและเทคโนโลยีที่ใช้)
 
 | หมวด | เทคโนโลยี | รายละเอียด |
 | :--- | :--- | :--- |
@@ -105,7 +104,7 @@ Markdown
 
 ---
 
-## 📅 แผนการดำเนินงาน (Work Plan: 4 Weeks)
+## <a id="work-plan"></a>📅 แผนการดำเนินงาน (Work Plan: 4 Weeks)
 | สัปดาห์ที่ (Week) | กิจกรรม (Activities) | รายละเอียดโดยย่อ (Brief Description) |
 | :---: | :--- | :--- |
 | **1** | **วิเคราะห์และออกแบบระบบ (Analysis & Design)** | รวบรวมความต้องการ วิเคราะห์ระบบและออกแบบโดยอิงจาก Persona, Usecase & Class Diagram ผ่านทาง Figma และตัว Wireframe |
@@ -115,7 +114,9 @@ Markdown
 
 ---
 
-## 🗝️ Use Case Diagram
+## <a id="use-case"></a>🗝️ Use Case Diagram
+
+```mermaid
 flowchart LR
     %% Actors
     Customer([ลูกค้า - Customer])
@@ -154,11 +155,14 @@ flowchart LR
     Manager --> UM1
     Manager --> UM2
     Manager --> UM3
+```
 
 ---
 
-## ⚙️ Class Diagram
-classDiagram
+## <a id="class-diagram"></a>⚙️ Class Diagram
+
+```mermaid
+    classDiagram
     class User {
         +String id
         +String username
@@ -212,12 +216,14 @@ classDiagram
     }
     Order *-- OrderItem : contains
     Customer "1" --> "0..*" Order : places
+```
 
 ---
 
-## 🔧 Sequence Diagrams
-1. Customer
-    sequenceDiagram
+## <a id="sequence-diagrams"></a>🔧 Sequence Diagrams
+
+```mermaid
+    1.Customer
     actor Customer as ลูกค้า (Customer)
     participant UI as หน้าเว็บ React (Web UI)
     participant US as User Service (Node.js)
@@ -276,8 +282,7 @@ classDiagram
         UI-->>Customer: แสดงหน้า "ขอบคุณที่สั่งซื้อสินค้า"
     end
 
-2. Staff
-    sequenceDiagram
+    2.Staff
     actor Staff as พนักงาน (Staff)
     participant UI as หน้า Dashboard (React)
     participant US as User Service
@@ -327,8 +332,7 @@ classDiagram
         UI-->>Staff: แจ้งเตือน "อัปเดตสถานะออเดอร์เรียบร้อย"
     end
 
-3. Manager
-    sequenceDiagram
+    3.Manager
     actor Manager as ผู้จัดการ (Manager)
     participant UI as หน้า Dashboard (React)
     participant US as User Service
@@ -371,5 +375,16 @@ classDiagram
         
         UI-->>Manager: นำ Object มาวาดเป็นกราฟแท่งและกราฟวงกลมบน Dashboard
     end
+```
+
+---
+
+## <a id="system-architecture"></a>🏗 System Architecture
+
+```mermaid
+    graph LR
+    A[React Web UI] -->|HTTP Requests| B(Node.js Backend / Express.js)
+    B -->|Read/Write Data| C[(Local Storage / JSON Files)]
+```
 
 ---
