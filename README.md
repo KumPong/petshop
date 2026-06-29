@@ -141,9 +141,9 @@ flowchart LR
         C_Ext2(ยืนยันคำสั่งซื้อ)
         C_Ext3(เลือกช่องทางชำระเงิน)
         
-        C3 -.->|"<<extend>>"| C_Ext1
-        C7 -.->|"<<include>>"| C_Ext2
-        C8 -.->|"<<include>>"| C_Ext3
+        C3 -.->|"&lt;&lt;extend&gt;&gt;"| C_Ext1
+        C7 -.->|"&lt;&lt;include&gt;&gt;"| C_Ext2
+        C8 -.->|"&lt;&lt;include&gt;&gt;"| C_Ext3
     end
 
     %% External Services
@@ -169,9 +169,9 @@ flowchart LR
         S_Ext2(รับสินค้าเข้า)
         S_Ext3(ปรับปรุงสต็อก)
         
-        S6 -.->|"<<include>>"| S_Ext1
-        S6 -.->|"<<include>>"| S_Ext2
-        S6 -.->|"<<include>>"| S_Ext3
+        S6 -.->|"&lt;&lt;include&gt;&gt;"| S_Ext1
+        S6 -.->|"&lt;&lt;include&gt;&gt;"| S_Ext2
+        S6 -.->|"&lt;&lt;include&gt;&gt;"| S_Ext3
     end
 
     %% Manager Subgraph
@@ -185,12 +185,12 @@ flowchart LR
         M6(รายงานสินค้าคงเหลือ)
         M7(รายงานผลประกอบการ)
         
-        M1 -.->|"<<include>>"| M2
-        M1 -.->|"<<include>>"| M3
-        M1 -.->|"<<include>>"| M4
-        M1 -.->|"<<include>>"| M5
-        M1 -.->|"<<include>>"| M6
-        M1 -.->|"<<include>>"| M7
+        M1 -.->|"&lt;&lt;include&gt;&gt;"| M2
+        M1 -.->|"&lt;&lt;include&gt;&gt;"| M3
+        M1 -.->|"&lt;&lt;include&gt;&gt;"| M4
+        M1 -.->|"&lt;&lt;include&gt;&gt;"| M5
+        M1 -.->|"&lt;&lt;include&gt;&gt;"| M6
+        M1 -.->|"&lt;&lt;include&gt;&gt;"| M7
     end
 
     %% Actor Connections
