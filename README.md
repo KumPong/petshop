@@ -141,9 +141,9 @@ flowchart LR
         C_Ext2(ยืนยันคำสั่งซื้อ)
         C_Ext3(เลือกช่องทางชำระเงิน)
         
-        C3 -.->|<<extend>>| C_Ext1
-        C7 -.->|<<include>>| C_Ext2
-        C8 -.->|<<include>>| C_Ext3
+        C3 -.->|"<<extend>>"| C_Ext1
+        C7 -.->|"<<include>>"| C_Ext2
+        C8 -.->|"<<include>>"| C_Ext3
     end
 
     %% External Services
@@ -169,9 +169,9 @@ flowchart LR
         S_Ext2(รับสินค้าเข้า)
         S_Ext3(ปรับปรุงสต็อก)
         
-        S6 -.->|<<include>>| S_Ext1
-        S6 -.->|<<include>>| S_Ext2
-        S6 -.->|<<include>>| S_Ext3
+        S6 -.->|"<<include>>"| S_Ext1
+        S6 -.->|"<<include>>"| S_Ext2
+        S6 -.->|"<<include>>"| S_Ext3
     end
 
     %% Manager Subgraph
@@ -185,18 +185,19 @@ flowchart LR
         M6(รายงานสินค้าคงเหลือ)
         M7(รายงานผลประกอบการ)
         
-        M1 -.->|<<include>>| M2
-        M1 -.->|<<include>>| M3
-        M1 -.->|<<include>>| M4
-        M1 -.->|<<include>>| M5
-        M1 -.->|<<include>>| M6
-        M1 -.->|<<include>>| M7
+        M1 -.->|"<<include>>"| M2
+        M1 -.->|"<<include>>"| M3
+        M1 -.->|"<<include>>"| M4
+        M1 -.->|"<<include>>"| M5
+        M1 -.->|"<<include>>"| M6
+        M1 -.->|"<<include>>"| M7
     end
 
     %% Actor Connections
     Customer --> C1 & C2 & C3 & C4 & C5 & C6 & C7 & C8 & C9 & C10
     Staff --> S1 & S2 & S3 & S4 & S5 & S6
     Manager --> M1
+    Manager --> M2
 ```
 
 ---
@@ -204,18 +205,18 @@ flowchart LR
 ## <a id="class-diagram"></a>⚙️ Class Diagram
 
 ```mermaid
-    classDiagram
+   classDiagram
     class User {
-        +String userId
-        +String username
-        +String email
-        +String passwordHash
-        +String firstName
-        +String lastName
-        +String phone
-        +String role
-        +Datetime createdAt
-        +Datetime updatedAt
+        -String userId
+        -String username
+        -String email
+        -String passwordHash
+        -String firstName
+        -String lastName
+        -String phone
+        -String role
+        -Datetime createdAt
+        -Datetime updatedAt
         +register(userData: Object) boolean
         +login(email, password) boolean
         +logout() void
@@ -224,15 +225,15 @@ flowchart LR
     }
     
     class Customer {
-        +Date dateOfBirth
-        +String gender
+        -Date dateOfBirth
+        -String gender
         +viewProfile() Customer
         +viewOrders() List~Order~
         +addAddress(addressData: Object) boolean
     }
     
     class Staff {
-        +String position
+        -String position
         +viewPendingOrders() Array
         +updateOrderStatus(orderId, status) boolean
         +checkStock(productId) Number
@@ -240,7 +241,7 @@ flowchart LR
     }
     
     class Manager {
-        +String department
+        -String department
         +viewDashboard() Object
         +viewReports(reportType) Array
         +manageUsers(targetUserId, action) boolean
@@ -253,55 +254,55 @@ flowchart LR
     User <|-- Manager
 
     class Product {
-        +String productId
-        +String modelId
-        +String categoryId
-        +String sku
-        +String name
-        +String description
-        +String gender
-        +String size
-        +String warranty
-        +Number price
-        +String status
-        +Datetime createdAt
+        -String productId
+        -String modelId
+        -String categoryId
+        -String sku
+        -String name
+        -String description
+        -String gender
+        -String size
+        -String warranty
+        -Number price
+        -String status
+        -Datetime createdAt
         +getImages() Array
         +getCurrentPrice() Number
     }
     
     class Category {
-        +String categoryId
-        +String name
-        +String description
-        +String status
+        -String categoryId
+        -String name
+        -String description
+        -String status
         +getSubCategories() List~Category~
     }
     
     class Brand {
-        +String brandId
-        +String name
-        +String country
-        +String logoUrl
-        +String description
-        +String status
+        -String brandId
+        -String name
+        -String country
+        -String logoUrl
+        -String description
+        -String status
         +getProducts() List~Product~
     }
     
     class ProductImage {
-        +String imageId
-        +String productId
-        +String imageUrl
-        +boolean isPrimary
-        +Number sortOrder
+        -String imageId
+        -String productId
+        -String imageUrl
+        -boolean isPrimary
+        -Number sortOrder
     }
     
     class Inventory {
-        +String inventoryId
-        +String productId
-        +Number quantityOnHand
-        +Number reservedQty
-        +Number reorderLevel
-        +Datetime lastUpdated
+        -String inventoryId
+        -String productId
+        -Number quantityOnHand
+        -Number reservedQty
+        -Number reorderLevel
+        -Datetime lastUpdated
         +adjustStock(qtyChange) boolean
         +updateReservedQty(qty) boolean
         +checkReorderLevel() boolean
@@ -313,13 +314,13 @@ flowchart LR
     Product --> Inventory : manages
 
     class Order {
-        +String orderId
-        +String orderNo
-        +String customerId
-        +Datetime orderDate
-        +String status
-        +Number totalAmount
-        +Number shippingAmount
+        -String orderId
+        -String orderNo
+        -String customerId
+        -Datetime orderDate
+        -String status
+        -Number totalAmount
+        -Number shippingAmount
         +calculateTotal() Number
         +confirmOrder() boolean
         +cancel() boolean
@@ -327,20 +328,20 @@ flowchart LR
     }
     
     class OrderItem {
-        +String orderItemId
-        +String orderId
-        +String productId
-        +Number quantity
-        +Number unitPrice
+        -String orderItemId
+        -String orderId
+        -String productId
+        -Number quantity
+        -Number unitPrice
         +getSubTotal() Number
     }
     
     class Cart {
-        +String cartId
-        +String customerId
-        +String status
-        +Datetime createdAt
-        +Datetime updatedAt
+        -String cartId
+        -String customerId
+        -String status
+        -Datetime createdAt
+        -Datetime updatedAt
         +addItem(productId, qty) boolean
         +updateItemQty(productId, qty) boolean
         +removeItem(productId) boolean
@@ -349,42 +350,42 @@ flowchart LR
     }
     
     class Payment {
-        +String paymentId
-        +String orderId
-        +String method
-        +Number amount
-        +String status
-        +Datetime paymentDate
-        +String transactionId
+        -String paymentId
+        -String orderId
+        -String method
+        -Number amount
+        -String status
+        -Datetime paymentDate
+        -String transactionId
         +confirmPayment() boolean
     }
     
     class Shipping {
-        +String shippingId
-        +String orderId
-        +String trackingNo
-        +String carrier
-        +String shippingAddressId
-        +String shippingMethod
-        +String status
-        +Datetime shippedDate
+        -String shippingId
+        -String orderId
+        -String trackingNo
+        -String carrier
+        -String shippingAddressId
+        -String shippingMethod
+        -String status
+        -Datetime shippedDate
         +updateStatus(status) boolean
     }
     
     class Address {
-        +String addressId
-        +String customerId
-        +String type
-        +String fullName
-        +String phone
-        +String addressLine1
-        +String addressLine2
-        +String district
-        +String city
-        +String province
-        +String postalCode
-        +String country
-        +boolean isDefault
+        -String addressId
+        -String customerId
+        -String type
+        -String fullName
+        -String phone
+        -String addressLine1
+        -String addressLine2
+        -String district
+        -String city
+        -String province
+        -String postalCode
+        -String country
+        -boolean isDefault
     }
     
     Customer "1" --> "0..*" Order : places
@@ -397,37 +398,37 @@ flowchart LR
     OrderItem "0..*" --> "1" Product : references
 
     class Report {
-        +String reportId
-        +String reportName
-        +String periodType
-        +Date startDate
-        +Date endDate
-        +Datetime generatedAt
-        +String generatedBy
+        -String reportId
+        -String reportName
+        -String periodType
+        -Date startDate
+        -Date endDate
+        -Datetime generatedAt
+        -String generatedBy
         +generate() Object
     }
     
     class SalesReport {
-        +Number totalOrders
-        +Number totalSales
-        +Number averageOrderValue
-        +List~Product~ topProducts
+        -Number totalOrders
+        -Number totalSales
+        -Number averageOrderValue
+        -List~Product~ topProducts
         +generate() Object
     }
     
     class InventoryReport {
-        +Number totalItems
-        +Number totalValue
-        +Array lowStockItems
-        +Array outOfStockItems
+        -Number totalItems
+        -Number totalValue
+        -Array lowStockItems
+        -Array outOfStockItems
         +generate() Object
     }
     
     class ProfitReport {
-        +Number totalRevenue
-        +Number totalCost
-        +Number grossProfit
-        +Number netProfit
+        -Number totalRevenue
+        -Number totalCost
+        -Number grossProfit
+        -Number netProfit
         +generate() Object
     }
     
@@ -436,16 +437,20 @@ flowchart LR
     Report <|-- ProfitReport
     
     class ProductSearch {
-        +String keyword
-        +String brandId
-        +String categoryId
-        +Number minPrice
-        +Number maxPrice
-        +String sortBy
-        +boolean isStockOnly
+        -String keyword
+        -String brandId
+        -String categoryId
+        -Number minPrice
+        -Number maxPrice
+        -String sortBy
+        -boolean isStockOnly
         +search() List~Product~
         +clear() void
     }
+    
+    %% ลากเส้นเชื่อมตัวที่ลอยอยู่
+    ProductSearch ..> Product : searches
+    Report ..> Order : analyzes
 ```
 
 ---
