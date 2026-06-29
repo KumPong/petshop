@@ -123,38 +123,80 @@ flowchart LR
     Staff([พนักงาน - Staff])
     Manager([ผู้จัดการ - Manager])
 
-    %% Use Cases
-    subgraph PetStop System Functions
+    %% Customer Subgraph
+    subgraph Customer_Functions [ฟังก์ชันสำหรับลูกค้า]
         direction TB
-        UC1(สมัครสมาชิก / เข้าสู่ระบบ)
-        UC2(ค้นหาและดูรายละเอียดสินค้า)
-        UC3(จัดการตะกร้าสินค้าและสั่งซื้อ)
-        UC4(ชำระเงินและติดตามสถานะ)
+        C1(สมัครสมาชิก)
+        C2(เข้าสู่ระบบ)
+        C3(ค้นหาสินค้า)
+        C4(ดูรายละเอียดสินค้า)
+        C5(เพิ่มสินค้าลงตะกร้า)
+        C6(จัดการตะกร้าสินค้า)
+        C7(สั่งซื้อสินค้า)
+        C8(ชำระเงิน)
+        C9(ติดตามสถานะคำสั่งซื้อ)
+        C10(ประวัติการสั่งซื้อ)
         
-        US1(ดูรายการและอัปเดตสถานะคำสั่งซื้อ)
-        US2(จัดการสต็อกสินค้า)
+        C_Ext1(ตัวกรองการค้นหา: แบรนด์, รุ่น, ราคา, ประเภท)
+        C_Ext2(ยืนยันคำสั่งซื้อ)
+        C_Ext3(เลือกช่องทางชำระเงิน)
         
-        UM1(ดูแดชบอร์ดภาพรวมยอดขาย)
-        UM2(จัดการสินค้าและหมวดหมู่)
-        UM3(ดูรายงานผลประกอบการ)
+        C3 -.->|<<extend>>| C_Ext1
+        C7 -.->|<<include>>| C_Ext2
+        C8 -.->|<<include>>| C_Ext3
     end
 
-    %% Customer Links
-    Customer --> UC1
-    Customer --> UC2
-    Customer --> UC3
-    Customer --> UC4
+    %% External Services
+    subgraph External_Services [บริการภายนอก]
+        direction TB
+        E1(ระบบชำระเงินออนไลน์)
+        E2(ระบบขนส่ง)
+    end
+    C8 -.-> E1
+    C9 -.-> E2
 
-    %% Staff Links
-    Staff --> UC1
-    Staff --> US1
-    Staff --> US2
+    %% Staff Subgraph
+    subgraph Staff_Functions [ฟังก์ชันสำหรับพนักงาน]
+        direction TB
+        S1(เข้าสู่ระบบ)
+        S2(ดูรายการคำสั่งซื้อ)
+        S3(ตรวจสอบและยืนยันคำสั่งซื้อ)
+        S4(จัดเตรียมสินค้า / แพ็คสินค้า)
+        S5(อัพเดตสถานะคำสั่งซื้อ)
+        S6(จัดการสต็อกสินค้า)
+        
+        S_Ext1(ตรวจสอบสต็อก)
+        S_Ext2(รับสินค้าเข้า)
+        S_Ext3(ปรับปรุงสต็อก)
+        
+        S6 -.->|<<include>>| S_Ext1
+        S6 -.->|<<include>>| S_Ext2
+        S6 -.->|<<include>>| S_Ext3
+    end
 
-    %% Manager Links
-    Manager --> UC1
-    Manager --> UM1
-    Manager --> UM2
-    Manager --> UM3
+    %% Manager Subgraph
+    subgraph Manager_Functions [ฟังก์ชันสำหรับผู้จัดการ]
+        direction TB
+        M1(ดูแดชบอร์ดภาพรวม)
+        M2(จัดการสินค้า)
+        M3(จัดการหมวดหมู่สินค้า)
+        M4(จัดการผู้ใช้ระบบ)
+        M5(รายงานยอดขาย)
+        M6(รายงานสินค้าคงเหลือ)
+        M7(รายงานผลประกอบการ)
+        
+        M1 -.->|<<include>>| M2
+        M1 -.->|<<include>>| M3
+        M1 -.->|<<include>>| M4
+        M1 -.->|<<include>>| M5
+        M1 -.->|<<include>>| M6
+        M1 -.->|<<include>>| M7
+    end
+
+    %% Actor Connections
+    Customer --> C1 & C2 & C3 & C4 & C5 & C6 & C7 & C8 & C9 & C10
+    Staff --> S1 & S2 & S3 & S4 & S5 & S6
+    Manager --> M1
 ```
 
 ---
@@ -164,75 +206,265 @@ flowchart LR
 ```mermaid
     classDiagram
     class User {
-        +String id
+        +String userId
         +String username
-        +String password
         +String email
-        +String role
-        +login()
-        +logout()
-    }
-    class Customer {
-        +String address
+        +String passwordHash
+        +String firstName
+        +String lastName
         +String phone
-        +viewProfile()
+        +String role
+        +Datetime createdAt
+        +Datetime updatedAt
+        +register(userData: Object) boolean
+        +login(email, password) boolean
+        +logout() void
+        +updateProfile(newData: Object) void
+        +changePassword(oldPass, newPass) boolean
     }
+    
+    class Customer {
+        +Date dateOfBirth
+        +String gender
+        +viewProfile() Customer
+        +viewOrders() List~Order~
+        +addAddress(addressData: Object) boolean
+    }
+    
     class Staff {
         +String position
-        +manageOrder()
+        +viewPendingOrders() Array
+        +updateOrderStatus(orderId, status) boolean
+        +checkStock(productId) Number
+        +manageInventory(productId, qty) boolean
     }
+    
     class Manager {
         +String department
-        +viewDashboard()
+        +viewDashboard() Object
+        +viewReports(reportType) Array
+        +manageUsers(targetUserId, action) boolean
+        +manageProducts(productData, action) boolean
+        +manageCategories(categoryData, action) boolean
     }
+    
     User <|-- Customer
     User <|-- Staff
     User <|-- Manager
 
     class Product {
         +String productId
+        +String modelId
+        +String categoryId
+        +String sku
         +String name
+        +String description
+        +String gender
+        +String size
+        +String warranty
         +Number price
         +String status
-        +updateStock()
+        +Datetime createdAt
+        +getImages() Array
+        +getCurrentPrice() Number
     }
+    
     class Category {
         +String categoryId
         +String name
+        +String description
+        +String status
+        +getSubCategories() List~Category~
     }
+    
+    class Brand {
+        +String brandId
+        +String name
+        +String country
+        +String logoUrl
+        +String description
+        +String status
+        +getProducts() List~Product~
+    }
+    
+    class ProductImage {
+        +String imageId
+        +String productId
+        +String imageUrl
+        +boolean isPrimary
+        +Number sortOrder
+    }
+    
+    class Inventory {
+        +String inventoryId
+        +String productId
+        +Number quantityOnHand
+        +Number reservedQty
+        +Number reorderLevel
+        +Datetime lastUpdated
+        +adjustStock(qtyChange) boolean
+        +updateReservedQty(qty) boolean
+        +checkReorderLevel() boolean
+    }
+    
     Product --> Category : belongs to
+    Product --> Brand : belongs to
+    Product --> ProductImage : has
+    Product --> Inventory : manages
 
     class Order {
         +String orderId
+        +String orderNo
         +String customerId
-        +Number totalAmount
+        +Datetime orderDate
         +String status
-        +calculateTotal()
+        +Number totalAmount
+        +Number shippingAmount
+        +calculateTotal() Number
+        +confirmOrder() boolean
+        +cancel() boolean
+        +changeStatus(status) boolean
     }
+    
     class OrderItem {
+        +String orderItemId
+        +String orderId
         +String productId
         +Number quantity
         +Number unitPrice
+        +getSubTotal() Number
     }
-    Order *-- OrderItem : contains
+    
+    class Cart {
+        +String cartId
+        +String customerId
+        +String status
+        +Datetime createdAt
+        +Datetime updatedAt
+        +addItem(productId, qty) boolean
+        +updateItemQty(productId, qty) boolean
+        +removeItem(productId) boolean
+        +clear() boolean
+        +getTotal() Number
+    }
+    
+    class Payment {
+        +String paymentId
+        +String orderId
+        +String method
+        +Number amount
+        +String status
+        +Datetime paymentDate
+        +String transactionId
+        +confirmPayment() boolean
+    }
+    
+    class Shipping {
+        +String shippingId
+        +String orderId
+        +String trackingNo
+        +String carrier
+        +String shippingAddressId
+        +String shippingMethod
+        +String status
+        +Datetime shippedDate
+        +updateStatus(status) boolean
+    }
+    
+    class Address {
+        +String addressId
+        +String customerId
+        +String type
+        +String fullName
+        +String phone
+        +String addressLine1
+        +String addressLine2
+        +String district
+        +String city
+        +String province
+        +String postalCode
+        +String country
+        +boolean isDefault
+    }
+    
     Customer "1" --> "0..*" Order : places
+    Order *-- OrderItem : contains
+    Order "1" --> "1" Payment : has
+    Order "1" --> "1" Shipping : uses
+    Shipping "1" --> "1" Address : delivers to
+    Customer "1" --> "1" Cart : owns
+    Cart "1" --> "0..*" OrderItem : items
+    OrderItem "0..*" --> "1" Product : references
+
+    class Report {
+        +String reportId
+        +String reportName
+        +String periodType
+        +Date startDate
+        +Date endDate
+        +Datetime generatedAt
+        +String generatedBy
+        +generate() Object
+    }
+    
+    class SalesReport {
+        +Number totalOrders
+        +Number totalSales
+        +Number averageOrderValue
+        +List~Product~ topProducts
+        +generate() Object
+    }
+    
+    class InventoryReport {
+        +Number totalItems
+        +Number totalValue
+        +Array lowStockItems
+        +Array outOfStockItems
+        +generate() Object
+    }
+    
+    class ProfitReport {
+        +Number totalRevenue
+        +Number totalCost
+        +Number grossProfit
+        +Number netProfit
+        +generate() Object
+    }
+    
+    Report <|-- SalesReport
+    Report <|-- InventoryReport
+    Report <|-- ProfitReport
+    
+    class ProductSearch {
+        +String keyword
+        +String brandId
+        +String categoryId
+        +Number minPrice
+        +Number maxPrice
+        +String sortBy
+        +boolean isStockOnly
+        +search() List~Product~
+        +clear() void
+    }
 ```
 
 ---
 
 ## <a id="sequence-diagrams"></a>🔧 Sequence Diagrams
 
+1.Customer
 ```mermaid
-    1.Customer
+    sequenceDiagram
     actor Customer as ลูกค้า (Customer)
     participant UI as หน้าเว็บ React (Web UI)
     participant US as User Service (Node.js)
     participant PS as Product Service
     participant CS as Cart Service
     participant OS as Order Service
+    participant PG as Payment Gateway
     participant DB as ฐานข้อมูล (JSON)
 
-    %% เฟส 1: เข้าสู่ระบบ
+    %% เฟส 1: การเข้าสู่ระบบ (Login)
     rect rgb(240, 248, 255)
         Customer->>UI: กรอก Email & Password
         UI->>US: login(email, password)
@@ -242,7 +474,7 @@ flowchart LR
         UI-->>Customer: เปลี่ยนหน้าจอเข้าสู่ระบบสำเร็จ
     end
 
-    %% เฟส 2: ค้นหาสินค้า
+    %% เฟส 2: ค้นหาสินค้า (Search Product)
     rect rgb(255, 250, 240)
         Customer->>UI: พิมพ์คำค้นหา (เช่น "อาหารแมว")
         UI->>PS: search(keyword, minPrice, maxPrice)
@@ -252,7 +484,7 @@ flowchart LR
         UI-->>Customer: แสดงการ์ดสินค้าบนหน้าจอ
     end
 
-    %% เฟส 3: หยิบใส่ตะกร้า
+    %% เฟส 3: หยิบใส่ตะกร้า (Add to Cart)
     rect rgb(240, 255, 240)
         Customer->>UI: กดปุ่ม "เพิ่มลงตะกร้า"
         UI->>CS: addItem(productId, qty)
@@ -262,7 +494,7 @@ flowchart LR
         UI-->>Customer: แสดง Popup แจ้งเตือน "เพิ่มสำเร็จ!"
     end
 
-    %% เฟส 4: สั่งซื้อและชำระเงิน
+    %% เฟส 4: สั่งซื้อและชำระเงิน (Checkout)
     rect rgb(255, 240, 245)
         Customer->>UI: กดปุ่ม "ชำระเงิน" ในตะกร้า
         UI->>OS: calculateTotal()
@@ -271,8 +503,8 @@ flowchart LR
         OS-->>UI: คืนค่าราคาสุทธิเป็น Number
         UI-->>Customer: แสดงหน้าสรุปยอดและช่องทางจ่ายเงิน
         Customer->>UI: กดยืนยันการจ่ายเงิน (จำลอง)
-        UI->>OS: confirmPayment(method, amount)
-        OS-->>UI: คืนค่า boolean (True) ยืนยันว่าตัดเงินผ่าน
+        UI->>PG: confirmPayment(method, amount)
+        PG-->>UI: คืนค่า boolean (True) ยืนยันว่าตัดเงินผ่าน
         UI->>OS: confirmOrder()
         OS->>DB: สร้างออเดอร์ใหม่ลง orders.json
         DB-->>OS: บันทึกสำเร็จ
@@ -281,8 +513,10 @@ flowchart LR
         CS-->>UI: ล้างตะกร้าสำเร็จ
         UI-->>Customer: แสดงหน้า "ขอบคุณที่สั่งซื้อสินค้า"
     end
-
-    2.Staff
+```
+2.Staff
+```mermaid
+    sequenceDiagram
     actor Staff as พนักงาน (Staff)
     participant UI as หน้า Dashboard (React)
     participant US as User Service
@@ -290,7 +524,7 @@ flowchart LR
     participant OS as Order Service
     participant DB as ฐานข้อมูล (JSON)
 
-    %% เฟส 1: การเข้าสู่ระบบ
+    %% เฟส 1: การเข้าสู่ระบบ (Staff Login)
     rect rgb(240, 248, 255)
         Staff->>UI: กรอก Email & Password
         UI->>US: login(email, password)
@@ -300,7 +534,7 @@ flowchart LR
         UI-->>Staff: พาเข้าสู่หน้า Dashboard การจัดการ
     end
 
-    %% เฟส 2: ตรวจสอบและอัปเดตสต็อก
+    %% เฟส 2: ตรวจสอบและอัปเดตสต็อก (Manage Inventory)
     rect rgb(255, 250, 240)
         Staff->>UI: พิมพ์รหัสสินค้าเพื่อดูจำนวนคงเหลือ
         UI->>IS: ขอดูข้อมูลสต็อกปัจจุบัน
@@ -316,7 +550,7 @@ flowchart LR
         UI-->>Staff: แสดง Popup แจ้งเตือน "อัปเดตสต็อกเรียบร้อย!"
     end
 
-    %% เฟส 3: อัปเดตสถานะคำสั่งซื้อ
+    %% เฟส 3: อัปเดตสถานะคำสั่งซื้อ (Update Order Status)
     rect rgb(240, 255, 240)
         Staff->>UI: กดเข้าเมนู "ออเดอร์ที่รอจัดส่ง"
         UI->>OS: ขอดึงรายการออเดอร์ทั้งหมด
@@ -331,8 +565,11 @@ flowchart LR
         OS-->>UI: คืนค่า boolean (True)
         UI-->>Staff: แจ้งเตือน "อัปเดตสถานะออเดอร์เรียบร้อย"
     end
+```
 
-    3.Manager
+3.Manager
+```mermaid
+    sequenceDiagram
     actor Manager as ผู้จัดการ (Manager)
     participant UI as หน้า Dashboard (React)
     participant US as User Service
@@ -340,7 +577,7 @@ flowchart LR
     participant RS as Report Service
     participant DB as ฐานข้อมูล (JSON)
 
-    %% เฟส 1: การเข้าสู่ระบบ
+    %% เฟส 1: การเข้าสู่ระบบ (Manager Login)
     rect rgb(240, 248, 255)
         Manager->>UI: กรอก Email & Password
         UI->>US: login(email, password)
@@ -350,7 +587,7 @@ flowchart LR
         UI-->>Manager: พาเข้าสู่หน้า Admin Dashboard
     end
 
-    %% เฟส 2: การจัดการสินค้า
+    %% เฟส 2: การจัดการสินค้า (Manage Catalog)
     rect rgb(255, 250, 240)
         Manager->>UI: กรอกข้อมูลสินค้าใหม่ (เช่น อาหารแมวสูตรใหม่)
         UI->>PS: มัดรวมข้อมูลส่งไปบันทึก
@@ -360,7 +597,7 @@ flowchart LR
         UI-->>Manager: แจ้งเตือน "เพิ่มสินค้าใหม่ลงระบบเรียบร้อย"
     end
 
-    %% เฟส 3: การสร้างรายงาน
+    %% เฟส 3: การสร้างรายงาน (Generate Reports)
     rect rgb(245, 240, 255)
         Manager->>UI: กดเมนู "ดูรายงานยอดขายและกำไร"
         UI->>RS: เรียกคำสั่ง generate() [คลาส SalesReport]
