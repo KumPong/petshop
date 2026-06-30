@@ -19,8 +19,8 @@
 
 ## <a id="group-members"></a>👥 สมาชิกในกลุ่ม (Group Members)
 * **67097950** อนันยศ ชัยชนะ (ปลานัย) - Project Manager, Infrastructure
-* **67107433** ณัชพล วงศาจันทร์ (บอน) - Frontend, Backend
-* **67115588** ธนกฤต เพ็ชรกำจัด (พี่นอร์ท) - Frontend, Backend
+* **67107433** ณัชพล วงศาจันทร์ (นอร์ท) - Frontend, Backend
+* **67115588** ธนกฤต เพ็ชรกำจัด (บอน) - Frontend, Backend
 
 ---
 
