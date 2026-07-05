@@ -1,9 +1,12 @@
 import { NavLink } from 'react-router-dom';
 import { PawPrint, LayoutGrid, Archive, LogOut } from 'lucide-react';
 
+// รายการเมนูใน sidebar ของ Staff — วนลูป render จาก array นี้แทนเขียน <NavLink> ซ้ำๆ ทีละอัน
+// end: true หมายถึงจะ highlight ว่า active เฉพาะตอน path ตรงเป๊ะ (ไม่ใช่ prefix)
+// ใช้กับ "/staff" เพราะไม่งั้น "/staff/inventory" จะ match กับ "/staff" ด้วย ทำให้ Dashboard ค้าง highlight ตลอด
 const NAV_ITEMS = [
-  { to: '/staff', label: 'Dashboard', icon: LayoutGrid, end: true },
-  { to: '/staff/inventory', label: 'Inventory', icon: Archive },
+  { to: '/staff', label: 'แดชบอร์ด', icon: LayoutGrid, end: true },
+  { to: '/staff/inventory', label: 'คลังสินค้า', icon: Archive },
 ];
 
 function StaffSidebar() {
@@ -16,12 +19,14 @@ function StaffSidebar() {
           </span>
           <div>
             <p className="font-semibold text-gray-900 leading-tight">PetStop</p>
-            <p className="text-xs text-gray-400 leading-tight">PetStop Staff</p>
+            <p className="text-xs text-gray-400 leading-tight">พนักงาน PetStop</p>
           </div>
         </div>
 
         <nav className="flex flex-col gap-1">
           {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+            // NavLink พิเศษกว่า Link ตรงที่รู้ว่าตัวเองกำลัง "active" อยู่หรือไม่
+            // (isActive มาจาก react-router เอง) เลยใช้ทำ highlight เมนูปัจจุบันได้โดยไม่ต้องเช็คเอง
             <NavLink
               key={to}
               to={to}
@@ -41,9 +46,10 @@ function StaffSidebar() {
         </nav>
       </div>
 
+      {/* ปุ่ม Logout ยังเป็นแค่ UI เฉยๆ ยังไม่ได้ผูก action จริง เพราะทั้งโปรเจกต์ยังไม่มีระบบ login */}
       <button className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-50">
         <LogOut size={18} />
-        Logout
+        ออกจากระบบ
       </button>
     </aside>
   );

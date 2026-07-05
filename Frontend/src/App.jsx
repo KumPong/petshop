@@ -11,6 +11,7 @@ import CustomerDashboard from './pages/Customer/customerDashboard';
 import ManagerDashboard from './pages/Manager/managerDashboard';
 import StaffDashBoard from './pages/Staff/staffDashboard';
 import Inventory from './pages/inventory.jsx';
+import RestockOrder from './pages/Manager/restockOrder.jsx';
 
 function App() {
   return (
@@ -31,7 +32,7 @@ function App() {
       {/* ของ Manager */}
       <Route path='/manager' element={<ManagerLayout />}>
         <Route index element={<ManagerDashboard />} />
-        <Route path='inventory' element={<Inventory />} />
+        <Route path='inventory' element={<RestockOrder />} />
         {/* หน้าอื่นๆ ของmanager เช่น /manager/reports ก็ใส่ในนี้ได้เลย */}
       </Route>
     </Routes>
