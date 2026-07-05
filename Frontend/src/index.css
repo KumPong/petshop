@@ -9,6 +9,7 @@
   --color-primary: #CCD5AE;
   --color-secondary: #E0E5B6;
   --color-other: #FAEDCE;
+  --color-background: #FEFAE0;
   
   /* ตั้งค่าชื่อฟอนต์ */
   --font-prompt: "Prompt", sans-serif;
