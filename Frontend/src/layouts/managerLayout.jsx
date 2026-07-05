@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import ManagerSidebar from "../components/managersidebar";
+import ManagerSidebar from "../components/managerSidebar";
 
 export default function ManagerLayout() {
     return(
