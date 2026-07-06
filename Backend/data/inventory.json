@@ -2,6 +2,7 @@
   {
     "id": "NK-SL-12-001",
     "sku": "NK-SL-12-001",
+    "productId": "PD-001",
     "name": "Nomad Kitchen: แซลมอนและมันหวาน",
     "subtitle": "อาหารสุนัขชนิดแห้ง • 12 ปอนด์",
     "unitLabel": "1 ถุง บรรจุ 12 ปอนด์",
@@ -20,6 +21,7 @@
   {
     "id": "OH-BF-12-552",
     "sku": "OH-BF-12-552",
+    "productId": "PD-002",
     "name": "Oak & Harvest: เนื้อวัวออร์แกนิกและข้าว",
     "subtitle": "อาหารแห้งพรีเมียม • 12 ปอนด์",
     "unitLabel": "1 ถุง บรรจุ 12 ปอนด์",
@@ -31,8 +33,65 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z"
   },
   {
+    "id": "WD-TUN-24-330",
+    "sku": "WD-TUN-24-330",
+    "productId": "PD-003",
+    "name": "Whisker Delight: ทูน่าเนื้อแน่นในเยลลี่",
+    "subtitle": "อาหารแมวชนิดเปียก • 85 กรัม/ซอง",
+    "unitLabel": "1 แพ็ก บรรจุ 24 ซอง",
+    "category": "อาหารเปียก",
+    "supplier": "Pawsome Suppliers Co.",
+    "stock": 48,
+    "threshold": 20,
+    "unitCost": 21,
+    "lastUpdated": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "id": "PC-LSH-ADJ-004",
+    "sku": "PC-LSH-ADJ-004",
+    "productId": "PD-004",
+    "name": "PawComfort: เชือกจูงสุนัขปรับความยาวได้",
+    "subtitle": "อุปกรณ์เดินเล่น • ปรับความยาวได้",
+    "unitLabel": "1 ชิ้น",
+    "category": "อุปกรณ์",
+    "supplier": "Eco-Pet Exports",
+    "stock": 25,
+    "threshold": 10,
+    "unitCost": 180,
+    "lastUpdated": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "id": "CN-BED-M-005",
+    "sku": "CN-BED-M-005",
+    "productId": "PD-005",
+    "name": "Cozy Nap: เบาะนอนสัตว์เลี้ยงไซส์กลาง",
+    "subtitle": "เบาะนอนสัตว์เลี้ยง • ไซส์กลาง",
+    "unitLabel": "1 ชิ้น",
+    "category": "อุปกรณ์",
+    "supplier": "Pawsome Suppliers Co.",
+    "stock": 18,
+    "threshold": 8,
+    "unitCost": 380,
+    "lastUpdated": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "id": "FB-CAT-006",
+    "sku": "FB-CAT-006",
+    "productId": "PD-006",
+    "name": "FreshBite: ขนมขบเคี้ยวสำหรับแมว",
+    "subtitle": "ขนมแมวกรอบ",
+    "unitLabel": "1 ซอง",
+    "category": "ขนม",
+    "supplier": "Pawsome Suppliers Co.",
+    "stock": 60,
+    "threshold": 20,
+    "unitCost": 32,
+    "lastUpdated": "2026-07-01T00:00:00.000Z"
+  },
+  {
     "id": "BW-CK-12-890",
     "sku": "BW-CK-12-890",
+    "productId": null,
     "name": "Barkwell: ไก่และผักสวนครัว",
     "subtitle": "สูตรไม่มีธัญพืช • 12 ปอนด์",
     "unitLabel": "1 ถุง บรรจุ 12 ปอนด์",
@@ -46,6 +105,7 @@
   {
     "id": "PS-PY-05-121",
     "sku": "PS-PY-05-121",
+    "productId": null,
     "name": "PetStop Essential: สูตรลูกสุนัข",
     "subtitle": "อาหารเม็ดเริ่มต้น • 5 ปอนด์",
     "unitLabel": "1 ถุง บรรจุ 5 ปอนด์",
@@ -59,6 +119,7 @@
   {
     "id": "FD-SAL-05",
     "sku": "FD-SAL-05",
+    "productId": null,
     "name": "อาหารสัตว์เลี้ยงออร์แกนิก รสแซลมอน (5กก.)",
     "subtitle": "อาหารแห้งออร์แกนิก • 5 กก.",
     "unitLabel": "1 กล่อง (ไซส์ L) บรรจุ 4 ชิ้น",
@@ -72,6 +133,7 @@
   {
     "id": "GR-BAM-01",
     "sku": "GR-BAM-01",
+    "productId": null,
     "name": "แปรงขนไม้ไผ่",
     "subtitle": "อุปกรณ์ดูแลขน",
     "unitLabel": "1 เคส บรรจุ 12 ชิ้น",
@@ -85,6 +147,7 @@
   {
     "id": "TR-TUN-01",
     "sku": "TR-TUN-01",
+    "productId": null,
     "name": "ขนมทูน่าโฮมเมด",
     "subtitle": "ขนมสัตว์เลี้ยง",
     "unitLabel": "1 เคส บรรจุ 24 ชิ้น",
@@ -98,6 +161,7 @@
   {
     "id": "TY-CAT-04",
     "sku": "TY-CAT-04",
+    "productId": null,
     "name": "ของเล่นหนูแคทนิป",
     "subtitle": "ของเล่นแมว",
     "unitLabel": "1 แพ็ก บรรจุ 6 ชิ้น",
@@ -111,6 +175,7 @@
   {
     "id": "AC-LSH-02",
     "sku": "AC-LSH-02",
+    "productId": null,
     "name": "สายจูงสุนัขสะท้อนแสง",
     "subtitle": "อุปกรณ์เสริม",
     "unitLabel": "1 ชิ้น",
@@ -124,6 +189,7 @@
   {
     "id": "AC-BWL-03",
     "sku": "AC-BWL-03",
+    "productId": null,
     "name": "ชามอาหารเซรามิก",
     "subtitle": "อุปกรณ์เสริม",
     "unitLabel": "1 ชิ้น",
@@ -137,6 +203,7 @@
   {
     "id": "orthopedic-bed",
     "sku": "BD-ORT-14",
+    "productId": null,
     "name": "เบาะนอนออร์โธปิดิกส์ทรงคลาวด์ (ไซส์ M)",
     "subtitle": "เบาะนอนสัตว์เลี้ยง",
     "unitLabel": "1 ชิ้น",
@@ -150,6 +217,7 @@
   {
     "id": "tug-toy",
     "sku": "TY-TUG-07",
+    "productId": null,
     "name": "ของเล่นเชือกฝ้ายสำหรับดึงเล่น (ไซส์ L)",
     "subtitle": "ของเล่นสุนัข",
     "unitLabel": "1 ชิ้น",

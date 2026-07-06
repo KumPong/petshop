@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ORDERS_PATH = path.join(__dirname, '..', 'data', 'order.json');
 const PRODUCT_PATH = path.join(__dirname, '..', 'data', 'product.json');
+const INVENTORY_PATH = path.join(__dirname, '..', 'data', 'inventory.json');
 
 const TAX_RATE = 0.07; // ภาษี 7% แบบเดียวกับ VAT
 
@@ -131,6 +132,20 @@ export async function createOrder(req, res) {
     });
   }
 
+  // เช็คสต็อกจริงจาก inventory.json ก่อนตัดเงิน/สร้างออเดอร์ (เชื่อมด้วย productId ที่ผูกไว้ในแต่ละ record ของ inventory)
+  const inventory = await readJson(INVENTORY_PATH);
+  for (const item of enrichedItems) {
+    const invItem = inventory.find((i) => i.productId === item.productId);
+    if (!invItem) {
+      return res.status(404).json({ message: `ไม่พบข้อมูลสต็อกของสินค้า "${item.name}"` });
+    }
+    if (invItem.stock < item.quantity) {
+      return res.status(409).json({
+        message: `สินค้า "${item.name}" เหลือไม่พอ (คงเหลือ ${invItem.stock} ต้องการ ${item.quantity})`,
+      });
+    }
+  }
+
   // calculateTotal() — รวมยอดจากทุกรายการสินค้า แล้วบวกค่าส่ง + ภาษี
   const subtotal = enrichedItems.reduce((sum, item) => sum + item.subTotal, 0);
   const shippingAmount = SHIPPING_METHODS[shippingMethod].cost;
@@ -181,6 +196,14 @@ export async function createOrder(req, res) {
     shipping,
     payment,
   };
+
+  // ตัดสต็อกจริงตามจำนวนที่สั่ง (เช็คพอแล้วตั้งแต่ก่อนคำนวณราคา) แล้วบันทึกคู่กับออเดอร์ในคำขอเดียวกัน
+  for (const item of enrichedItems) {
+    const invItem = inventory.find((i) => i.productId === item.productId);
+    invItem.stock -= item.quantity;
+    invItem.lastUpdated = orderDate;
+  }
+  await writeJson(INVENTORY_PATH, inventory);
 
   orders.push(newOrder);
   await writeJson(ORDERS_PATH, orders);
