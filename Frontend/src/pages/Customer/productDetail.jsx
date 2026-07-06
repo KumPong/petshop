@@ -61,9 +61,6 @@ function ProductDetail() {
 
   return (
     <div className="min-h-screen bg-background text-gray-800 p-6">
-      <div className="container mx-auto mb-4">
-        <Link to="/products" className="inline-block text-sm text-gray-700 hover:underline">← กลับไปยังรายการสินค้า</Link>
-      </div>
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 bg-white rounded-lg shadow-md p-6">
           <img src={product.image || 'https://via.placeholder.com/800x600?text=Product'} alt={product.name} className="w-full h-96 object-cover rounded-md mb-4" />
