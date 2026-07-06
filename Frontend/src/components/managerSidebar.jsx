@@ -1,71 +1,83 @@
-import { NavLink } from 'react-router-dom';
-import { PawPrint, LayoutGrid, User, Box, Truck, FileBarChart2, LogOut } from 'lucide-react';
-
-// เมนูที่มี disabled: true คือหน้าที่ยังไม่มีอยู่จริงในโปรเจกต์ (Manage Users, Products, Report)
-// จงใจใส่ไว้ให้เห็นครบตาม design แต่กดไม่ได้ (เทาๆ) กันไม่ให้เป็นลิงก์ที่พาไปหน้าเปล่า/error
-// ส่วน "ผู้จัดจำหน่าย" (Suppliers) คือเมนูเดียวที่ใช้งานได้จริง ลิงก์ไปหน้า Restock ที่ /manager/inventory
-const NAV_ITEMS = [
-  { to: '/manager', label: 'แดชบอร์ด', icon: LayoutGrid, end: true },
-  { label: 'จัดการผู้ใช้งาน', icon: User, disabled: true },
-  { label: 'สินค้า', icon: Box, disabled: true },
-  { to: '/manager/inventory', label: 'ผู้จัดจำหน่าย', icon: Truck },
-  { label: 'รายงาน', icon: FileBarChart2, disabled: true },
-];
+import { NavLink, useNavigate } from 'react-router-dom';
+import {
+    LayoutDashboard, 
+    Users, 
+    Package, 
+    Truck, 
+    FileBarChart, 
+    LogOut
+} from 'lucide-react'
+import Logo from '../assets/Logo.png'
 
 function ManagerSidebar() {
-  return (
-    <aside className="flex h-screen w-64 shrink-0 flex-col justify-between border-r border-gray-100 bg-white px-4 py-6">
-      <div>
-        <div className="mb-8 flex items-center gap-2 px-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary">
-            <PawPrint size={18} className="text-gray-700" />
-          </span>
-          <div>
-            <p className="font-semibold text-gray-900 leading-tight">PetStop</p>
-            <p className="text-xs text-gray-400 leading-tight">ผู้จัดการ PetStop</p>
-          </div>
-        </div>
+    const navigate = useNavigate();
 
-        <nav className="flex flex-col gap-1">
-          {/* เมนูแต่ละอันเลือก render เป็น <span> เฉยๆ (กดไม่ได้) หรือ <NavLink> (กดได้จริง)
-              แล้วแต่ว่ามี flag disabled หรือไม่ */}
-          {NAV_ITEMS.map(({ to, label, icon: Icon, end, disabled }) =>
-            disabled ? (
-              <span
-                key={label}
-                title="เร็ว ๆ นี้"
-                className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-300"
-              >
-                <Icon size={18} />
-                {label}
-              </span>
-            ) : (
-              <NavLink
-                key={to}
-                to={to}
-                end={end}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                    isActive
-                      ? 'bg-primary text-gray-900'
-                      : 'text-gray-500 hover:bg-gray-50'
-                  }`
-                }
-              >
-                <Icon size={18} />
-                {label}
-              </NavLink>
-            )
-          )}
-        </nav>
-      </div>
+    const handleLogout = async () => {
+        try {
+            // ใส่โค้ดเคลียร์ Token/Session ของ Node.js ตรงนี้
+            // เช่น localStorage.removeItem('token');
+            // await axios.post('/api/auth/logout');
+            console.log('Manager logged out successfully');
+            navigate('/login')
+        } catch (error) {
+            console.error('Logout failed:', error)
+        }
+    };
 
-      <button className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-50">
-        <LogOut size={18} />
-        ออกจากระบบ
-      </button>
-    </aside>
-  );
-}
+    const navItems = [
+        { name: 'Dashboard', path: '/manager', icon: <LayoutDashboard size={20} /> },
+        { name: 'Manage Users', path: '/manager/users', icon: <Users size={20} /> },
+        { name: 'Products', path: '/manager/products', icon: <Package size={20} /> },
+        { name: 'Suppliers', path: '/manager/suppliers', icon: <Truck size={20} /> },
+        { name: 'Report', path: '/manager/reports', icon: <FileBarChart size={20} /> },
+    ]
+
+    return(
+        <aside className="w-64 h-screen bg-other flex flex-col border-r border-gray-200">
+            {/* Header & Logo */}
+            <div className="p-6 flex items-center gap-3">
+                <NavLink className="shrink-0">
+                    <img src={Logo} alt="PetStop" className="h-8 cursor-pointer"/>
+                </NavLink>
+                <div>
+                    <h1 className="text-xl text-fontgreen font-bold leading-tight">PetStop</h1>
+                    <p className="text-sm">PetStop Manager</p>
+                </div>
+            </div>
+
+            {/* Navigation Links */}
+            <nav className="flex-1 px-4 py-2 space-y-1">
+                {navItems.map((item) => (
+                    <NavLink
+                        key={item.name}
+                        to={item.path}
+                        end={item.path === '/manager'} // ไม่ให้มันทำงานค้างเวลาไปหน้าอื่นๆ
+                        className={({ isActive }) => 
+                            `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                                isActive
+                                    ? 'bg-secondary text-black font-medium'
+                                    : 'text-black hover:bg-secondary hover:text-gray-900' 
+                            }`
+                        }
+                    >
+                        {item.icon}
+                        <span>{item.name}</span>
+                    </NavLink>
+                ))}
+            </nav>
+
+            {/* Logout Button */}
+            <div className="p-4 mb-4">
+                <button 
+                    onClick={handleLogout}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-secondary hover:bg-primary text-fontgreen font-medium rounded-xl transition-colors"
+                >
+                    <LogOut size={24}/>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+    );
+};
 
 export default ManagerSidebar;

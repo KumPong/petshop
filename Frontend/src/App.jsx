@@ -37,6 +37,7 @@ function App() {
         <Route path='/products/cats' element={<ProductListing selectedSegment="cats" />} />
         <Route path='/products/accessories' element={<ProductListing selectedSegment="accessories" />} />
         <Route path='/products/:id' element={<ProductDetail />} />
+        {/* หน้าอื่นๆ ของลูกค้าในอนาคต เช่น /shop, /cart ก็ใส่ในนี้ได้เลย */}
         <Route path='/profile' element={<Profile />} />
         <Route path='/address' element={<Address />} />
         <Route path='/orders' element={<OrderHistory />} />
