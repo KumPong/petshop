@@ -8,9 +8,7 @@ export async function getPurchaseOrders() {
   return data;
 }
 
-// สร้างใบสั่งซื้อใหม่จากรายการที่เลือกไว้
-// items ต้องเป็น array ของ { id, qty } เช่น [{ id: 'FD-SAL-05', qty: 11 }]
-// เรียกตอนกด "ยืนยันการสั่งซื้อ" ใน modal ยืนยัน
+// สร้างใบสั่งซื้อใหม่ — items เป็น array ของ { id, qty } เรียกตอนกด "ยืนยันการสั่งซื้อ" ใน modal
 export async function createPurchaseOrder(items) {
   const { data } = await api.post('/purchase-orders', { items });
   return data;

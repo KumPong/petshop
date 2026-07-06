@@ -7,14 +7,14 @@
     "unitLabel": "1 ถุง บรรจุ 12 ปอนด์",
     "category": "อาหารแห้ง",
     "supplier": "Wholesome Pet Foods",
-    "stock": 69,
+    "stock": 65,
     "threshold": 20,
     "unitCost": 18,
-    "lastUpdated": "2026-07-05T07:41:11.908Z",
+    "lastUpdated": "2026-07-06T16:28:47.368Z",
     "lastAdjustment": {
       "type": "remove",
-      "amount": 15,
-      "reason": "ปรับแก้ยอดสต็อก"
+      "amount": 5,
+      "reason": "สินค้าเสียหาย / สูญหาย"
     }
   },
   {
@@ -38,10 +38,10 @@
     "unitLabel": "1 ถุง บรรจุ 12 ปอนด์",
     "category": "ไม่มีธัญพืช",
     "supplier": "Eco-Pet Exports",
-    "stock": 1,
+    "stock": 15,
     "threshold": 15,
     "unitCost": 25,
-    "lastUpdated": "2026-07-05T07:07:32.335Z"
+    "lastUpdated": "2026-07-06T13:53:42.298Z"
   },
   {
     "id": "PS-PY-05-121",
@@ -77,10 +77,10 @@
     "unitLabel": "1 เคส บรรจุ 12 ชิ้น",
     "category": "ของใช้ดูแลขน",
     "supplier": "Eco-Pet Exports",
-    "stock": 8,
+    "stock": 10,
     "threshold": 10,
     "unitCost": 12,
-    "lastUpdated": "2026-07-01T00:00:00.000Z"
+    "lastUpdated": "2026-07-06T13:53:42.298Z"
   },
   {
     "id": "TR-TUN-01",
@@ -155,48 +155,9 @@
     "unitLabel": "1 ชิ้น",
     "category": "ของเล่น",
     "supplier": "Eco-Pet Exports",
-    "stock": 5,
+    "stock": 6,
     "threshold": 10,
     "unitCost": 8.2,
     "lastUpdated": "2026-07-01T00:00:00.000Z"
-  },
-  {
-    "id": "CF-PUR-01",
-    "sku": "CF-PUR-01",
-    "name": "Purrrfect Choice: Salmon & Tuna",
-    "subtitle": "อาหารแมวชนิดแห้ง • 1.5 กก.",
-    "unitLabel": "1 ถุง บรรจุ 1.5 กก.",
-    "category": "อาหารแมว",
-    "supplier": "Purrfect Suppliers",
-    "stock": 48,
-    "threshold": 10,
-    "unitCost": 6.5,
-    "lastUpdated": "2026-07-06T09:00:00.000Z"
-  },
-  {
-    "id": "CF-ROY-02",
-    "sku": "CF-ROY-02",
-    "name": "Royal Feline: Adult Chicken",
-    "subtitle": "อาหารแมวผู้ใหญ่ • 2 กก.",
-    "unitLabel": "1 ถุง บรรจุ 2 กก.",
-    "category": "อาหารแมว",
-    "supplier": "Royal Pet Foods",
-    "stock": 25,
-    "threshold": 8,
-    "unitCost": 9.0,
-    "lastUpdated": "2026-07-06T09:05:00.000Z"
-  },
-  {
-    "id": "CF-NAT-03",
-    "sku": "CF-NAT-03",
-    "name": "Nature's Bowl: Grain-Free Tuna",
-    "subtitle": "อาหารแมวไร้ธัญพืช • 1 กก.",
-    "unitLabel": "1 ถุง บรรจุ 1 กก.",
-    "category": "อาหารแมว",
-    "supplier": "Nature's Pet Co.",
-    "stock": 12,
-    "threshold": 5,
-    "unitCost": 7.25,
-    "lastUpdated": "2026-07-06T09:10:00.000Z"
   }
 ]

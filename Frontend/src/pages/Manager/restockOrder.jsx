@@ -19,9 +19,8 @@ import {
   receivePurchaseOrder,
 } from '../../services/purchaseOrder.service.js';
 
-// สถานะของใบสั่งซื้อ (PO) มี 3 แบบเท่าที่ backend ส่งมาได้: Pending, Shipped, Received
-// ตอนนี้ flow จริงมีแค่ Pending -> Received (ข้าม Shipped ไปเลย เพราะยังไม่มีระบบแจ้งจัดส่งจริง)
-// Shipped ยังเหลืออยู่ในระบบเพราะมีอยู่ในข้อมูลตัวอย่าง (seed) เท่านั้น
+// สถานะ PO มี 3 แบบ: Pending, Shipped, Received — flow จริงมีแค่ Pending -> Received (ข้าม Shipped เพราะ
+// ยังไม่มีระบบแจ้งจัดส่งจริง, เหลือไว้เพราะมีอยู่ในข้อมูลตัวอย่างเท่านั้น)
 const PENDING_LABEL = 'รอดำเนินการ';
 
 const STATUS_LABELS = {
@@ -44,8 +43,7 @@ function money(n) {
   return `฿${n.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-// แปลงวันที่แบบ ISO string (ที่ backend เก็บ) ให้เป็นข้อความไทยอ่านง่าย เช่น "5 ก.ค. 2026"
-// เผื่อไว้กรณีไม่มีวันที่ส่งมาจะได้ไม่ขึ้นค่าว่างเปล่า/Invalid Date
+// แปลง ISO string ของ backend เป็นข้อความไทยอ่านง่าย เช่น "5 ก.ค. 2026" (ไม่มีวันที่ -> โชว์ PENDING_LABEL)
 function formatDateTH(iso) {
   if (!iso) return PENDING_LABEL;
   const d = new Date(iso);
@@ -68,8 +66,7 @@ function RestockOrder() {
   const [selections, setSelections] = useState({}); // { productId: จำนวนที่เลือกไว้ใน modal } ก่อนกด "เพิ่มเข้ารายการสั่งซื้อ"
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  // โหลดข้อมูล 2 อย่างพร้อมกัน: สินค้าคงคลังทั้งหมด + ประวัติใบสั่งซื้อ
-  // ใช้ Promise.all เพราะ 2 อย่างนี้ไม่เกี่ยวกัน ยิงพร้อมกันได้ ไม่ต้องรอทีละอัน
+  // โหลด inventory + ประวัติ PO พร้อมกันด้วย Promise.all เพราะสองอย่างนี้ไม่เกี่ยวกัน
   useEffect(() => {
     let cancelled = false;
 
@@ -89,9 +86,8 @@ function RestockOrder() {
     };
 
     loadData();
-    // หน้า Staff กับ Manager ต่างคนต่างโหลด inventory เอง ไม่มี state กลางร่วมกัน
-    // ถ้าอีกฝั่งปรับสต็อกไปแล้วเปลี่ยนกลับมาที่ tab นี้ ข้อมูลที่ค้างอยู่จะเก่า
-    // เลยรีเฟรชข้อมูลอัตโนมัติทุกครั้งที่กลับมาโฟกัสหน้านี้ แทนที่จะต้องกด reload เอง
+    // Staff/Manager ต่างคนต่างโหลด inventory เอง (ไม่มี state กลางร่วมกัน) — รีเฟรชอัตโนมัติทุกครั้งที่
+    // กลับมาโฟกัสหน้านี้ กันข้อมูลค้างเก่าเวลาอีกฝั่งปรับสต็อกไปแล้ว
     window.addEventListener('focus', loadData);
     return () => {
       cancelled = true;
@@ -99,8 +95,8 @@ function RestockOrder() {
     };
   }, []);
 
-  // การ์ด "แจ้งเตือนสินค้าใกล้หมด" กรองจาก products ที่โหลดมา ไม่ได้เรียก endpoint /low-stock แยก
-  // (เขียน logic เดียวกันไว้ทั้ง 2 ที่: ฝั่งนี้กับ backend controller — ถ้าจะแก้เกณฑ์ต้องแก้ทั้งคู่)
+  // "แจ้งเตือนสินค้าใกล้หมด" กรองจาก products ที่โหลดมา ไม่เรียก /low-stock แยก (logic ซ้ำกับ backend
+  // controller — แก้เกณฑ์ต้องแก้ทั้งคู่)
   const lowStockItems = useMemo(() => products.filter((p) => p.stock <= p.threshold), [products]);
 
   const categoryOptions = useMemo(
@@ -141,8 +137,7 @@ function RestockOrder() {
     }));
   };
 
-  // ฟังก์ชันกลางสำหรับ "เพิ่มสินค้าเข้าร่างใบสั่งซื้อ" ใช้ทั้งจากปุ่ม Quick Restock และจาก modal เลือกสินค้า
-  // ถ้าสินค้านั้นมีอยู่ในร่างอยู่แล้ว จะบวกจำนวนเพิ่มแทนสร้างแถวซ้ำ
+  // เพิ่มสินค้าเข้าร่าง PO — ใช้ทั้งจาก Quick Restock และ modal เลือกสินค้า, ถ้ามีอยู่แล้วบวกจำนวนแทนสร้างแถวซ้ำ
   const mergeIntoOrder = (product, qty) => {
     setOrderItems((prev) => {
       const existing = prev.find((item) => item.id === product.id);
@@ -174,9 +169,8 @@ function RestockOrder() {
     closeProductModal();
   };
 
-  // "เติมสต็อกด่วน" — คำนวณจำนวนที่ควรสั่งจาก threshold ลบ stock ปัจจุบัน (อย่างน้อยสั่ง 1 หน่วยเสมอ)
-  // กันกดซ้ำ: ถ้าสินค้านี้ถูกเพิ่มเข้าร่าง order ไปแล้ว ปุ่มจะถูกปิดไว้ (ดู isInOrder ตรงจุด render)
-  // ไม่ให้กดซ้ำจนจำนวนสั่งซื้อบวกซ้ำโดยไม่ตั้งใจ — ถ้าจะสั่งเพิ่มอีกให้ปรับจำนวนในตาราง "รายการสั่งซื้อปัจจุบัน" แทน
+  // "เติมสต็อกด่วน" — สั่ง threshold - stock ปัจจุบัน (อย่างน้อย 1 หน่วย) ปุ่มถูกปิดเองถ้าอยู่ในร่างแล้ว
+  // (ดู isInOrder ตรงจุด render) กันกดซ้ำจนจำนวนบวกเพิ่มโดยไม่ตั้งใจ
   const quickRestock = (item) => {
     const qty = Math.max(1, item.threshold - item.stock);
     mergeIntoOrder(item, qty);
@@ -201,17 +195,17 @@ function RestockOrder() {
 
   const closeConfirmModal = () => setShowConfirmModal(false);
 
-  // กด "ยืนยันการสั่งซื้อ" ใน modal สรุปรายการ — ตรงนี้ถึงจะยิง API สร้าง PO จริง
-  // (การกด "สร้างใบสั่งซื้อ" ปุ่มแรกแค่เปิด modal ให้ตรวจทานก่อน กันกดพลาดสั่งเลย)
+  // กด "ยืนยันการสั่งซื้อ" ใน modal สรุปรายการ — ตรงนี้ถึงยิง API สร้าง PO จริง (ปุ่ม "สร้างใบสั่งซื้อ" แรก
+  // แค่เปิด modal ให้ตรวจทานก่อน กันกดพลาด)
   const confirmPurchaseOrder = async () => {
     setSubmitting(true);
     try {
-      // ส่งแค่ id กับ qty ไป backend เท่านั้น — backend จะไปดึงชื่อ/ราคา/ผู้จัดจำหน่ายจริงมาเติมเอง
+      // ส่งแค่ id/qty ไป backend — backend ไปดึงชื่อ/ราคา/ผู้จัดจำหน่ายจริงมาเติมเอง
       const newOrder = await createPurchaseOrder(
         orderItems.map((item) => ({ id: item.id, qty: item.qty }))
       );
-      setRecentOrders((prev) => [newOrder, ...prev]); // เอา PO ใหม่ไปโผล่บนสุดของตารางทันที ไม่ต้อง refetch ใหม่ทั้งหมด
-      setOrderItems([]); // เคลียร์ร่างใบสั่งซื้อ กลับไปว่างเหมือนเริ่มใหม่
+      setRecentOrders((prev) => [newOrder, ...prev]); // โผล่บนสุดของตารางทันที ไม่ต้อง refetch ใหม่ทั้งหมด
+      setOrderItems([]); // เคลียร์ร่างใบสั่งซื้อ
       closeConfirmModal();
     } catch {
       setError('สร้างใบสั่งซื้อไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
@@ -220,16 +214,14 @@ function RestockOrder() {
     }
   };
 
-  // กด "รับสินค้าเข้าคลัง" — จุดที่ผูก PO เข้ากับสต็อกจริง
-  // backend จะบวกสต็อกของทุกสินค้าใน PO นั้นให้เอง แล้วส่งทั้ง order และ inventory ที่อัปเดตแล้วกลับมา
+  // กด "รับสินค้าเข้าคลัง" — จุดที่ผูก PO เข้ากับสต็อกจริง backend บวกสต็อกทุกชิ้นใน PO ให้เอง แล้วส่งทั้ง
+  // order/inventory ที่อัปเดตแล้วกลับมา
   const handleReceive = async (id) => {
     setReceivingId(id);
     try {
       const { order, inventory } = await receivePurchaseOrder(id);
-      // แทนที่ order ตัวเดิมในตารางด้วยตัวที่อัปเดตสถานะแล้ว (ไม่ต้อง refetch รายการทั้งหมดใหม่)
       setRecentOrders((prev) => prev.map((po) => (po.id === order.id ? order : po)));
-      // อัปเดต products ทั้งชุดจาก inventory ล่าสุดที่ backend ส่งกลับมา — การ์ด "แจ้งเตือนสินค้าใกล้หมด"
-      // จะหายไปเองทันทีถ้าสินค้านั้นได้สต็อกกลับมาพ้นเกณฑ์ threshold แล้ว
+      // อัปเดต products ทั้งชุดจาก inventory ล่าสุด — การ์ด "แจ้งเตือนสินค้าใกล้หมด" หายไปเองถ้าพ้น threshold แล้ว
       setProducts(inventory);
     } catch {
       setError('รับสินค้าเข้าคลังไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
@@ -239,7 +231,7 @@ function RestockOrder() {
   };
 
   return (
-    <div className="-m-6 min-h-screen bg-[#FEFAE0] p-10">
+    <div className="-m-6 min-h-screen bg-background p-10">
       <div className="mb-10 flex items-start justify-between gap-6">
         <h1 className="text-3xl font-bold text-gray-900">
           เติมสต็อกและสั่งซื้อสินค้าใหม่

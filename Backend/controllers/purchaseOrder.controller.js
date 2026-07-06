@@ -45,9 +45,7 @@ export async function createPurchaseOrder(req, res) {
   const inventory = await readJson(INVENTORY_PATH);
   const enrichedItems = [];
 
-  // ฝั่ง frontend ส่งมาแค่ id กับ qty — ต้อง "enrich" (เติมข้อมูล) ชื่อ/ผู้จัดจำหน่าย/ราคา
-  // จากข้อมูลสินค้าจริงใน inventory.json เอง ไม่เชื่อข้อมูลที่ frontend ส่งมาตรงๆ
-  // (กันกรณี frontend ส่งราคาปลอมมา หรือแค่ข้อมูลไม่ครบ)
+  // frontend ส่งมาแค่ id/qty — เติมชื่อ/ผู้จัดจำหน่าย/ราคาจาก inventory.json เอง ไม่เชื่อข้อมูลจาก frontend ตรงๆ
   for (const { id, qty } of items) {
     const product = inventory.find((p) => p.id === id);
     if (!product) {
@@ -87,9 +85,8 @@ export async function createPurchaseOrder(req, res) {
   res.status(201).json(newOrder);
 }
 
-// PATCH /api/purchase-orders/:id/receive — "รับสินค้าเข้าคลัง"
-// จุดสำคัญ: endpoint นี้คือตัวที่ผูกใบสั่งซื้อเข้ากับสต็อกจริง
-// (ก่อนหน้านี้สร้าง PO ได้แต่สต็อกไม่เคยขยับเลย จนกว่าจะมาเรียก endpoint นี้)
+// PATCH /api/purchase-orders/:id/receive — "รับสินค้าเข้าคลัง" จุดเดียวที่ผูก PO เข้ากับสต็อกจริง (สร้าง PO
+// แล้วสต็อกไม่ขยับจนกว่าจะเรียก endpoint นี้)
 export async function receivePurchaseOrder(req, res) {
   const { id } = req.params;
 
@@ -119,7 +116,6 @@ export async function receivePurchaseOrder(req, res) {
   order.receivedAt = new Date().toISOString();
   await writeJson(ORDERS_PATH, orders);
 
-  // ส่งกลับทั้ง order ที่อัปเดตแล้ว และ inventory ทั้งชุดที่เพิ่งบวกสต็อกไป
-  // เพื่อให้ frontend เอาไปอัปเดตทั้งตาราง "ใบสั่งซื้อล่าสุด" และการ์ด "แจ้งเตือนสินค้าใกล้หมด" ได้ทันทีโดยไม่ต้อง reload
+  // ส่งกลับทั้ง order และ inventory ที่อัปเดตแล้ว ให้ frontend รีเฟรชตาราง PO + การ์ดแจ้งเตือนได้ทันทีโดยไม่ต้อง reload
   res.json({ order, inventory });
 }

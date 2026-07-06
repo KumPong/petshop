@@ -14,6 +14,9 @@ import Inventory from './pages/inventory.jsx';
 import RestockOrder from './pages/Manager/restockOrder.jsx';
 import ProductListing from './pages/Customer/productListing.jsx';
 import ProductDetail from './pages/Customer/productDetail.jsx';
+import Payment from './pages/Customer/payment.jsx';
+import Confirmation from './pages/Customer/confirmation.jsx';
+import Tracking from './pages/Customer/tracking.jsx';
 
 function App() {
   return (
@@ -23,6 +26,10 @@ function App() {
         <Route path='/' element={<CustomerDashboard />} />
         <Route path='/products' element={<ProductListing />} />
         <Route path='/products/:id' element={<ProductDetail />} />
+        <Route path='/payment' element={<Payment />} />
+        <Route path='/confirmation/:orderId' element={<Confirmation />} />
+        <Route path='/tracking' element={<Tracking />} />
+        <Route path='/tracking/:orderId' element={<Tracking />} />
         {/* หน้าอื่นๆ ของลูกค้าในอนาคต เช่น /shop, /cart ก็ใส่ในนี้ได้เลย */}
       </Route> {/* <--- เติมปิดตรงนี้ครับ */}
 
