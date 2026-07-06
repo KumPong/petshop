@@ -22,6 +22,9 @@ function App() {
       <Route element={<CustomerLayout />}>
         <Route path='/' element={<CustomerDashboard />} />
         <Route path='/products' element={<ProductListing />} />
+        <Route path='/products/dogs' element={<ProductListing selectedSegment="dogs" />} />
+        <Route path='/products/cats' element={<ProductListing selectedSegment="cats" />} />
+        <Route path='/products/accessories' element={<ProductListing selectedSegment="accessories" />} />
         <Route path='/products/:id' element={<ProductDetail />} />
         {/* หน้าอื่นๆ ของลูกค้าในอนาคต เช่น /shop, /cart ก็ใส่ในนี้ได้เลย */}
       </Route> {/* <--- เติมปิดตรงนี้ครับ */}

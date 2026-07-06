@@ -127,8 +127,7 @@ function Navbar() {
                         <ul>
                             <li><Link to='/products/dogs' className="block px-4 py-2 hover:bg-background rounded-lg text-sm">สินค้าสุนัข</Link></li>
                             <li><Link to='/products/cats' className="block px-4 py-2 hover:bg-background rounded-lg text-sm">สินค้าแมว</Link></li>
-                            <li><Link to='/products/birds' className="block px-4 py-2 hover:bg-background rounded-lg text-sm">สินค้านก</Link></li>
-                            <li><Link to='/products/accessoriess' className="block px-4 py-2 hover:bg-background rounded-lg text-sm">อุปกรณ์อื่นๆ</Link></li>
+                            <li><Link to='/products/accessories' className="block px-4 py-2 hover:bg-background rounded-lg text-sm">อุปกรณ์อื่นๆ</Link></li>
                         </ul>
                     </div>
                 </div>
