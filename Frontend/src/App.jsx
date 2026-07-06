@@ -12,6 +12,8 @@ import ManagerDashboard from './pages/Manager/managerDashboard';
 import StaffDashBoard from './pages/Staff/staffDashboard';
 import Inventory from './pages/inventory.jsx';
 import RestockOrder from './pages/Manager/restockOrder.jsx';
+import ProductListing from './pages/Customer/productListing.jsx';
+import ProductDetail from './pages/Customer/productDetail.jsx';
 
 function App() {
   return (
@@ -19,8 +21,10 @@ function App() {
       {/* ของ Customer */}
       <Route element={<CustomerLayout />}>
         <Route path='/' element={<CustomerDashboard />} />
+        <Route path='/products' element={<ProductListing />} />
+        <Route path='/products/:id' element={<ProductDetail />} />
         {/* หน้าอื่นๆ ของลูกค้าในอนาคต เช่น /shop, /cart ก็ใส่ในนี้ได้เลย */}
-      </Route>
+      </Route> {/* <--- เติมปิดตรงนี้ครับ */}
 
       {/* ของ Staff */}
       <Route path='/staff' element={<StaffLayout />}>
