@@ -1,58 +1,80 @@
-import { NavLink } from 'react-router-dom';
-import { PawPrint, LayoutGrid, Archive, LogOut } from 'lucide-react';
-
-// รายการเมนูใน sidebar ของ Staff — วนลูป render จาก array นี้แทนเขียน <NavLink> ซ้ำๆ ทีละอัน
-// end: true หมายถึงจะ highlight ว่า active เฉพาะตอน path ตรงเป๊ะ (ไม่ใช่ prefix)
-// ใช้กับ "/staff" เพราะไม่งั้น "/staff/inventory" จะ match กับ "/staff" ด้วย ทำให้ Dashboard ค้าง highlight ตลอด
-const NAV_ITEMS = [
-  { to: '/staff', label: 'แดชบอร์ด', icon: LayoutGrid, end: true },
-  { to: '/staff/inventory', label: 'คลังสินค้า', icon: Archive },
-];
+import { NavLink, useNavigate } from "react-router-dom";
+import {
+    LayoutDashboard, 
+    ShoppingCart, 
+    Archive, 
+    LogOut
+} from 'lucide-react'
+import Logo from '../assets/Logo.png'
 
 function StaffSidebar() {
-  return (
-    <aside className="flex h-screen w-64 shrink-0 flex-col justify-between border-r border-gray-100 bg-white px-4 py-6">
-      <div>
-        <div className="mb-8 flex items-center gap-2 px-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary">
-            <PawPrint size={18} className="text-gray-700" />
-          </span>
-          <div>
-            <p className="font-semibold text-gray-900 leading-tight">PetStop</p>
-            <p className="text-xs text-gray-400 leading-tight">พนักงาน PetStop</p>
-          </div>
-        </div>
+    const navigate = useNavigate();    
 
-        <nav className="flex flex-col gap-1">
-          {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
-            // NavLink พิเศษกว่า Link ตรงที่รู้ว่าตัวเองกำลัง "active" อยู่หรือไม่
-            // (isActive มาจาก react-router เอง) เลยใช้ทำ highlight เมนูปัจจุบันได้โดยไม่ต้องเช็คเอง
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  isActive
-                    ? 'bg-primary text-gray-900'
-                    : 'text-gray-500 hover:bg-gray-50'
-                }`
-              }
-            >
-              <Icon size={18} />
-              {label}
-            </NavLink>
-          ))}
-        </nav>
-      </div>
+    const handleLogout = async () => {
+        try {
+            // ใส่โค้ดเคลียร์ Token/Session ของ Node.js ตรงนี้
+            // เช่น localStorage.removeItem('token');
+            // await axios.post('/api/auth/logout');
+            
+            console.log('Manager logged out successfully');
+            navigate('/login'); // เปลี่ยนเส้นทางไปหน้า Login
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
 
-      {/* ปุ่ม Logout ยังเป็นแค่ UI เฉยๆ ยังไม่ได้ผูก action จริง เพราะทั้งโปรเจกต์ยังไม่มีระบบ login */}
-      <button className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-50">
-        <LogOut size={18} />
-        ออกจากระบบ
-      </button>
-    </aside>
-  );
+    const navItems = [
+        { name: 'Dashboard', path: '/staff', icon: <LayoutDashboard size={20} /> },
+        { name: 'Orders', path: '/staff/orders', icon: <ShoppingCart size={20} /> },
+        { name: 'Inventory', path: '/staff/inventory', icon: <Archive size={20} /> },
+    ];
+
+    return(
+        <aside className="w-64 h-screen bg-other flex flex-col border-r border-gray-200">
+            {/* Header & Logo */}
+            <div className="p-6 flex items-center gap-3">
+                <NavLink>
+                    <img src={Logo} alt="PetStop" className="h-8 cursor-pointer"/>
+                </NavLink>
+                <div>
+                    <h1 className="text-xl font-bold text-fontgreen leading-tight">PetStop</h1>
+                    <p className="text-sm text-gray-600">PetStop Staff</p>
+                </div>
+            </div>
+
+            {/* Navigation Links */}
+            <nav className="flex-1 px-4 py-2 space-y-1">
+                {navItems.map((item) => (
+                    <NavLink
+                        key={item.name}
+                        to={item.path}
+                        end={item.path === '/staff'}
+                        className={({ isActive }) => 
+                            `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                                isActive
+                                    ? 'bg-secondary text-black font-medium'
+                                    : 'text-gray-600 hover:bg-secondary hover:text-black'
+                            }`
+                        }
+                    >
+                        {item.icon}
+                        <span>{item.name}</span>
+                    </NavLink>
+                ))}
+            </nav>
+
+            {/* Logout BT */}
+            <div className="p-4 mb-4">
+                <button 
+                    onClick={handleLogout}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-secondary hover:bg-primary text-fontgreen font-medium rounded-xl transition-colors"
+                >
+                    <LogOut size={20}/>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+    )
 }
 
 export default StaffSidebar;

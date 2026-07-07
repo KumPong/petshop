@@ -35,7 +35,7 @@ function Navbar() {
                 }
                 */
             } catch (error) {
-                console.error("เกิดข้อผิดพลาดในการดึงข้อมูล")
+                console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", error)
             }
         };
 
@@ -127,8 +127,7 @@ function Navbar() {
                         <ul>
                             <li><Link to='/products/dogs' className="block px-4 py-2 hover:bg-background rounded-lg text-sm">สินค้าสุนัข</Link></li>
                             <li><Link to='/products/cats' className="block px-4 py-2 hover:bg-background rounded-lg text-sm">สินค้าแมว</Link></li>
-                            <li><Link to='/products/birds' className="block px-4 py-2 hover:bg-background rounded-lg text-sm">สินค้านก</Link></li>
-                            <li><Link to='/products/accessoriess' className="block px-4 py-2 hover:bg-background rounded-lg text-sm">อุปกรณ์อื่นๆ</Link></li>
+                            <li><Link to='/products/accessories' className="block px-4 py-2 hover:bg-background rounded-lg text-sm">อุปกรณ์อื่นๆ</Link></li>
                         </ul>
                     </div>
                 </div>
@@ -197,7 +196,15 @@ function Navbar() {
                         {IsProfileOpen && (
                             <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-100 rounded-md shadow-lg z-50">
                                 <ul className="py-2">
-                                    <li><button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm">Setting</button></li>
+                                    <li>
+                                        <Link
+                                            to='/profile'
+                                            onClick={() => setIsProfileOpen(false)}
+                                            className="block w-full text-left px-4 py-2 hover:bg-gray-50 text-sm"
+                                        >
+                                            Setting
+                                        </Link>
+                                    </li>
                                     <li><hr className="my-1 border-gray-100"/></li>
                                     <li><button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-red-600">Logout</button></li>
                                 </ul>
@@ -262,6 +269,6 @@ function Navbar() {
             </div>
         </nav>
     );
-}
+};
 
 export default Navbar;

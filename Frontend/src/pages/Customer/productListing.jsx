@@ -2,24 +2,37 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { getInventory } from '../../services/inventory.service.js'
 
-function ProductListing() {
+function ProductListing({ selectedSegment = 'all' }) {
   const [sort, setSort] = useState('all')
+  const titleMap = {
+    all: 'สินค้าทั้งหมด',
+    dogs: 'สินค้าสุนัข',
+    cats: 'สินค้าแมว',
+    accessories: 'อุปกรณ์อื่นๆ',
+    birds: 'สินค้านก',
+  }
+  const title = titleMap[selectedSegment] || titleMap.all
 
   return (
     <div className="min-h-screen bg-background text-gray-800">
       <div className="container mx-auto p-4 flex gap-8">
         {/* Sidebar for Categories */}
         <aside className="w-1/4 bg-other rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-bold mb-4">สินค้าทั้งหมด</h2>
+          <h2 className="text-xl font-bold mb-4">{title}</h2>
           <nav>
             <ul>
               <li>
-                <a href="#" className="block py-2 px-4 hover:bg-secondary rounded-md transition duration-200">หมา</a>
+                <Link to="/products" className="block py-2 px-4 hover:bg-secondary rounded-md transition duration-200">ทั้งหมด</Link>
               </li>
               <li>
-                <a href="#" className="block py-2 px-4 hover:bg-secondary rounded-md transition duration-200">แมว</a>
+                <Link to="/products/dogs" className="block py-2 px-4 hover:bg-secondary rounded-md transition duration-200">หมา</Link>
               </li>
-              {/* Add more categories as needed */}
+              <li>
+                <Link to="/products/cats" className="block py-2 px-4 hover:bg-secondary rounded-md transition duration-200">แมว</Link>
+              </li>
+              <li>
+                <Link to="/products/accessories" className="block py-2 px-4 hover:bg-secondary rounded-md transition duration-200">อุปกรณ์อื่นๆ</Link>
+              </li>
             </ul>
           </nav>
         </aside>
@@ -28,7 +41,7 @@ function ProductListing() {
         <main className="w-3/4">
           {/* Product List Header */}
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">Dog Food</h1>
+            <h1 className="text-3xl font-bold">{title}</h1>
             <div className="flex items-center gap-2">
               <span className="text-gray-600">Sort by:</span>
               <select value={sort} onChange={(e) => setSort(e.target.value)} className="border rounded-md px-3 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-primary">
@@ -42,7 +55,7 @@ function ProductListing() {
 
           {/* Product Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <InventoryGrid sort={sort} />
+            <InventoryGrid sort={sort} selectedSegment={selectedSegment} />
           </div>
         </main>
       </div>
@@ -51,7 +64,7 @@ function ProductListing() {
 }
 
 
-function InventoryGrid({ sort }) {
+function InventoryGrid({ sort, selectedSegment }) {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -78,13 +91,17 @@ function InventoryGrid({ sort }) {
   // reset page when sort changes
   useEffect(() => {
     setPage(1)
-  }, [sort])
+  }, [sort, selectedSegment])
+
+  const filteredItems = selectedSegment === 'all'
+    ? items
+    : items.filter((item) => item['id-type'] === selectedSegment)
 
   if (loading) return <div className="col-span-full p-6">กำลังโหลดข้อมูลสินค้า...</div>
   if (error) return <div className="col-span-full p-6 text-red-600">{error}</div>
 
   // apply sorting
-  let sorted = [...items]
+  let sorted = [...filteredItems]
   if (sort === 'price-asc') {
     sorted.sort((a, b) => (a.unitCost ?? a.price ?? 0) - (b.unitCost ?? b.price ?? 0))
   } else if (sort === 'price-desc') {

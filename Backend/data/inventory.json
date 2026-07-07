@@ -14,9 +14,10 @@
     "lastUpdated": "2026-07-06T16:28:47.368Z",
     "lastAdjustment": {
       "type": "remove",
-      "amount": 5,
-      "reason": "สินค้าเสียหาย / สูญหาย"
-    }
+      "amount": 15,
+      "reason": "ปรับแก้ยอดสต็อก"
+    },
+    "id-type": "dogs"
   },
   {
     "id": "OH-BF-12-552",
@@ -30,7 +31,8 @@
     "stock": 12,
     "threshold": 20,
     "unitCost": 22,
-    "lastUpdated": "2026-07-01T00:00:00.000Z"
+    "lastUpdated": "2026-07-01T00:00:00.000Z",
+    "id-type": "dogs"
   },
   {
     "id": "WD-TUN-24-330",
@@ -100,7 +102,8 @@
     "stock": 15,
     "threshold": 15,
     "unitCost": 25,
-    "lastUpdated": "2026-07-06T13:53:42.298Z"
+    "lastUpdated": "2026-07-05T07:07:32.335Z",
+    "id-type": "dogs"
   },
   {
     "id": "PS-PY-05-121",
@@ -114,7 +117,8 @@
     "stock": 210,
     "threshold": 30,
     "unitCost": 9,
-    "lastUpdated": "2026-07-01T00:00:00.000Z"
+    "lastUpdated": "2026-07-01T00:00:00.000Z",
+    "id-type": "dogs"
   },
   {
     "id": "FD-SAL-05",
@@ -128,7 +132,8 @@
     "stock": 4,
     "threshold": 15,
     "unitCost": 24.5,
-    "lastUpdated": "2026-07-01T00:00:00.000Z"
+    "lastUpdated": "2026-07-01T00:00:00.000Z",
+    "id-type": "dogs"
   },
   {
     "id": "GR-BAM-01",
@@ -142,7 +147,8 @@
     "stock": 10,
     "threshold": 10,
     "unitCost": 12,
-    "lastUpdated": "2026-07-06T13:53:42.298Z"
+    "lastUpdated": "2026-07-01T00:00:00.000Z",
+    "id-type": "accessories"
   },
   {
     "id": "TR-TUN-01",
@@ -156,7 +162,8 @@
     "stock": 2,
     "threshold": 20,
     "unitCost": 8.5,
-    "lastUpdated": "2026-07-01T00:00:00.000Z"
+    "lastUpdated": "2026-07-01T00:00:00.000Z",
+    "id-type": "accessories"
   },
   {
     "id": "TY-CAT-04",
@@ -170,7 +177,8 @@
     "stock": 34,
     "threshold": 10,
     "unitCost": 3.5,
-    "lastUpdated": "2026-07-01T00:00:00.000Z"
+    "lastUpdated": "2026-07-01T00:00:00.000Z",
+    "id-type": "cats"
   },
   {
     "id": "AC-LSH-02",
@@ -184,7 +192,8 @@
     "stock": 20,
     "threshold": 10,
     "unitCost": 9,
-    "lastUpdated": "2026-07-01T00:00:00.000Z"
+    "lastUpdated": "2026-07-01T00:00:00.000Z",
+    "id-type": "accessories"
   },
   {
     "id": "AC-BWL-03",
@@ -198,7 +207,8 @@
     "stock": 15,
     "threshold": 10,
     "unitCost": 11.5,
-    "lastUpdated": "2026-07-01T00:00:00.000Z"
+    "lastUpdated": "2026-07-01T00:00:00.000Z",
+    "id-type": "accessories"
   },
   {
     "id": "orthopedic-bed",
@@ -212,7 +222,8 @@
     "stock": 12,
     "threshold": 8,
     "unitCost": 45,
-    "lastUpdated": "2026-07-01T00:00:00.000Z"
+    "lastUpdated": "2026-07-01T00:00:00.000Z",
+    "id-type": "accessories"
   },
   {
     "id": "tug-toy",
@@ -226,6 +237,52 @@
     "stock": 6,
     "threshold": 10,
     "unitCost": 8.2,
-    "lastUpdated": "2026-07-01T00:00:00.000Z"
+    "lastUpdated": "2026-07-01T00:00:00.000Z",
+    "id-type": "accessories"
+  },
+  {
+    "id": "CF-PUR-01",
+    "sku": "CF-PUR-01",
+    "productId": null,
+    "name": "Purrrfect Choice: Salmon & Tuna",
+    "subtitle": "อาหารแมวชนิดแห้ง • 1.5 กก.",
+    "unitLabel": "1 ถุง บรรจุ 1.5 กก.",
+    "category": "อาหารแมว",
+    "supplier": "Purrfect Suppliers",
+    "stock": 48,
+    "threshold": 10,
+    "unitCost": 6.5,
+    "lastUpdated": "2026-07-06T09:00:00.000Z",
+    "id-type": "cats"
+  },
+  {
+    "id": "CF-ROY-02",
+    "sku": "CF-ROY-02",
+    "productId": null,
+    "name": "Royal Feline: Adult Chicken",
+    "subtitle": "อาหารแมวผู้ใหญ่ • 2 กก.",
+    "unitLabel": "1 ถุง บรรจุ 2 กก.",
+    "category": "อาหารแมว",
+    "supplier": "Royal Pet Foods",
+    "stock": 25,
+    "threshold": 8,
+    "unitCost": 9,
+    "lastUpdated": "2026-07-06T09:05:00.000Z",
+    "id-type": "cats"
+  },
+  {
+    "id": "CF-NAT-03",
+    "sku": "CF-NAT-03",
+    "productId": null,
+    "name": "Nature's Bowl: Grain-Free Tuna",
+    "subtitle": "อาหารแมวไร้ธัญพืช • 1 กก.",
+    "unitLabel": "1 ถุง บรรจุ 1 กก.",
+    "category": "อาหารแมว",
+    "supplier": "Nature's Pet Co.",
+    "stock": 12,
+    "threshold": 5,
+    "unitCost": 7.25,
+    "lastUpdated": "2026-07-06T09:10:00.000Z",
+    "id-type": "cats"
   }
 ]
