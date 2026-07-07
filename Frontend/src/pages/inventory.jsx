@@ -19,8 +19,7 @@ import {
 } from 'lucide-react';
 import { getInventory, adjustStock } from '../services/inventory.service.js';
 
-// สถานะของสินค้าคำนวณจาก stock เทียบกับ threshold ของ SKU นั้นๆ (ไม่ใช้ค่าคงที่ตายตัว)
-// เรียกใช้ทุกครั้งที่โหลดข้อมูลใหม่หรือมีการปรับสต็อก เพื่อให้ป้าย (badge) แสดงถูกต้องเสมอ
+// สถานะคำนวณจาก stock เทียบ threshold ต่อ SKU (ไม่ใช่ค่าคงที่) — เรียกใหม่ทุกครั้งที่โหลด/ปรับสต็อก
 function getStatus(stock, threshold) {
   if (stock <= 0) return 'Out of Stock';
   if (stock <= threshold) return 'Low Stock';
@@ -33,8 +32,7 @@ const STATUS_LABELS = {
   'Out of Stock': 'หมดสต็อก',
 };
 
-// สี + ไอคอนของป้ายสถานะแต่ละแบบ ในตารางรายการสินค้า
-// ใช้ pattern เดียวกับป้ายสถานะใบสั่งซื้อในหน้า Manager (STATUS_PILL) ให้ดูเป็นระบบเดียวกัน
+// สี+ไอคอนป้ายสถานะ — ใช้ pattern เดียวกับ STATUS_PILL ในหน้า Manager (restockOrder.jsx)
 const STATUS_PILL = {
   'In Stock': { bg: 'bg-green-100', text: 'text-green-700', Icon: CircleCheck },
   'Low Stock': { bg: 'bg-yellow-100', text: 'text-yellow-700', Icon: AlertTriangle },
@@ -45,11 +43,13 @@ const STATUS_OPTIONS = ['All', 'In Stock', 'Low Stock', 'Out of Stock'];
 
 const PAGE_SIZE = 10;
 
-const ADJUSTMENT_REASONS = ['รับสินค้าใหม่เข้า', 'ลูกค้าคืนสินค้า', 'สินค้าเสียหาย / สูญหาย', 'ปรับแก้ยอดสต็อก', 'อื่นๆ'];
+// เหตุผลแยกตามทิศทาง เพราะบางอย่างสมเหตุสมผลแค่ทางเดียว: "ลูกค้าคืนสินค้า" มีได้แค่ตอนเพิ่ม,
+// "สินค้าเสียหาย/สูญหาย" มีได้แค่ตอนตัดออก — "รับสินค้าใหม่เข้า" ตัดทิ้งแล้ว เพราะต้องรับผ่าน PO ของ Manager เท่านั้น
+const ADD_REASONS = ['ลูกค้าคืนสินค้า', 'ปรับแก้ยอดสต็อก', 'อื่นๆ'];
+const REMOVE_REASONS = ['สินค้าเสียหาย / สูญหาย', 'ปรับแก้ยอดสต็อก', 'อื่นๆ'];
 
-// ข้อมูลที่ backend ส่งมาไม่มี field "status" (มีแค่ stock/threshold ดิบๆ)
-// ฟังก์ชันนี้เลยทำหน้าที่ "แปะ" status ที่คำนวณแล้วเข้าไปให้ ก่อนเก็บลง state
-// ใช้ทั้งตอนโหลดข้อมูลครั้งแรก และตอนได้ข้อมูลอัปเดตกลับมาหลังปรับสต็อก
+// backend ไม่ส่ง field "status" มาด้วย (มีแค่ stock/threshold ดิบๆ) — ฟังก์ชันนี้แปะ status ที่คำนวณแล้วให้
+// ใช้ทั้งตอนโหลดข้อมูลครั้งแรกและตอนได้ผลลัพธ์กลับมาหลังปรับสต็อก
 function withStatus(item) {
   return { ...item, status: getStatus(item.stock, item.threshold) };
 }
@@ -79,12 +79,10 @@ function Inventory() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [actionType, setActionType] = useState('add');
   const [adjustment, setAdjustment] = useState('0');
-  const [reason, setReason] = useState(ADJUSTMENT_REASONS[0]);
+  const [reason, setReason] = useState(ADD_REASONS[0]);
   const [saving, setSaving] = useState(false);
 
-  // ดึงข้อมูลสต็อกจาก backend ตอนหน้านี้ถูกโหลดครั้งแรก
-  // ตัวแปร cancelled กันปัญหา "setState หลัง component ถูกถอดออกจากหน้าจอไปแล้ว"
-  // เช่น ถ้าผู้ใช้กดเปลี่ยนหน้าไปเร็วมากก่อน API ตอบกลับ จะไม่พยายาม setProducts ของ component ที่ไม่มีอยู่แล้ว
+  // โหลดสต็อกจาก backend ตอนเปิดหน้า — cancelled กัน setState หลัง component ถูก unmount ไปแล้ว
   useEffect(() => {
     let cancelled = false;
 
@@ -102,9 +100,8 @@ function Inventory() {
     };
 
     loadInventory();
-    // หน้า Staff กับ Manager ต่างคนต่างโหลด inventory เอง ไม่มี state กลางร่วมกัน
-    // ถ้าฝั่ง Manager รับสินค้าเข้าคลังไปแล้วสลับกลับมาที่ tab นี้ ข้อมูลที่ค้างอยู่จะเก่า
-    // เลยรีเฟรชข้อมูลอัตโนมัติทุกครั้งที่กลับมาโฟกัสหน้านี้ แทนที่จะต้องกด reload เอง
+    // Staff กับ Manager ต่างคนต่างโหลด inventory เอง (ไม่มี state กลางร่วมกัน) — รีเฟรชอัตโนมัติ
+    // ทุกครั้งที่กลับมาโฟกัสหน้านี้ กันข้อมูลค้างเก่าเวลาอีกฝั่งรับของเข้าคลังไปแล้ว
     window.addEventListener('focus', loadInventory);
     return () => {
       cancelled = true;
@@ -145,7 +142,7 @@ function Inventory() {
     setEditingProduct(product);
     setActionType('add');
     setAdjustment('0');
-    setReason(ADJUSTMENT_REASONS[0]);
+    setReason(ADD_REASONS[0]);
   };
 
   const closeEdit = () => setEditingProduct(null);
@@ -153,8 +150,7 @@ function Inventory() {
   // แปลงค่าที่พิมพ์ในช่อง input (string) ให้เป็นจำนวนเต็มที่ไม่ติดลบเสมอ
   const adjustmentAmount = Math.max(0, Math.floor(Number(adjustment)) || 0);
 
-  // คำนวณ "ยอดคงเหลือใหม่โดยประมาณ" แบบ real-time ในหน้าจอ (ยังไม่ได้ยิง API)
-  // แค่ให้ผู้ใช้เห็นตัวเลขก่อนกดยืนยัน — ตัวเลขจริงที่บันทึกจะคำนวณอีกทีฝั่ง backend
+  // ยอดคงเหลือใหม่โดยประมาณ แสดงให้ดูก่อนกดยืนยันเฉยๆ (ยังไม่ยิง API) — backend คำนวณตัวจริงเองอีกที
   const projectedTotal = editingProduct
     ? actionType === 'add'
       ? editingProduct.stock + adjustmentAmount
@@ -185,7 +181,7 @@ function Inventory() {
   };
 
   return (
-    <div className="-m-6 min-h-screen bg-[#FEFAE0] p-10">
+    <div className="-m-6 min-h-screen bg-background p-10">
       <div className="mb-8 flex items-start justify-between gap-6">
         <div>
           <h1 className="text-4xl font-bold text-gray-900">จัดการสินค้าคงคลัง</h1>
@@ -428,7 +424,10 @@ function Inventory() {
               <p className="mb-2 text-sm font-medium text-gray-700">ประเภทการดำเนินการ</p>
               <div className="mb-6 flex gap-2 rounded-full bg-gray-100 p-1">
                 <button
-                  onClick={() => setActionType('add')}
+                  onClick={() => {
+                    setActionType('add');
+                    setReason(ADD_REASONS[0]);
+                  }}
                   className={`flex flex-1 items-center justify-center gap-1.5 rounded-full py-2 text-sm font-medium transition-colors ${
                     actionType === 'add' ? 'bg-primary text-gray-900' : 'text-gray-500'
                   }`}
@@ -437,7 +436,10 @@ function Inventory() {
                   เพิ่มสต็อก
                 </button>
                 <button
-                  onClick={() => setActionType('remove')}
+                  onClick={() => {
+                    setActionType('remove');
+                    setReason(REMOVE_REASONS[0]);
+                  }}
                   className={`flex flex-1 items-center justify-center gap-1.5 rounded-full py-2 text-sm font-medium transition-colors ${
                     actionType === 'remove' ? 'bg-primary text-gray-900' : 'text-gray-500'
                   }`}
@@ -471,7 +473,7 @@ function Inventory() {
                     onChange={(e) => setReason(e.target.value)}
                     className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
                   >
-                    {ADJUSTMENT_REASONS.map((r) => (
+                    {(actionType === 'add' ? ADD_REASONS : REMOVE_REASONS).map((r) => (
                       <option key={r} value={r}>
                         {r}
                       </option>

@@ -4,7 +4,7 @@ function CustomerDashboard() {
   return (
     <div className="min-h-screen bg-background text-gray-800">
       {/* Hero Section */}
-      <section className="relative h-[500px] bg-cover bg-center flex items-center justify-center text-white" style={{ backgroundImage: "url('https://via.placeholder.com/1500x500?text=Hero+Image')" }}>
+      <section className="relative h-125 bg-cover bg-center flex items-center justify-center text-white" style={{ backgroundImage: "url('https://via.placeholder.com/1500x500?text=Hero+Image')" }}>
         <div className="absolute inset-0 bg-black opacity-40"></div>
         <div className="relative z-10 text-center">
           <h1 className="text-5xl font-bold mb-4">Quality Time for Your Best Friend</h1>

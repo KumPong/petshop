@@ -1,0 +1,190 @@
+[
+  {
+    "orderId": "ORD-1001",
+    "orderNo": "ORD-1001",
+    "customerId": "GUEST",
+    "orderDate": "2026-07-05T09:56:54.536Z",
+    "status": "Confirmed",
+    "subtotal": 1790,
+    "shippingAmount": 0,
+    "taxAmount": 125.3,
+    "totalAmount": 1915.3,
+    "items": [
+      {
+        "orderItemId": "OI-PD-002-1783245414536",
+        "productId": "PD-002",
+        "name": "Oak & Harvest: เนื้อวัวออร์แกนิกและข้าว",
+        "quantity": 1,
+        "unitPrice": 950,
+        "subTotal": 950
+      },
+      {
+        "orderItemId": "OI-PD-005-1783245414536",
+        "productId": "PD-005",
+        "name": "Cozy Nap: เบาะนอนสัตว์เลี้ยงไซส์กลาง",
+        "quantity": 1,
+        "unitPrice": 750,
+        "subTotal": 750
+      },
+      {
+        "orderItemId": "OI-PD-003-1783245414536",
+        "productId": "PD-003",
+        "name": "Whisker Delight: ทูน่าเนื้อแน่นในเยลลี่",
+        "quantity": 2,
+        "unitPrice": 45,
+        "subTotal": 90
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "สมชาย ใจดี",
+      "street": "test",
+      "city": "เชียงใหม่",
+      "postalCode": "50200",
+      "phone": "0888888888"
+    },
+    "shipping": {
+      "method": "standard",
+      "methodLabel": "จัดส่งมาตรฐาน",
+      "cost": 0,
+      "carrier": "Kerry Express",
+      "trackingNumber": "KER-611552631",
+      "estimatedDeliveryStart": "2026-07-08T09:56:54.536Z",
+      "estimatedDeliveryEnd": "2026-07-10T09:56:54.536Z",
+      "timeline": [
+        {
+          "key": "paid",
+          "label": "ชำระเงินสำเร็จ",
+          "status": "done",
+          "timestamp": "2026-07-05T09:56:54.536Z"
+        },
+        {
+          "key": "preparing",
+          "label": "กำลังจัดเตรียมสินค้า",
+          "status": "done",
+          "timestamp": "2026-07-05T13:56:54.536Z"
+        },
+        {
+          "key": "handed_to_carrier",
+          "label": "ส่งมอบให้บริษัทขนส่ง",
+          "status": "current",
+          "timestamp": "2026-07-06T09:56:54.536Z"
+        },
+        {
+          "key": "in_transit",
+          "label": "สินค้าอยู่ระหว่างทาง",
+          "status": "pending",
+          "timestamp": null
+        },
+        {
+          "key": "delivered",
+          "label": "จัดส่งสำเร็จ",
+          "status": "pending",
+          "timestamp": null
+        }
+      ],
+      "statusLabel": "อยู่ระหว่างการขนส่ง"
+    },
+    "payment": {
+      "paymentId": "PAY-ORD-1001",
+      "method": "บัตรเครดิต",
+      "amount": 1915.3,
+      "status": "Paid",
+      "paymentDate": "2026-07-05T09:56:54.536Z",
+      "transactionId": "TXN-1783245414536-9555"
+    }
+  },
+  {
+    "orderId": "ORD-1002",
+    "orderNo": "ORD-1002",
+    "customerId": "GUEST",
+    "orderDate": "2026-07-06T14:07:21.152Z",
+    "status": "Confirmed",
+    "subtotal": 1790,
+    "shippingAmount": 150,
+    "taxAmount": 125.3,
+    "totalAmount": 2065.3,
+    "items": [
+      {
+        "orderItemId": "OI-PD-002-1783346841151",
+        "productId": "PD-002",
+        "name": "Oak & Harvest: เนื้อวัวออร์แกนิกและข้าว",
+        "quantity": 1,
+        "unitPrice": 950,
+        "subTotal": 950
+      },
+      {
+        "orderItemId": "OI-PD-005-1783346841151",
+        "productId": "PD-005",
+        "name": "Cozy Nap: เบาะนอนสัตว์เลี้ยงไซส์กลาง",
+        "quantity": 1,
+        "unitPrice": 750,
+        "subTotal": 750
+      },
+      {
+        "orderItemId": "OI-PD-003-1783346841151",
+        "productId": "PD-003",
+        "name": "Whisker Delight: ทูน่าเนื้อแน่นในเยลลี่",
+        "quantity": 2,
+        "unitPrice": 45,
+        "subTotal": 90
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "l",
+      "street": "s",
+      "city": "s",
+      "postalCode": "s",
+      "phone": "s"
+    },
+    "shipping": {
+      "method": "express",
+      "methodLabel": "จัดส่งด่วน",
+      "cost": 150,
+      "carrier": "Kerry Express",
+      "trackingNumber": "KER-590385916",
+      "estimatedDeliveryStart": "2026-07-07T14:07:21.152Z",
+      "estimatedDeliveryEnd": "2026-07-08T14:07:21.152Z",
+      "timeline": [
+        {
+          "key": "paid",
+          "label": "ชำระเงินสำเร็จ",
+          "status": "done",
+          "timestamp": "2026-07-06T14:07:21.152Z"
+        },
+        {
+          "key": "preparing",
+          "label": "กำลังจัดเตรียมสินค้า",
+          "status": "done",
+          "timestamp": "2026-07-06T18:07:21.152Z"
+        },
+        {
+          "key": "handed_to_carrier",
+          "label": "ส่งมอบให้บริษัทขนส่ง",
+          "status": "current",
+          "timestamp": "2026-07-07T14:07:21.152Z"
+        },
+        {
+          "key": "in_transit",
+          "label": "สินค้าอยู่ระหว่างทาง",
+          "status": "pending",
+          "timestamp": null
+        },
+        {
+          "key": "delivered",
+          "label": "จัดส่งสำเร็จ",
+          "status": "pending",
+          "timestamp": null
+        }
+      ],
+      "statusLabel": "อยู่ระหว่างการขนส่ง"
+    },
+    "payment": {
+      "paymentId": "PAY-ORD-1002",
+      "method": "บัตรเครดิต",
+      "amount": 2065.3,
+      "status": "Paid",
+      "paymentDate": "2026-07-06T14:07:21.152Z",
+      "transactionId": "TXN-1783346841152-5657"
+    }
+  }
+]

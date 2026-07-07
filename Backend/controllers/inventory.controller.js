@@ -46,6 +46,14 @@ export async function adjustStock(req, res) {
     return res.status(400).json({ message: 'amount ต้องเป็นตัวเลขที่มากกว่าหรือเท่ากับ 0' });
   }
 
+  // กันช่องโหว่: ห้ามสร้างสต็อกลอยๆ อ้างว่าเป็นของเพิ่งรับเข้า — ต้องผ่าน PATCH /api/purchase-orders/:id/receive
+  // เท่านั้น (มี PO ผูกไว้ ตรวจสอบย้อนหลังได้) เช็คนี้กันไว้เผื่อมีคนยิง API ข้าม UI ของ inventory.jsx มาตรงๆ
+  if (type === 'add' && reason === 'รับสินค้าใหม่เข้า') {
+    return res.status(400).json({
+      message: 'ห้ามเพิ่มสต็อกด้วยเหตุผล "รับสินค้าใหม่เข้า" ที่นี่ — กรุณารับสินค้าผ่านใบสั่งซื้อในหน้า Manager แทน',
+    });
+  }
+
   const items = await readInventory();
   const item = items.find((i) => i.id === id);
   if (!item) {

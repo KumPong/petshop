@@ -1,0 +1,50 @@
+[
+  {
+    "productId": "PD-001",
+    "name": "Nomad Kitchen: แซลมอนและมันหวาน",
+    "description": "อาหารสุนัขชนิดแห้ง สูตรแซลมอนและมันหวาน อุดมด้วยโปรตีนคุณภาพสูง",
+    "price": 890,
+    "category": "อาหารแห้ง",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-002",
+    "name": "Oak & Harvest: เนื้อวัวออร์แกนิกและข้าว",
+    "description": "อาหารสุนัขชนิดแห้งพรีเมียม สูตรเนื้อวัวออร์แกนิกผสมข้าว",
+    "price": 950,
+    "category": "อาหารแห้ง",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-003",
+    "name": "Whisker Delight: ทูน่าเนื้อแน่นในเยลลี่",
+    "description": "อาหารแมวชนิดเปียก เนื้อทูน่าแน่นๆ ในเยลลี่รสกลมกล่อม",
+    "price": 45,
+    "category": "อาหารเปียก",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-004",
+    "name": "PawComfort: เชือกจูงสุนัขปรับความยาวได้",
+    "description": "สายจูงสุนัขคุณภาพดี ปรับความยาวได้ เหมาะกับการพาเดินเล่น",
+    "price": 320,
+    "category": "อุปกรณ์",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-005",
+    "name": "Cozy Nap: เบาะนอนสัตว์เลี้ยงไซส์กลาง",
+    "description": "เบาะนอนนุ่มสบาย ไซส์กลาง เหมาะกับสุนัขและแมวขนาดเล็ก-กลาง",
+    "price": 750,
+    "category": "อุปกรณ์",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-006",
+    "name": "FreshBite: ขนมขบเคี้ยวสำหรับแมว",
+    "description": "ขนมแมวกรอบอร่อย เสริมสารอาหารที่จำเป็น",
+    "price": 65,
+    "category": "ขนม",
+    "status": "Active"
+  }
+]
