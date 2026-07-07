@@ -21,6 +21,7 @@ import Profile from './pages/Customer/profile';
 import Address from './pages/Customer/address';
 import OrderHistory from './pages/Customer/orderHistory';
 import ChangePassword from './pages/Customer/changePassword';
+import ManageUsers from './pages/Manager/manageUsers.jsx';
 
 function App() {
   return (
@@ -52,7 +53,6 @@ function App() {
       }>
         <Route index element={<StaffDashBoard />} />
         <Route path='inventory' element={<Inventory />} />
-        {/* หน้าอื่นๆ ของstaff เช่น /staff/tasks, /staff/schedule ก็ใส่ในนี้ได้เลย */}
       </Route>
 
       {/* ของ Manager */}
@@ -63,7 +63,7 @@ function App() {
       }>
         <Route index element={<ManagerDashboard />} />
         <Route path='inventory' element={<RestockOrder />} />
-        {/* หน้าอื่นๆ ของmanager เช่น /manager/reports ก็ใส่ในนี้ได้เลย */}
+        <Route path='users' element={<ManageUsers />} />
       </Route>
     </Routes>
   )
