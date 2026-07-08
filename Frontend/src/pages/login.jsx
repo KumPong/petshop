@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import { Loader2 } from 'lucide-react';
 import Logo from '../assets/Logo.png';
 
 function Login() {
@@ -10,6 +13,7 @@ function Login() {
     const isEmployee = location.state?.isEmployeeRoute || false;
 
     const [formData, setFormData] = useState({ email: '', password: ''});
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,11 +21,49 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Login attempt with:', formData);
-        // ต่อ API Backend ตรงนี้ 
-        // ถ้ายิง API ผ่าน ก็เช็ก Role ว่าเป็น Staff, Manager หรือ Customer แล้ว navigate ไปหน้านั้นๆ
-        // สมมติว่าล็อกอินสำเร็จเป็น Manager:
-        // navigate('/manager');
+        setIsLoading(true);
+
+        try {
+            const response = await axios.post('http://localhost:4000/api/auth/login', formData);
+            const data = response.data;
+
+            // Pop-up แบบสำเร็จ
+            Swal.fire({
+                icon: 'success',
+                title: 'เข้าสู่ระบบสำเร็จ',
+                text: data.message,
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            // เก็บข้อมูลลงเครื่อง
+            localStorage.setItem('user', JSON.stringify(data.user));
+            localStorage.setItem('token', data.token);
+
+            // รอให้ Pop-up โชว์ก่อนแล้วค่อยเปลี่ยนหน้า
+            setTimeout(() => {
+                if (data.user.role === 'Manager') {
+                    navigate('/manager');
+                } else if (data.user.role === 'Staff') {
+                    navigate('/staff')
+                } else {
+                    navigate('/');
+                }
+            }, 1000);
+
+        } catch (error) {
+            console.error("Login failed:", error);
+            // Pop-up
+            Swal.fire({
+                icon: 'error',
+                title: 'เข้าสู่ระบบล้มเหลว',
+                text: error.response?.data?.message || 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้',
+                timer: 2500,
+                showConfirmButton: false
+            });
+        } finally{
+            setIsLoading(false); 
+        }
     };
 
     return(
@@ -43,6 +85,7 @@ function Login() {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
+                            disabled={isLoading}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                             placeholder="Enter your email"
                             required
@@ -55,6 +98,7 @@ function Login() {
                             name="password" 
                             value={formData.password}
                             onChange={handleChange}
+                            disabled={isLoading}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                             placeholder="Enter your password"
                             required
@@ -63,9 +107,22 @@ function Login() {
 
                     <button
                         type="submit"
-                        className="w-full bg-primary hover:bg-secondary text-white font-semibold py-2.5 rounded-lg transition duration-200 mt-6"
+                        disabled={isLoading}
+                        className={`w-full font-semibold py-2.5 rounded-lg transition duration-200 mt-6 flex justify-center items-center gap-2
+                            ${isLoading 
+                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                                : 'bg-primary hover:bg-secondary text-black'
+                            }`
+                        }
                     >
-                        Login
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="animate-spin" size={20} />
+                                กำลังเข้าสู่ระบบ...
+                            </>
+                        ) : (
+                            'Login'
+                        )}
                     </button>
                 </form>
 

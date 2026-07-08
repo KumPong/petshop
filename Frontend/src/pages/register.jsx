@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { Loader2 } from 'lucide-react';
 import Logo from '../assets/Logo.png'
 
 function Register() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        firstName: '', lastName: '', email: '', password:'', confirmPassword: ''
+        fullName: '', email: '', password:'', confirmPassword: ''
     });
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -14,14 +18,59 @@ function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         if(formData.password !== formData.confirmPassword) {
-            alert("Passwords don't match");
+            Swal.fire({
+                icon: 'warning',
+                title: 'รหัสผ่านไม่ตรงกัน',
+                text: 'กรุณายืนยันรหัสผ่านใหม่อีกครั้ง',
+                timer: 2000,
+                showConfirmButton: false
+            });
             return;
         }
-        console.log('Register attempt with:', formData);
-        // ต่อ API Backend สมัครสมาชิก (สร้าง Prisma Record)
-        // พอสำเร็จค่อยเด้งไปหน้า Login
-        // navigate('/login');
+
+        setIsLoading(true);
+        
+        // แยก FullName เป็น firstName และ lastName ให้ Backend
+        const nameParts = formData.fullName.trim().split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || ''; // เอาคำที่เหลือทั้งหมดเป็นนามสกุล
+
+        try {
+            const payload = {
+                firstName,
+                lastName,
+                email: formData.email,
+                password: formData.password
+            };
+
+            const response = await axios.post('http://localhost:4000/api/auth/register', payload);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'สมัครสมาชิกสำเร็จ',
+                text: 'ระบบจะพาคุณไปยังหน้าLogin',
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+            setTimeout(() => {
+                navigate('/login');
+            }, 1500);
+
+        } catch (error) {
+            console.error('Register failed:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'สมัครสมาชิกไม่สำเร็จ',
+                text: error.response?.data?.message || 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้',
+                timer: 2500,
+                showConfirmButton: false
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -36,47 +85,61 @@ function Register() {
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                             <input 
-                                type="text" name="firstName" onChange={handleChange} required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                            <input 
-                                type="text" name="lastName" onChange={handleChange} required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                type="text" name="fullName" value={formData.fullName} onChange={handleChange} disabled={isLoading} required 
+                                placeholder="Pet Parent Name"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none disabled:bg-gray-100"
                             />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                             <input 
-                                type="email" name="email" onChange={handleChange} required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                type="email" name="email" onChange={handleChange} disabled={isLoading} required
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none disabled:bg-gray-100"
                             />
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                            <input 
-                                type="password" name="password" onChange={handleChange} required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                            />
+                        
+                        {/* จับ Password กับ Confirm Password มัดรวมกันให้อยู่บรรทัดเดียวกัน */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                <input 
+                                    type="password" name="password" onChange={handleChange} disabled={isLoading} required
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none disabled:bg-gray-100"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                                <input 
+                                    type="password" name="confirmPassword" onChange={handleChange} disabled={isLoading} required
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none disabled:bg-gray-100"
+                                />
+                            </div>
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                            <input 
-                                type="password" name="confirmPassword" onChange={handleChange} required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                            />
-                        </div>
-
-                        <button type="submit" className="w-full bg-primary hover:bg-secondary text-white font-semibold py-2.5 rounded-lg transition duration-200 mt-6">
-                            Register
-                        </button>
                     </div>
+
+                    <button 
+                        type="submit" 
+                        disabled={isLoading}
+                        className={`w-full font-semibold py-2.5 rounded-lg transition duration-200 mt-6 flex justify-center items-center gap-2
+                            ${isLoading 
+                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                                : 'bg-primary hover:bg-secondary text-white'
+                            }`
+                        }
+                    >
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="animate-spin" size={20} />
+                                กำลังดำเนินการ...
+                            </>
+                        ) : (
+                            'Create Account'
+                        )}
+                    </button>
                 </form>
 
                 <p className="text-center text-sm text-gray-600 mt-6">

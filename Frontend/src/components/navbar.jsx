@@ -1,10 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import Logo from "../assets/Logo.png"
 
 function Navbar() {
+    const navigate = useNavigate();
+
     // จำลอง State สำหรับการ Login (ค่าเริ่มต้นให้เป็น false คือยังไม่ Login)
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
 
     // State สำหรับจัดการ Dropdown แบบกดคลิก
     const [isCartOpen, setIsCartOpen] = useState(false);
@@ -86,12 +88,15 @@ function Navbar() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // ฟังก์ชันจำลองการ Login / Logout
-    const handleLogin = () => setIsLoggedIn(true);
+    // ฟังก์ชันจำลองการ Logout
     const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
         setIsLoggedIn(false);
         setIsProfileOpen(false);
         setIsCartOpen(false);
+        navigate('/');
+        window.location.reload();
     };
 
     // ฟังก์ชันจำลองการชำระเงิน (เคลียร์ตะกร้า)
@@ -106,8 +111,8 @@ function Navbar() {
         <nav className="flex items-center justify-between px-8 py-4 bg-secondary shadow-sm border-b border-gray-200">
             {/* Logo */}
             <div className="shrink-0">
-                <Link>
-                    <img src={Logo} alt="PetStop" className="h-8 cursor-pointer"/>
+                <Link to='/'>
+                    <img src={Logo} alt="PetStop" className="h-8 cursor-pointer" />
                 </Link>
             </div>
             
@@ -212,9 +217,9 @@ function Navbar() {
                         )}
                     </div>
                 ) : (
-                    <button onClick={handleLogin} className="text-sm font-medium hover:underline px-2">
+                    <Link to='/login' className="text-sm font-medium hover:underline px-2">
                         Login / Register
-                    </button>
+                    </Link>
                 )}
 
                 {/* Cart Button & Dropdown */}

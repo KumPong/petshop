@@ -2,8 +2,9 @@ import { Navigate, useLocation } from "react-router-dom";
 
 // Component สำหรับป้องกัน Route
 export default function ProtectedRoute ({ children }) {
-    // ฟังก์ชันจำลองการเช็ก Login (เดี๋ยวค่อยมาเปลี่ยนตอนต่อ API)
-    const isAuthenticated = true; 
+    // ฟังก์ชันการเช็ก Login 
+    const token = localStorage.getItem('token');
+    const isAuthenticated = !!token;
     const location = useLocation();
 
     if (!isAuthenticated) {
