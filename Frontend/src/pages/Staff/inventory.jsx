@@ -17,7 +17,7 @@ import {
   CircleCheck,
   Circle,
 } from 'lucide-react';
-import { getInventory, adjustStock } from '../services/inventory.service.js';
+import { getInventory, adjustStock } from '../../services/inventory.service.js';
 
 // สถานะคำนวณจาก stock เทียบ threshold ต่อ SKU (ไม่ใช่ค่าคงที่) — เรียกใหม่ทุกครั้งที่โหลด/ปรับสต็อก
 function getStatus(stock, threshold) {

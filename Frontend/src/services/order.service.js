@@ -17,8 +17,15 @@ export async function getOrder(orderId) {
   return data;
 }
 
-// ดึงออเดอร์ทั้งหมด — ใช้ใน Tracking ตอนไม่ระบุเลขออเดอร์ (ยังไม่มี login เลย fallback โชว์ล่าสุดแทน)
+// ดึงออเดอร์ทั้งหมด — ใช้ใน Tracking ตอนไม่ระบุเลขออเดอร์ (ยังไม่มี login เลย fallback โชว์ล่าสุดแทน) และหน้า Order manage (list)
 export async function getOrders() {
   const { data } = await api.get('/orders');
+  return data;
+}
+
+// อัปเดตความคืบหน้าออเดอร์ — ใช้ในหน้า Order manage (Staff) เท่านั้น
+// payload: { status, courierNotes?, pickedItems?, flagReason? } — ดู order.controller.js (updateOrderStatus) สำหรับกติกาเต็ม
+export async function updateOrderStatus(orderId, payload) {
+  const { data } = await api.patch(`/orders/${orderId}/status`, payload);
   return data;
 }

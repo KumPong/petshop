@@ -10,7 +10,9 @@ import StaffLayout from './layouts/staffLayout';
 import CustomerDashboard from './pages/Customer/customerDashboard';
 import ManagerDashboard from './pages/Manager/managerDashboard';
 import StaffDashBoard from './pages/Staff/staffDashboard';
-import Inventory from './pages/inventory.jsx';
+import Inventory from './pages/Staff/inventory.jsx';
+import OrderManage from './pages/Staff/orderManage.jsx';
+import OrderVerify from './pages/Staff/orderVerify.jsx';
 import RestockOrder from './pages/Manager/restockOrder.jsx';
 import ProductListing from './pages/Customer/productListing.jsx';
 import ProductDetail from './pages/Customer/productDetail.jsx';
@@ -60,6 +62,8 @@ function App() {
       }>
         <Route index element={<StaffDashBoard />} />
         <Route path='inventory' element={<Inventory />} />
+        <Route path='orders' element={<OrderManage />} />
+        <Route path='orders/:id' element={<OrderVerify />} />
       </Route>
 
       {/* ของ Manager */}

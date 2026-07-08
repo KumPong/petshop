@@ -47,20 +47,19 @@ function fakeTrackingNumber() {
   return `KER-${randomPart}`;
 }
 
-// จำลอง timeline จัดส่งไว้ล่วงหน้าตอนสร้างออเดอร์ (ไม่มีระบบขนส่งจริงเชื่อมต่อ): 2 ขั้นแรกเสร็จแล้ว
-// (ชำระเงิน/เตรียมสินค้า), ขั้น 3 คือปัจจุบัน (ส่งมอบขนส่ง+เลข tracking), ที่เหลือยังไม่ถึง
-function buildShippingTimeline(orderDate) {
-  const base = new Date(orderDate);
-  const plusHours = (h) => new Date(base.getTime() + h * 60 * 60 * 1000).toISOString();
+// ลำดับสถานะจริงของออเดอร์ (Staff เป็นคนกดเปลี่ยนผ่าน PATCH /:id/status) — Flagged/Cancelled เป็น exception
+// แทรกได้ทุกจุด ไม่นับเป็น step ใน timeline ที่ลูกค้าเห็น
+const STEP_ORDER = ['Confirmed', 'Processing', 'Packed', 'Shipped', 'Delivered'];
 
-  return [
-    { key: 'paid', label: 'ชำระเงินสำเร็จ', status: 'done', timestamp: base.toISOString() },
-    { key: 'preparing', label: 'กำลังจัดเตรียมสินค้า', status: 'done', timestamp: plusHours(4) },
-    { key: 'handed_to_carrier', label: 'ส่งมอบให้บริษัทขนส่ง', status: 'current', timestamp: plusHours(24) },
-    { key: 'in_transit', label: 'สินค้าอยู่ระหว่างทาง', status: 'pending', timestamp: null },
-    { key: 'delivered', label: 'จัดส่งสำเร็จ', status: 'pending', timestamp: null },
-  ];
-}
+// map สถานะ Staff (ฝั่งใน) ให้ตรงกับ step ที่ลูกค้าเห็นในหน้า Tracking (ฝั่งนอก) แบบ 1:1 — คนละมุมมอง
+// เดียวกัน ไม่ใช่จำลองแยกกันคนละระบบเหมือนเดิม
+const STEP_META = {
+  Confirmed: { key: 'paid', label: 'ชำระเงินสำเร็จ' },
+  Processing: { key: 'preparing', label: 'กำลังจัดเตรียมสินค้า' },
+  Packed: { key: 'handed_to_carrier', label: 'ส่งมอบให้บริษัทขนส่ง' },
+  Shipped: { key: 'in_transit', label: 'สินค้าอยู่ระหว่างทาง' },
+  Delivered: { key: 'delivered', label: 'จัดส่งสำเร็จ' },
+};
 
 // แปล step ปัจจุบันของ timeline เป็นข้อความสั้นๆ ไว้โชว์เป็น badge สรุปสถานะบนสุดของหน้าติดตามพัสดุ
 const STATUS_BADGE_LABEL = {
@@ -71,14 +70,52 @@ const STATUS_BADGE_LABEL = {
   delivered: 'จัดส่งสำเร็จ',
 };
 
+// สร้าง timeline ที่ลูกค้าเห็นจากสถานะจริงของ Staff (order.status/statusHistory) สดทุกครั้ง แทนการจำลอง
+// เวลาล่วงหน้าแบบเดิม — effectiveStatus ควรใช้ statusBeforeFlag แทน order.status ตรงๆ ตอนกำลัง Flagged
+// อยู่ เพราะลูกค้าไม่ควรรู้ว่ามีปัญหาภายใน เห็นแค่ความคืบหน้าล่าสุดก่อนโดน flag ตามปกติ
+function buildTimelineFromStatus(effectiveStatus, statusHistory) {
+  const currentIndex = STEP_ORDER.indexOf(effectiveStatus);
+  const findTimestamp = (status) => statusHistory.find((h) => h.status === status)?.at ?? null;
+
+  return STEP_ORDER.map((step, idx) => {
+    const meta = STEP_META[step];
+    const isDone = idx < currentIndex || (idx === currentIndex && (effectiveStatus === 'Confirmed' || effectiveStatus === 'Delivered'));
+    const isCurrent = idx === currentIndex && effectiveStatus !== 'Confirmed' && effectiveStatus !== 'Delivered';
+    return {
+      key: meta.key,
+      label: meta.label,
+      status: isDone ? 'done' : isCurrent ? 'current' : 'pending',
+      timestamp: findTimestamp(step),
+    };
+  });
+}
+
+// เติม shipping.timeline/statusLabel สดจาก status จริงให้ order ก่อนส่งออกไปทุกครั้ง (ไม่เชื่อค่าที่ persist ไว้เดิม)
+function attachLiveTimeline(order) {
+  const effectiveStatus = order.status === 'Flagged' ? order.statusBeforeFlag || 'Confirmed' : order.status;
+  const timeline = buildTimelineFromStatus(effectiveStatus, order.statusHistory || []);
+  // ไม่มี step ไหนเป็น 'current' ได้ตอน Confirmed/Delivered (ดู buildTimelineFromStatus) — fallback ไปหา
+  // step 'done' ล่าสุดแทน ไม่ใช่ step สุดท้ายของ array เฉยๆ (ไม่งั้นตอน Confirmed จะโชว์ป้ายผิดเป็น "จัดส่งสำเร็จ")
+  const currentStep =
+    timeline.find((s) => s.status === 'current') ??
+    [...timeline].reverse().find((s) => s.status === 'done') ??
+    timeline[0];
+  return {
+    ...order,
+    shipping: { ...order.shipping, timeline, statusLabel: STATUS_BADGE_LABEL[currentStep.key] },
+  };
+}
+
+const ALLOWED_UPDATE_STATUSES = ['Confirmed', 'Processing', 'Packed', 'Shipped', 'Delivered', 'Flagged'];
+
 // GET /api/orders — ออเดอร์ทั้งหมด (เรียงล่าสุดก่อน) ใช้โดย Tracking ตอนไม่ระบุเลขออเดอร์ (ยังไม่มี login จริง)
 export async function getOrders(req, res) {
   const orders = await readJson(ORDERS_PATH);
   orders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
-  res.json(orders);
+  res.json(orders.map(attachLiveTimeline));
 }
 
-// GET /api/orders/:id — ดึงออเดอร์เดียว ใช้โดยหน้า Confirmation และหน้า Tracking (ระบุเลขออเดอร์ตรงๆ)
+// GET /api/orders/:id — ดึงออเดอร์เดียว ใช้โดยหน้า Confirmation, Tracking (ระบุเลขออเดอร์ตรงๆ) และ Order manage
 export async function getOrderById(req, res) {
   const { id } = req.params;
   const orders = await readJson(ORDERS_PATH);
@@ -86,7 +123,7 @@ export async function getOrderById(req, res) {
   if (!order) {
     return res.status(404).json({ message: `ไม่พบคำสั่งซื้อ orderId "${id}"` });
   }
-  res.json(order);
+  res.json(attachLiveTimeline(order));
 }
 
 // POST /api/orders — ทำครบ checkout ในจุดเดียว: ตรวจสินค้า -> คำนวณราคาจริงฝั่ง backend -> จำลองชำระเงิน
@@ -129,6 +166,7 @@ export async function createOrder(req, res) {
       quantity: qty,
       unitPrice: product.price,
       subTotal: product.price * qty,
+      picked: false,
     });
   }
 
@@ -167,6 +205,8 @@ export async function createOrder(req, res) {
   };
 
   const { minDays, maxDays } = SHIPPING_METHODS[shippingMethod];
+  // shipping ไม่เก็บ timeline/statusLabel ไว้ตรงๆ อีกแล้ว — คำนวณสดจาก status/statusHistory ทุกครั้งที่ query
+  // ผ่าน attachLiveTimeline() แทน (กันข้อมูลเก่าค้าง ไม่ตรงกับสถานะจริงที่ Staff กด)
   const shipping = {
     method: shippingMethod,
     methodLabel: SHIPPING_METHODS[shippingMethod].label,
@@ -175,18 +215,20 @@ export async function createOrder(req, res) {
     trackingNumber: fakeTrackingNumber(),
     estimatedDeliveryStart: new Date(Date.now() + minDays * 24 * 60 * 60 * 1000).toISOString(),
     estimatedDeliveryEnd: new Date(Date.now() + maxDays * 24 * 60 * 60 * 1000).toISOString(),
-    timeline: buildShippingTimeline(orderDate),
   };
-  const currentStep = shipping.timeline.find((s) => s.status === 'current') ?? shipping.timeline[0];
-  shipping.statusLabel = STATUS_BADGE_LABEL[currentStep.key];
 
   // confirmOrder() — ฝัง items[]/shippingAddress/shipping/payment ไว้ในเรคคอร์ดเดียว (เหมือน purchaseOrder.controller.js)
+  // statusHistory เก็บเวลาจริงที่แต่ละสถานะเกิดขึ้น ใช้คำนวณ timeline ที่ลูกค้าเห็นแทนการจำลองเวลาล่วงหน้า
   const newOrder = {
     orderId,
     orderNo: orderId,
     customerId: customerId || 'GUEST', // ยังไม่มีระบบ login จริง เลยใช้ค่า default ไปก่อน
     orderDate,
     status: 'Confirmed',
+    statusHistory: [{ status: 'Confirmed', at: orderDate }],
+    courierNotes: '',
+    flagReason: '',
+    statusBeforeFlag: null,
     subtotal,
     shippingAmount,
     taxAmount,
@@ -209,5 +251,57 @@ export async function createOrder(req, res) {
   await writeJson(ORDERS_PATH, orders);
 
   // 201 = สร้างสำเร็จ (Created) — ส่งออเดอร์ที่เพิ่งสร้างกลับไป ให้ frontend เอาไปแสดงหน้า "ขอบคุณที่สั่งซื้อสินค้า" ได้เลย
-  res.status(201).json(newOrder);
+  res.status(201).json(attachLiveTimeline(newOrder));
+}
+
+// PATCH /api/orders/:id/status — Staff อัปเดตความคืบหน้าออเดอร์ (Order manage) body: { status, courierNotes?, pickedItems?, flagReason? }
+// status ต้องอยู่ใน ALLOWED_UPDATE_STATUSES — ไม่รองรับ "Cancelled" เพราะการยกเลิกไม่ใช่ use case ของ Staff (S2-S5 ใน README
+// ไม่มีข้อไหนพูดถึงยกเลิกเลย น่าจะเป็นสิทธิ์ของลูกค้าจากหน้า Order History แทน คนละ endpoint/scope)
+export async function updateOrderStatus(req, res) {
+  const { id } = req.params;
+  const { status, courierNotes, pickedItems, flagReason } = req.body;
+
+  if (!ALLOWED_UPDATE_STATUSES.includes(status)) {
+    return res.status(400).json({
+      message: `status ต้องเป็นหนึ่งใน ${ALLOWED_UPDATE_STATUSES.join(', ')}`,
+    });
+  }
+  if (status === 'Flagged' && (!flagReason || !flagReason.trim())) {
+    return res.status(400).json({ message: 'flagReason ต้องระบุเมื่อแจ้งปัญหา (status = "Flagged")' });
+  }
+
+  const orders = await readJson(ORDERS_PATH);
+  const order = orders.find((o) => o.orderId === id);
+  if (!order) {
+    return res.status(404).json({ message: `ไม่พบคำสั่งซื้อ orderId "${id}"` });
+  }
+
+  // เก็บ/เคลียร์ statusBeforeFlag ฝั่ง server เอง ไม่เชื่อค่าจาก client เพื่อกันของปลอม
+  if (status === 'Flagged') {
+    if (order.status !== 'Flagged') {
+      order.statusBeforeFlag = order.status;
+    }
+    order.flagReason = flagReason.trim();
+  } else {
+    if (order.status === 'Flagged') {
+      order.statusBeforeFlag = null;
+      order.flagReason = '';
+    }
+    // บันทึกเวลาจริงตอนถึงสถานะนี้ครั้งแรก (กันบันทึกซ้ำถ้ายิงซ้ำสถานะเดิม เช่น อัปเดตแค่ courierNotes ระหว่าง Processing)
+    if (!order.statusHistory.some((h) => h.status === status)) {
+      order.statusHistory.push({ status, at: new Date().toISOString() });
+    }
+  }
+
+  if (typeof courierNotes === 'string') {
+    order.courierNotes = courierNotes;
+  }
+  if (Array.isArray(pickedItems)) {
+    order.items = order.items.map((item) => ({ ...item, picked: pickedItems.includes(item.orderItemId) }));
+  }
+
+  order.status = status;
+
+  await writeJson(ORDERS_PATH, orders);
+  res.json(attachLiveTimeline(order));
 }
