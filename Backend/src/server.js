@@ -4,6 +4,7 @@ import inventoryRoutes from '../routes/inventory.route.js';
 import purchaseOrderRoutes from '../routes/purchaseOrder.route.js';
 import orderRoutes from '../routes/order.route.js';
 import authRoutes from '../routes/auth.route.js'
+import reportRoutes from '../routes/report.route.js';
 
 // จุดเริ่มต้นของ Backend — ไฟล์นี้แค่ "ประกอบร่าง" server ไม่มี business logic เอง
 const app = express();
@@ -19,6 +20,7 @@ app.use('/api/inventory', inventoryRoutes);
 app.use('/api/purchase-orders', purchaseOrderRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/reports', reportRoutes);
 
 // อ่าน port จาก env ถ้ามี ไม่งั้น fallback 4000 (เลี่ยง 5000 เพราะชนกับ AirPlay Receiver บน macOS)
 const PORT = process.env.PORT || 4000;
