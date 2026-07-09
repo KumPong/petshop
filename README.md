@@ -650,23 +650,15 @@ flowchart LR
 * `role` (String): ประเภทผู้ใช้งาน (`Customer`, `Staff`, `Manager`)
 * `createdAt` (Datetime): วันที่สร้างบัญชี
 * `updatedAt` (Datetime): วันที่อัปเดตข้อมูลล่าสุด
-* **[Customer Only]** `dateOfBirth` (Date): วันเกิด
-* **[Customer Only]** `gender` (String): เพศ
 * **[Customer Only]** `addressList` (Array of Address Object): ข้อมูลที่อยู่สำหรับจัดส่ง
-* **[Staff Only]** `position` (String): ตำแหน่งงาน
-* **[Manager Only]** `department` (String): แผนกที่ดูแล
 
 ### 2. 🛍️ Products (`products.json`)
 จัดเก็บข้อมูลสินค้า, แบรนด์, หมวดหมู่ และรูปภาพ
 * `productId` (String): รหัสสินค้า (Primary Key)
 * `categoryId` (String): รหัสหมวดหมู่ (อ้างอิง Category)
-* `brandId` (String): รหัสแบรนด์ (อ้างอิง Brand)
 * `sku` (String): รหัส SKU สินค้า
 * `name` (String): ชื่อสินค้า
 * `description` (String): รายละเอียดสินค้า
-* `gender` (String): เพศของสัตว์เลี้ยงที่เหมาะสม
-* `size` (String): ขนาดสินค้า (เช่น S, M, L)
-* `warranty` (String): ข้อมูลการรับประกัน
 * `price` (Number): ราคาสินค้า
 * `status` (String): สถานะสินค้า (เช่น Available, Out of stock)
 * `images` (Array of ProductImage Object): รายการรูปภาพสินค้า (`imageId`, `imageUrl`, `sortOrder`)
@@ -678,7 +670,7 @@ flowchart LR
 * `productId` (String): รหัสสินค้าที่เชื่อมโยง
 * `quantityOnHand` (Number): จำนวนสินค้าที่มีอยู่จริง
 * `reservedQty` (Number): จำนวนสินค้าที่ถูกจอง (รอชำระเงิน/จัดส่ง)
-* `reorderLevel` (Number): จุดสั่งซื้อสินค้าเพิ่ม
+* `reorderLevel` (Number): สั่งซื้อสินค้าเพิ่ม
 * `lastUpdated` (Datetime): วันที่อัปเดตสต็อกล่าสุด
 
 ### 4. 🛒 Carts (`carts.json`)
@@ -695,7 +687,7 @@ flowchart LR
 * `orderId` (String): รหัสคำสั่งซื้อ (Primary Key)
 * `customerId` (String): รหัสลูกค้า
 * `orderDate` (Datetime): วัน-เวลาที่สั่งซื้อ
-* `status` (String): สถานะคำสั่งซื้อ (เช่น Pending, Paid, Shipped, Cancelled)
+* `status` (String): สถานะคำสั่งซื้อ (เช่น Pending, Paid, Shipped)
 * `totalAmount` (Number): ยอดรวมราคาสินค้า
 * `shippingAmount` (Number): ค่าจัดส่ง
 * `items` (Array of OrderItem Object): รายการสินค้าที่สั่ง
