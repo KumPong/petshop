@@ -56,7 +56,7 @@ function App() {
 
       {/* ของ Staff */}
       <Route path='/staff' element={
-        <ProtectedRoute>
+        <ProtectedRoute allowedRoles={['Staff']}>
           <StaffLayout /> 
         </ProtectedRoute>
       }>
@@ -68,7 +68,7 @@ function App() {
 
       {/* ของ Manager */}
       <Route path='/manager' element={
-        <ProtectedRoute>
+        <ProtectedRoute allowedRoles={['Manager']}>
           <ManagerLayout />
         </ProtectedRoute>
       }>
