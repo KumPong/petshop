@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { Loader2 } from 'lucide-react';
 import Logo from '../assets/Logo.png'
+import { registerUser } from "../services/auth.service";
 
 function Register() {
     const navigate = useNavigate();
@@ -31,7 +31,7 @@ function Register() {
         }
 
         setIsLoading(true);
-        
+
         // แยก FullName เป็น firstName และ lastName ให้ Backend
         const nameParts = formData.fullName.trim().split(' ');
         const firstName = nameParts[0] || '';
@@ -45,12 +45,12 @@ function Register() {
                 password: formData.password
             };
 
-            const response = await axios.post('http://localhost:4000/api/auth/register', payload);
+            const data = await registerUser(payload);
 
             Swal.fire({
                 icon: 'success',
                 title: 'สมัครสมาชิกสำเร็จ',
-                text: 'ระบบจะพาคุณไปยังหน้าLogin',
+                text: data.message || 'ระบบจะพาคุณไปยังหน้าเข้าสู่ระบบ',
                 timer: 2000,
                 showConfirmButton: false
             });

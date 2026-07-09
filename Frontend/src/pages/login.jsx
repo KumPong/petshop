@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Loader2 } from 'lucide-react';
 import Logo from '../assets/Logo.png';
+import { loginUser } from '../services/auth.service';
 
 function Login() {
     const navigate = useNavigate();
@@ -24,8 +24,8 @@ function Login() {
         setIsLoading(true);
 
         try {
-            const response = await axios.post('http://localhost:4000/api/auth/login', formData);
-            const data = response.data;
+            // call service
+            const data = await loginUser(formData)
 
             // Pop-up แบบสำเร็จ
             Swal.fire({
