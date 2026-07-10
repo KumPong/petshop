@@ -28,10 +28,10 @@
     "unitLabel": "1 ถุง บรรจุ 12 ปอนด์",
     "category": "ออร์แกนิก",
     "supplier": "Wholesome Pet Foods",
-    "stock": 12,
+    "stock": 11,
     "threshold": 20,
     "unitCost": 22,
-    "lastUpdated": "2026-07-01T00:00:00.000Z",
+    "lastUpdated": "2026-07-10T10:39:57.547Z",
     "id-type": "dogs"
   },
   {
@@ -43,10 +43,10 @@
     "unitLabel": "1 แพ็ก บรรจุ 24 ซอง",
     "category": "อาหารเปียก",
     "supplier": "Pawsome Suppliers Co.",
-    "stock": 48,
+    "stock": 46,
     "threshold": 20,
     "unitCost": 21,
-    "lastUpdated": "2026-07-01T00:00:00.000Z"
+    "lastUpdated": "2026-07-10T10:39:57.547Z"
   },
   {
     "id": "PC-LSH-ADJ-004",
@@ -71,10 +71,10 @@
     "unitLabel": "1 ชิ้น",
     "category": "อุปกรณ์",
     "supplier": "Pawsome Suppliers Co.",
-    "stock": 18,
+    "stock": 17,
     "threshold": 8,
     "unitCost": 380,
-    "lastUpdated": "2026-07-01T00:00:00.000Z"
+    "lastUpdated": "2026-07-10T10:39:57.547Z"
   },
   {
     "id": "FB-CAT-006",

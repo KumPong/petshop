@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Truck, CreditCard, QrCode, Landmark, ShieldCheck, BadgeCheck, MessageCircle, Plus, Minus, Trash2, Image as ImageIcon } from 'lucide-react';
 import { createOrder } from '../../services/order.service.js';
+import Swal from 'sweetalert2'
 
 // ตะกร้าจำลอง — ยังไม่มี Cart/Context กลางใช้ร่วมกับ navbar.jsx เลยแยกทำงานเดี่ยวๆ ไปก่อน
 // (productId อ้างอิงของจริงจาก Backend/data/product.json)
@@ -35,12 +36,27 @@ function Payment() {
   const navigate = useNavigate();
 
   const [cart, setCart] = useState(INITIAL_CART);
-  const [address, setAddress] = useState({ fullName: '', street: '', city: '', postalCode: '', phone: '' });
+  const [address, setAddress] = useState(() => {
+    const stored = JSON.parse(localStorage.getItem('userAddresses')) || [];
+    if (stored.length === 1) {
+      return{
+        fullName: stored[0].fullName,
+        street: stored[0].street,
+        city: stored[0].city,
+        postalCode: stored[0].postalCode,
+        phone: stored[0].phone
+      };
+    }
+    return { fullName: '', street: '', city: '', postalCode: '', phone: ''};
+  });
   const [shippingMethod, setShippingMethod] = useState('standard');
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_TABS[0].value);
   const [card, setCard] = useState({ name: '', number: '', expiry: '', cvv: '' });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [savedAddresses, setSavedAddresses] = useState(() => {
+    return JSON.parse(localStorage.getItem('userAddresses')) || [];
+  });
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shippingCost = SHIPPING_METHODS.find((m) => m.value === shippingMethod).cost;
@@ -105,10 +121,51 @@ function Payment() {
     paymentMethod !== PAYMENT_TABS[0].value || Object.values(card).every((v) => v.trim() !== '');
   const canSubmit = addressComplete && cardComplete && cart.length > 0;
 
+  // ฟังก์ชันดึงที่อยู่เก่ามาใช้
+  const handleSelectAddress = (addr) => {
+    setAddress({
+      fullName: addr.fullName,
+      street: addr.street,
+      city: addr.city,
+      postalCode: addr.postalCode,
+      phone: addr.phone
+    });
+  }
+
+  const openAddressSelector = async () => {
+    // ดึงที่อยู่มาทำเป็นตัวเลือกใน SweetAlert2
+    const inputOptions = {};
+    savedAddresses.forEach(addr => {
+      inputOptions[addr.id] = `${addr.fullName} - ${addr.street} ${addr.city}`;
+    });
+
+    const { value: selectedId } = await Swal.fire({
+      title: 'เลือกที่อยู่จัดส่ง',
+      input: 'radio',
+      inputOptions,
+      showCancelButton: true,
+      confirmButtonText: 'เลือก'
+    });
+
+    if (selectedId) {
+      const selected = savedAddresses.find(a => a.id.toString() === selectedId);
+      if (selected) handleSelectAddress(selected);
+    }
+  };
+
   const handlePlaceOrder = async () => {
     if (!canSubmit) return;
     setError(null);
     setSubmitting(true);
+
+    // บันทึกที่อยู่ใหม่ลง localStorage (เช็กก่อนว่าซ้ำไหม)
+    const stored = JSON.parse(localStorage.getItem('userAddresses')) || [];
+    const exists = stored.find(a => a.street === address.street && a.postalCode === address.postalCode);
+    if (!exists) {
+      stored.push({ ...address, id: Date.now(), isDefault: stored.length === 0});
+      localStorage.setItem('userAddresses', JSON.stringify(stored));
+    }
+
     try {
       const items = cart.map(({ productId, quantity }) => ({ productId, quantity }));
       const order = await createOrder(items, paymentMethod, address, shippingMethod);
@@ -160,10 +217,22 @@ function Payment() {
       <div className="mx-auto grid max-w-5xl grid-cols-3 gap-6">
         <div className="col-span-2 space-y-6">
           <div className="rounded-2xl bg-white p-6 shadow-sm">
-            <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-gray-900">
-              <Truck size={18} />
-              ที่อยู่จัดส่ง
-            </h2>
+            <div className='flex justify-between items-center mb-4'>
+              <h2 className="flex items-center gap-2 text-lg font-bold text-gray-900">
+                <Truck size={18} />
+                ที่อยู่จัดส่ง
+              </h2>
+
+              {savedAddresses.length > 0 && (
+                <button 
+                  onClick={openAddressSelector} 
+                  className='text-sm text-gray-700 bg-background border border-gray-100 px-3 py-1.5 rounded-lg hover:bg-other hover:text-black transition-colors'
+                >
+                  เลือกที่อยู่ที่บันทึกไว้
+                </button>
+              )}
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <label className="col-span-2 flex flex-col gap-1 text-sm font-medium text-gray-700">
                 ชื่อ-นามสกุล

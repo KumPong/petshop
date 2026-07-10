@@ -16,9 +16,10 @@
     "firstName": "เจน",
     "lastName": "โด",
     "email": "jane.doe@example.com",
-    "phone": "",
-    "password": "jane1234",
+    "phone": "ยังไม่ได้ระบุ",
+    "password": "jane1122",
     "role": "Customer",
-    "status": "ACTIVE"
+    "status": "ACTIVE",
+    "profileImage": "http://localhost:4000/uploads/Profile/Profile-1783679764006-25130873.jpg"
   }
 ]

@@ -1,45 +1,114 @@
 import { useState, useEffect } from "react";
 import CustomerSidebar from "../../components/customerSidebar";
+import Swal from "sweetalert2";
 
 function Address() {
     const [addresses, setAddresses] = useState([]);
-    const [loading, setLoading] = useState(true); 
+    const [loading, setLoading] = useState(true);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [newAddress, setNewAddress] = useState({ fullName: '', street: '', city: '', postalCode: '', phone: ''})
+
+    const [editingId, setEditingId] = useState(null);
 
     useEffect(() => {
         const fetchAddresses = async () => {
-            try {
-                // ดึง token ที่เก็บไว้ใน localStorage
-                const token = localStorage.getItem('token');
-
-                if (!token) {
-                    setLoading(false);
-                    return;
-                }
-
-                // API ไปยัง Backend
-                const response = await fetch('http://localhost:xxxx/api/customers/addresses', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` // แนบ Token ไปใน Header เพื่อระบุตัวตนผู้ใช้
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    setAddresses(data);
-                } else {
-                    console.error("ไม่สามารถดึงข้อมูลที่อยู่ได้");
-                }
-            } catch (error) {
-                console.error("เกิดข้อผิดพลาดในการเชื่อมต่อ:", error )
-            } finally {
+                const stored = JSON.parse(localStorage.getItem('userAddresses')) || [];
+                setAddresses(stored);
                 setLoading(false);
-            }
-        };
+            } ;
 
         fetchAddresses();
     }, []);
+
+    // ฟังก์ชันสำหรับเปิด Pop-up เพื่อ "เพิ่มที่อยู่ใหม่"
+    const handleAddNewClick = () => {
+        setEditingId(null);
+        setNewAddress({ fullName: '', street: '', city: '', postalCode: '', phone: '' });
+        setIsModalOpen(true);
+    };
+
+    // ฟังก์ชันสำหรับเปิด Pop-up เพื่อ "แก้ไขที่อยู่เดิม"
+    const handleEditClick = (addr) => {
+        setEditingId(addr.id);
+        setNewAddress(addr);
+        setIsModalOpen(true);
+    };
+
+    // ฟังก์ชันสำหรับเซฟข้อมูลจากฟอร์ม
+    const handleSaveAddress = (e) => {
+        e.preventDefault();
+
+        if (!newAddress.fullName.trim() || !newAddress.street.trim() || !newAddress.city.trim() || !newAddress.postalCode.trim() || !newAddress.phone.trim()) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'ข้อมูลไม่ครบถ้วน',
+                text: 'กรุณากรอกข้อมูลที่อยู่ให้ครบทุกช่อง',
+                confirmButtonColor: '#4A5D23',
+                confirmButtonText: 'ตกลง'
+            });
+            return;
+        }
+
+        const stored = JSON.parse(localStorage.getItem('userAddresses')) || [];
+
+        if (editingId) {
+            // ถ้า editingId ไม่เป็น null แปลว่าโหมด "แก้ไข"
+            const updatedStored = stored.map(addr =>
+                addr.id === editingId ? { ...newAddress, id: editingId, isDefault: addr.isDefault } : addr
+            );
+            localStorage.setItem('userAddresses', JSON.stringify(updatedStored));
+            setAddresses(updatedStored);
+            Swal.fire('สำเร็จ', 'อัปเดตที่อยู่เรียบร้อย', 'success');
+        } else {
+            // ถ้าเป็น null แปลว่าโหมด "เพิ่มใหม่"
+            const newEntry = { ...newAddress, id: Date.now(), isDefault: stored.length === 0 };
+            stored.push(newEntry);
+            localStorage.setItem('userAddresses', JSON.stringify(stored));
+            setAddresses(stored);
+            Swal.fire('สำเร็จ', 'เพิ่มที่อยู่ใหม่เรียบร้อย', 'success');
+        }
+
+        // ปิด Pop-up และล้างค่าต่างๆ ทิ้ง
+        setIsModalOpen(false);
+        setNewAddress({ fullName: '', street: '', city: '', postalCode: '', phone: '' });
+        setEditingId(null);
+    }
+
+    const handleDeleteAddress = (idToDelete) => {
+        Swal.fire({
+            title: 'ยืนยันการลบ',
+            text: 'คุณแน่ใจหรือไม่ว่าต้องการลบที่อยู่นี้?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'ลบเลย',
+            cancelButtonText: 'ยกเลิก'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const updatedAddresses = addresses.filter(addr => addr.id !== idToDelete);
+
+                if (updatedAddresses.length > 0 && !updatedAddresses.some(addr => addr.isDefault)) {
+                    updatedAddresses[0].isDefault = true;
+                }
+
+                localStorage.setItem('userAddresses', JSON.stringify(updatedAddresses));
+                setAddresses(updatedAddresses);
+                Swal.fire('ลบแล้ว!', 'ที่อยู่ถูกลบเรียบร้อย', 'success');
+            }
+        })
+    };
+
+    const handleSetDefault = (idToDefault) => {
+        const updatedAddresses = addresses.map(addr => ({
+            ...addr,
+            isDefault: addr.id === idToDefault
+        }));
+
+        localStorage.setItem('userAddresses', JSON.stringify(updatedAddresses));
+        setAddresses(updatedAddresses);
+    };
 
     if (loading) {
         return <div className="text-center py-10 text-gray-500">กำลังโหลดข้อมูลที่อยู่...</div>
@@ -57,19 +126,19 @@ function Address() {
                         <h2 className="text-2xl font-bold text-black mb-1">ที่อยู่ของฉัน</h2>
                         <p className="text-gray-600">จัดการที่อยู่สำหรับการจัดส่งของคุณ</p>
                     </div>
-                    <button className="bg-primary hover:bg-secondary text-white font-medium py-2 px-4 rounded-lg transition">
+                    <button onClick={handleAddNewClick} className="bg-primary hover:bg-secondary text-black font-medium py-2 px-4 rounded-lg transition">
                         + เพิ่มที่อยู่ใหม่
                     </button>
                 </div>
 
                 <div className="space-y-4">
                     {addresses.length === 0 ? (
-                        <div className="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 text-center text-gray-500">
+                        <div className="bg-other p-10 rounded-2xl shadow-sm border border-gray-100 text-center text-gray-500">
                             คุณยังไม่ได้เพิ่มที่อยู่จัดส่งสินค้า
                         </div>
                     ) : (
                         addresses.map((addr) => (
-                            <div key={addr.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-4">
+                            <div key={addr.id} className="bg-background p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-4">
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <div className="flex items-center gap-3 mb-2">
@@ -79,20 +148,20 @@ function Address() {
                                             </h3>
                                             <span className="text-gray-600">{addr.phone}</span>
                                             {addr.isDefault && (
-                                                <span className="px-2 py-0.5 bg-secondary text-primary text-sm rounded-full font-medium">ค่าเริ่มต้น</span>
+                                                <span className="px-2 py-0.5 bg-secondary text-gray-700 text-sm rounded-full font-medium">ค่าเริ่มต้น</span>
                                             )}
                                         </div>
                                         {/* ปรับการต่อข้อความที่อยู่ตาม Fields ในตาราง Address ของคุณ */}
                                         <p className="text-gray-600 text-sm max-w-2xl">
-                                            {addr.addressLine1} {addr.addressLine2 || ''}  {addr.district} {addr.amphoe} {addr.province} {addr.zipcode}
+                                            {addr.street} {addr.city} {addr.postalCode}
                                         </p>
                                     </div>
                                     <div className="text-sm">
-                                        <button className="text-gray-500 hover:text-black">แก้ไข</button>
+                                        <button onClick={() => handleEditClick(addr)} className="text-gray-700 hover:text-black">แก้ไข</button>
                                         {!addr.isDefault && (
                                             <>
                                                 <span className="mx-2 text-gray-300">|</span>
-                                                <button className="text-red-500 hover:text-red-700">ลบ</button>
+                                                <button onClick={() => handleDeleteAddress(addr.id)} className="text-red-500 hover:text-red-700">ลบ</button>
                                             </>
                                         )}
                                     </div>
@@ -100,7 +169,13 @@ function Address() {
 
                                 <div className="flex justify-end mt-2">
                                     <button
-                                        className={`px-4 py-2 text-sm rounded-lg border transition-colors ${addr.isDefault ? 'border-gray-200 text-gray-400 cursor-not-allowed' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+                                        onClick={() => handleSetDefault(addr.id)}
+                                        className={`px-4 py-2 text-sm rounded-lg border transition-colors ${
+                                                        addr.isDefault 
+                                                            ? 'border-gray-200 text-gray-500 cursor-not-allowed' 
+                                                            : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                                                    }`
+                                                }
                                         disabled={addr.isDefault}
                                     >
                                         ตั้งเป็นค่าเริ่มต้น
@@ -111,6 +186,37 @@ function Address() {
                     )}
                 </div>
             </div>
+
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black/40 bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-other p-6 rounded-2xl shadow-xl w-full max-w-md">
+                        {/* เช็กหัวข้อ Pop-up ให้ตรงกับโหมด */}
+                        <h3 className="text-xl font-bold mb-4">{editingId ? 'แก้ไขที่อยู่' : 'เพิ่มที่อยู่ใหม่'}</h3>
+                        
+                        <form onSubmit={handleSaveAddress} className="space-y-4">
+                            <input required placeholder="ชื่อ-นามสกุล" value={newAddress.fullName} onChange={(e) => setNewAddress({...newAddress, fullName: e.target.value})} className="w-full px-4 py-2 border border-gray-100 rounded-lg bg-background" />
+                            <input required placeholder="ที่อยู่ (บ้านเลขที่, ถนน)" value={newAddress.street} onChange={(e) => setNewAddress({...newAddress, street: e.target.value})} className="w-full px-4 py-2 border border-gray-100 rounded-lg bg-background" />
+                            <input required placeholder="จังหวัด" value={newAddress.city} onChange={(e) => setNewAddress({...newAddress, city: e.target.value})} className="w-full px-4 py-2 border border-gray-100 rounded-lg bg-background" />
+                            <input required placeholder="รหัสไปรษณีย์" value={newAddress.postalCode} onChange={(e) => setNewAddress({...newAddress, postalCode: e.target.value})} className="w-full px-4 py-2 border border-gray-100 rounded-lg bg-background" />
+                            <input required placeholder="เบอร์โทรศัพท์" value={newAddress.phone} onChange={(e) => setNewAddress({...newAddress, phone: e.target.value})} className="w-full px-4 py-2 border border-gray-100 rounded-lg bg-background" />
+                            <div className="flex justify-end gap-2 mt-4">
+                                <button 
+                                    type="button" 
+                                    onClick={() => {
+                                        setIsModalOpen(false); 
+                                        setNewAddress({ fullName: '', street: '', city: '', postalCode: '', phone: '' });
+                                        setEditingId(null); // เคลียร์ id ทิ้งด้วยเวลายกเลิก
+                                    }} 
+                                    className="px-4 py-2 text-gray-500 hover:bg-gray-100 rounded-lg"
+                                >
+                                    ยกเลิก
+                                </button>
+                                <button type="submit" className="px-4 py-2 bg-primary text-black rounded-lg">บันทึก</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
