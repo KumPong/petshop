@@ -202,7 +202,7 @@ function SalesTab({ period, onPeriodChange }) {
       </div>
 
       <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 break-inside-avoid rounded-2xl bg-white p-6 shadow-sm">
+        <div className="col-span-2 break-inside-avoid rounded-2xl bg-other p-6 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
             <div>
               <h2 className="text-lg font-bold text-gray-900">แนวโน้มยอดขาย</h2>
@@ -239,7 +239,7 @@ function SalesTab({ period, onPeriodChange }) {
           )}
         </div>
 
-        <div className="break-inside-avoid rounded-2xl bg-white p-6 shadow-sm">
+        <div className="break-inside-avoid rounded-2xl bg-other p-6 shadow-sm">
           <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-gray-900">
             <Tag size={18} className="text-gray-500" />
             หมวดหมู่สินค้า
@@ -262,7 +262,7 @@ function SalesTab({ period, onPeriodChange }) {
         </div>
       </div>
 
-      <div className="break-inside-avoid rounded-2xl bg-white p-6 shadow-sm">
+      <div className="break-inside-avoid rounded-2xl bg-other p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-bold text-gray-900">ผลงานแยกตามหมวดหมู่</h2>
           <button
@@ -290,7 +290,7 @@ function SalesTab({ period, onPeriodChange }) {
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-400">
+              <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-700">
                 <th className="py-3 font-medium">หมวดหมู่</th>
                 <th className="py-3 font-medium">จำนวนออเดอร์</th>
                 <th className="py-3 font-medium">ยอดขายรวม</th>
@@ -305,7 +305,7 @@ function SalesTab({ period, onPeriodChange }) {
                   <td className="py-3 text-gray-600">{c.orders.toLocaleString('th-TH')} รายการ</td>
                   <td className="py-3 font-semibold text-gray-900">{money(c.revenue)}</td>
                   <td className="py-3">
-                    <div className="h-1.5 w-24 overflow-hidden rounded-full bg-gray-100">
+                    <div className="h-1.5 w-24 overflow-hidden rounded-full bg-background">
                       <div className="h-full rounded-full bg-primary" style={{ width: `${Math.min(100, c.share)}%` }} />
                     </div>
                   </td>
@@ -321,14 +321,14 @@ function SalesTab({ period, onPeriodChange }) {
         )}
       </div>
 
-      <div className="break-inside-avoid rounded-2xl bg-white p-6 shadow-sm">
+      <div className="break-inside-avoid rounded-2xl bg-other p-6 shadow-sm">
         <h2 className="mb-4 text-lg font-bold text-gray-900">สินค้าขายดี{categoryFilter !== 'ทั้งหมด' && ` — ${categoryFilter}`}</h2>
         {filteredTopProducts.length === 0 ? (
           <EmptyState text="ไม่มีข้อมูลสินค้าในหมวดหมู่นี้" />
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-400">
+              <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-700">
                 <th className="py-3 font-medium">ชื่อสินค้า</th>
                 <th className="py-3 font-medium">จำนวนที่ขายได้</th>
                 <th className="py-3 font-medium">ยอดขาย</th>

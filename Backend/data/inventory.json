@@ -144,10 +144,10 @@
     "unitLabel": "1 เคส บรรจุ 12 ชิ้น",
     "category": "ของใช้ดูแลขน",
     "supplier": "Eco-Pet Exports",
-    "stock": 10,
+    "stock": 11,
     "threshold": 10,
     "unitCost": 12,
-    "lastUpdated": "2026-07-01T00:00:00.000Z",
+    "lastUpdated": "2026-07-09T02:37:46.631Z",
     "id-type": "accessories"
   },
   {
@@ -234,10 +234,10 @@
     "unitLabel": "1 ชิ้น",
     "category": "ของเล่น",
     "supplier": "Eco-Pet Exports",
-    "stock": 6,
+    "stock": 10,
     "threshold": 10,
     "unitCost": 8.2,
-    "lastUpdated": "2026-07-01T00:00:00.000Z",
+    "lastUpdated": "2026-07-09T02:37:46.631Z",
     "id-type": "accessories"
   },
   {
