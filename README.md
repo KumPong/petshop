@@ -14,6 +14,7 @@
 10. [Class Diagram](#class-diagram)
 11. [Sequence Diagrams](#sequence-diagrams)
 12. [System Architecture](#system-architecture)
+13. [Data Schema](#data-schema)
 
 ---
 
@@ -630,5 +631,69 @@ flowchart LR
     A[React Web UI] -->|HTTP Requests| B(Node.js Backend / Express.js)
     B -->|Read/Write Data| C[(Local Storage / JSON Files)]
 ```
+
+---
+
+## <a id="data-schema"></a>🗄️ Data Schema (JSON Database)
+
+ระบบ PetStop ใช้การจัดเก็บข้อมูลในรูปแบบไฟล์ JSON (Local Storage) โดยแบ่ง Collection หลักๆ ออกตาม Entity ดังนี้:
+
+### 1. 👤 Users (`users.json`)
+จัดเก็บข้อมูลผู้ใช้งานระบบทั้งหมด (Customer, Staff, Manager) สืบทอดคุณสมบัติมาจาก Class `User`
+* `userid` (String): รหัสผู้ใช้งาน (Primary Key)
+* `username` (String): ชื่อบัญชีผู้ใช้
+* `email` (String): อีเมลสำหรับการ Login
+* `passwordHash` (String): รหัสผ่านที่ผ่านการเข้ารหัส
+* `firstName` (String): ชื่อจริง
+* `lastName` (String): นามสกุล
+* `phone` (String): เบอร์โทรศัพท์
+* `role` (String): ประเภทผู้ใช้งาน (`Customer`, `Staff`, `Manager`)
+* `createdAt` (Datetime): วันที่สร้างบัญชี
+* `updatedAt` (Datetime): วันที่อัปเดตข้อมูลล่าสุด
+* **[Customer Only]** `addressList` (Array of Address Object): ข้อมูลที่อยู่สำหรับจัดส่ง
+
+### 2. 🛍️ Products (`products.json`)
+จัดเก็บข้อมูลสินค้า, แบรนด์, หมวดหมู่ และรูปภาพ
+* `productId` (String): รหัสสินค้า (Primary Key)
+* `categoryId` (String): รหัสหมวดหมู่ (อ้างอิง Category)
+* `sku` (String): รหัส SKU สินค้า
+* `name` (String): ชื่อสินค้า
+* `description` (String): รายละเอียดสินค้า
+* `price` (Number): ราคาสินค้า
+* `status` (String): สถานะสินค้า (เช่น Available, Out of stock)
+* `images` (Array of ProductImage Object): รายการรูปภาพสินค้า (`imageId`, `imageUrl`, `sortOrder`)
+* `createdAt` (Datetime): วันที่เพิ่มสินค้า
+
+### 3. 📦 Inventory (`inventory.json`)
+จัดเก็บข้อมูลคลังสินค้าและจำนวนสต็อก
+* `inventoryId` (String): รหัสคลังสินค้า (Primary Key)
+* `productId` (String): รหัสสินค้าที่เชื่อมโยง
+* `quantityOnHand` (Number): จำนวนสินค้าที่มีอยู่จริง
+* `reservedQty` (Number): จำนวนสินค้าที่ถูกจอง (รอชำระเงิน/จัดส่ง)
+* `reorderLevel` (Number): สั่งซื้อสินค้าเพิ่ม
+* `lastUpdated` (Datetime): วันที่อัปเดตสต็อกล่าสุด
+
+### 4. 🛒 Carts (`carts.json`)
+จัดเก็บข้อมูลตะกร้าสินค้าของลูกค้าที่ยังไม่ได้ Checkout
+* `cartId` (String): รหัสตะกร้าสินค้า (Primary Key)
+* `customerId` (String): รหัสลูกค้า
+* `status` (String): สถานะตะกร้า (เช่น Active, Abandoned)
+* `items` (Array of OrderItem Object): รายการสินค้าในตะกร้า (`productId`, `quantity`, `unitPrice`)
+* `createdAt` (Datetime): วันที่สร้างตะกร้า
+* `updatedAt` (Datetime): วันที่อัปเดตตะกร้าล่าสุด
+
+### 5. 🧾 Orders (`orders.json`)
+จัดเก็บข้อมูลคำสั่งซื้อ, การชำระเงิน และการจัดส่ง
+* `orderId` (String): รหัสคำสั่งซื้อ (Primary Key)
+* `customerId` (String): รหัสลูกค้า
+* `orderDate` (Datetime): วัน-เวลาที่สั่งซื้อ
+* `status` (String): สถานะคำสั่งซื้อ (เช่น Pending, Paid, Shipped)
+* `totalAmount` (Number): ยอดรวมราคาสินค้า
+* `shippingAmount` (Number): ค่าจัดส่ง
+* `items` (Array of OrderItem Object): รายการสินค้าที่สั่ง
+* **Payment Info:**
+  * `payment` (Object): ข้อมูลการชำระเงิน (`paymentId`, `method`, `amount`, `status`, `transactionId`)
+* **Shipping Info:**
+  * `shipping` (Object): ข้อมูลการจัดส่ง (`shippingId`, `trackingNo`, `carrier`, `shippingMethod`, `shippingAddress`, `status`)
 
 ---

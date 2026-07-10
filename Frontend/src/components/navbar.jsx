@@ -5,7 +5,7 @@ import Logo from "../assets/Logo.png"
 function Navbar() {
     const navigate = useNavigate();
 
-    // จำลอง State สำหรับการ Login (ค่าเริ่มต้นให้เป็น false คือยังไม่ Login)
+    // State สำหรับการ Login 
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
 
     // State สำหรับจัดการ Dropdown แบบกดคลิก
@@ -25,6 +25,12 @@ function Navbar() {
     // สร้าง State สำหรับเก็บข้อมูลสินค้าที่จะดึงจาก Backend
     const [products, setProducts] = useState([]);
 
+    // State สำหรับเก็บรูปโปรไฟล์
+    const [profileImage, setProfileImage] = useState(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        return user?.profileImage || null;
+    });
+
     // เตรียม useEffect สำหรับ Fetch ข้อมูลจาก Backend
     useEffect(() => {
         const fetchProduct = async () => {
@@ -43,6 +49,26 @@ function Navbar() {
 
         fetchProduct();
     }, [])
+
+    // เช็กและอัปเดตรูปโปรไฟล์
+    useEffect(() => {
+        const updateImage = () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) setProfileImage(user.profileImage);
+        };
+
+        // ดักฟังเมื่อมีการสลับ Tab
+        window.addEventListener('storage', updateImage);
+        // ดักฟัง Custom Event เวลาเราเปลี่ยนรูปในหน้าเว็บเดียวกัน
+        window.addEventListener('profileUpdated', updateImage); 
+        
+        updateImage();
+
+        return () => {
+            window.removeEventListener('storage', updateImage);
+            window.removeEventListener('profileUpdated', updateImage);
+        };
+    }, []);
 
     // ฟังก์ชั่น ค้นหา
     const handleSearch = (e) => {
@@ -190,28 +216,39 @@ function Navbar() {
                     <div className="relative">
                         <button 
                             onClick={() => setIsProfileOpen(!IsProfileOpen)}
-                            className="p-2 rounded-full hover:bg-gray-100 transition"
+                            className="rounded-full hover:bg-primary transition flex items-center justify-center overflow-hidden"
                         >
-                            <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            {/* เช็กว่ามีรูปไหม ถ้ามีก็โชว์รูป ถ้าไม่มีก็โชว์ SVG เดิม */}
+                            {profileImage ? (
+                                <img 
+                                    src={profileImage} 
+                                    alt="Profile"
+                                    className="w-8 h-8 object-cover rounded-full" 
+                                />
+                            ) : (
+                                <div className="p-2">
+                                    <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                            )}
                         </button>
 
                         {/* Profile Dropdown */}
                         {IsProfileOpen && (
-                            <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-100 rounded-md shadow-lg z-50">
+                            <div className="absolute right-0 mt-2 w-40 bg-other border border-gray-200 rounded-md shadow-lg z-50">
                                 <ul className="py-2">
                                     <li>
                                         <Link
                                             to='/profile'
                                             onClick={() => setIsProfileOpen(false)}
-                                            className="block w-full text-left px-4 py-2 hover:bg-gray-50 text-sm"
+                                            className="block w-full text-left px-4 py-2 hover:bg-background text-sm"
                                         >
                                             Setting
                                         </Link>
                                     </li>
                                     <li><hr className="my-1 border-gray-100"/></li>
-                                    <li><button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-red-600">Logout</button></li>
+                                    <li><button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-background text-sm text-red-600">Logout</button></li>
                                 </ul>
                             </div>
                         )}
@@ -226,7 +263,7 @@ function Navbar() {
                 <div className="relative">
                     <button
                         onClick={() => setIsCartOpen(!isCartOpen)}
-                        className="flex items-center gap-2 bg-secondary hover:bg-other text-black px-4 py-2 rounded-md transition"
+                        className="flex items-center gap-2 hover:bg-primary text-black px-4 py-2 rounded-md transition"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -242,11 +279,11 @@ function Navbar() {
 
                     {/* Cart DropDown */}
                     {isCartOpen && (
-                        <div className="absolute right-0 mt-2 w-72 bg-white border border-gray-100 rounded-md shadow-lg z-50 p-4">
+                        <div className="absolute right-0 mt-2 w-72 bg-other border border-gray-200 rounded-md shadow-lg z-50 p-4">
                             <h3 className="font-semibold text-gray-700 mb-3 border-b pb-2">ตะกร้าสินค้าของคุณ</h3>
 
                             {!isLoggedIn || cartItems.length === 0 ? (
-                                <p className="text-sm text-gray-500 text-center py-4">ตะกร้าสินค้าว่างเปล่า</p>
+                                <p className="text-sm text-gray-600 text-center py-4">ตะกร้าสินค้าว่างเปล่า</p>
                             ) : (
                                 <div className="space-y-3">
                                     {cartItems.map((item) => (

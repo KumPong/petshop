@@ -102,3 +102,127 @@ export const login = (req, res) => {
         res.status(500).json({ message: "Server Error", error: error.message });
     }
 };
+
+// ดึงข้อมูล Profile (ต้องใช้ Token ยืนยัน)
+export const getProfile = (req, res) => {
+    try {
+        // ดึง Token จาก Header
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: "ไม่พบ Token ยืนยันตัวตน"});
+        }
+
+        const token = authHeader.split(' ')[1];
+
+        // แกะ Token ด้วย Secret Key ตัวเดียวกับตอน Login
+        const decoded = jwt.verify(token, 'YOUR_SECRET_KEY_PETSTOP');
+
+        // หาข้อมูล User จากไฟล์ user.json
+        const users = readUsers();
+        const user = users.find(u => u.id === decoded.id);
+
+        if (!user) {
+            return res.status(404).json({ message: "ไม่พบข้อมูลผู้ใช้งาน" });
+        }
+
+        // ส่งข้อมูลกลับไปให้ Frontend
+        res.status(200).json({
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            role: user.role,
+            profileImage: user.profileImage
+        });
+
+    } catch (error) {
+        // ถ้า Token หมดอายุ หรือไม่ถูกต้อง
+        res.status(401).json({ message: "Token ไม่ถูกต้องหรือหมดอายุ", error: error.message });
+    }
+};
+
+// อัปเดตข้อมูล Profile
+export const updateProfile = (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: "ไม่พบ Token ยืนยันตัวตน" });
+        }
+
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, 'YOUR_SECRET_KEY_PETSTOP');
+
+        const users = readUsers();
+        // หาตำแหน่ง (Index) ของ User คนนี้ใน Array
+        const userIndex = users.findIndex(u => u.id === decoded.id);
+
+        if (userIndex === -1) {
+            return res.status(404).json({ message: "ไม่พบข้อมูลผู้ใช้งาน" });
+        }
+
+        // รับข้อมูลใหม่ที่ส่งมาจากหน้าบ้าน
+        const { firstName, lastName, phone, email, profileImage } = req.body;
+
+        // อัปเดตค่าลงใน Array
+        if (firstName) users[userIndex].firstName = firstName;
+        if (lastName) users[userIndex].lastName = lastName;
+        if (phone !== undefined) users[userIndex].phone = phone;
+        if (email) users[userIndex].email = email;
+        if (profileImage) users[userIndex].profileImage = profileImage;
+
+        // บันทึกกลับลงไฟล์ user.json
+        writeUsers(users);
+
+        res.status(200).json({
+            message: "อัปเดตข้อมูลสำเร็จ",
+            user: {
+                id: users[userIndex].id,
+                firstName: users[userIndex].firstName,
+                lastName: users[userIndex].lastName,
+                email: users[userIndex].email,
+                phone: users[userIndex].phone,
+                role: users[userIndex].role
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+// เปลี่ยนรหัสผ่าน
+export const changePassword = (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: "ไม่พบ Token ยืนยันตัวตน" });
+        }
+
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, 'YOUR_SECRET_KEY_PETSTOP');
+
+        const users = readUsers();
+        const userIndex = users.findIndex(u => u.id === decoded.id);
+
+        if (userIndex === -1) {
+            return res.status(404).json({ message: "ไม่พบข้อมูลผู้ใช้งาน" });
+        }
+
+        const { oldPassword, newPassword} = req.body;
+
+        // เช็กรหัสผ่านเก่าว่าตรงกับในฐานข้อมูลไหม
+        if (users[userIndex].password !== oldPassword) {
+            return res.status(400).json({ message: "รหัสผ่านปัจจุบันไม่ถูกต้อง" });
+        }
+
+        // อัปเดตรหัสผ่านใหม่
+        users[userIndex].password = newPassword;
+        writeUsers(users);
+
+        res.status(200).json({ message: "เปลี่ยนรหัสผ่านสำเร็จ" });
+
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
