@@ -27,6 +27,7 @@ import Address from './pages/Customer/address';
 import OrderHistory from './pages/Customer/orderHistory';
 import ChangePassword from './pages/Customer/changePassword';
 import ManageUsers from './pages/Manager/manageUsers.jsx';
+import ProductManagement from './pages/Manager/productManagement.jsx';
 
 function App() {
   return (
@@ -75,6 +76,7 @@ function App() {
         <Route index element={<ManagerDashboard />} />
         <Route path='inventory' element={<RestockOrder />} />
         <Route path='users' element={<ManageUsers />} />
+        <Route path='products' element={<ProductManagement />} />
       </Route>
     </Routes>
   )
