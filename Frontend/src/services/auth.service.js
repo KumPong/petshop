@@ -51,3 +51,17 @@ export const uploadProfileImage = async (file) => {
     });
     return response.data;
 }
+
+export const getUserAddresses = async (token) => {
+    const response = await api.get('/auth/addresses', {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    return response.data;
+}
+
+export const updateUserAddresses = async (token, addresses) => {
+    const response = await api.put('/auth/addresses', { addresses }, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    return response.data;
+}

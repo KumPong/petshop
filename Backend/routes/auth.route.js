@@ -2,7 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { login, register, getProfile, updateProfile, changePassword } from '../controllers/auth.controller.js';
+import { login, register, getProfile, updateProfile, changePassword, getAddresses, updateAddresses } from '../controllers/auth.controller.js';
 
 const router = Router();
 
@@ -43,5 +43,11 @@ router.put('/profile', updateProfile);
 
 // สำหรับเปลี่ยนรหัสผ่าน
 router.put('/change-password', changePassword);
+
+// สำหรับดึง Address (GET /api/auth/Addresses)
+router.get('/addresses', getAddresses);
+
+// สำหรับบันทึก Addresses (PUT /api/auth/Addresses)
+router.put('/addresses', updateAddresses);
 
 export default router;

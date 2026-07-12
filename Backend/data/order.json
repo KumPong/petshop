@@ -217,5 +217,78 @@
       "paymentDate": "2026-07-10T10:39:57.547Z",
       "transactionId": "TXN-1783679997547-9631"
     }
+  },
+  {
+    "orderId": "ORD-1004",
+    "orderNo": "ORD-1004",
+    "customerId": "GUEST",
+    "orderDate": "2026-07-12T08:53:42.437Z",
+    "status": "Confirmed",
+    "statusHistory": [
+      {
+        "status": "Confirmed",
+        "at": "2026-07-12T08:53:42.437Z"
+      }
+    ],
+    "courierNotes": "",
+    "flagReason": "",
+    "statusBeforeFlag": null,
+    "subtotal": 3825,
+    "shippingAmount": 0,
+    "taxAmount": 267.75,
+    "totalAmount": 4092.75,
+    "items": [
+      {
+        "orderItemId": "OI-PD-002-1783846422436",
+        "productId": "PD-002",
+        "name": "Oak & Harvest: เนื้อวัวออร์แกนิกและข้าว",
+        "quantity": 3,
+        "unitPrice": 950,
+        "subTotal": 2850,
+        "picked": false
+      },
+      {
+        "orderItemId": "OI-PD-005-1783846422436",
+        "productId": "PD-005",
+        "name": "Cozy Nap: เบาะนอนสัตว์เลี้ยงไซส์กลาง",
+        "quantity": 1,
+        "unitPrice": 750,
+        "subTotal": 750,
+        "picked": false
+      },
+      {
+        "orderItemId": "OI-PD-003-1783846422436",
+        "productId": "PD-003",
+        "name": "Whisker Delight: ทูน่าเนื้อแน่นในเยลลี่",
+        "quantity": 5,
+        "unitPrice": 45,
+        "subTotal": 225,
+        "picked": false
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "เจน โด",
+      "street": "67 Goon Mar Solar system",
+      "city": "Galaxy",
+      "postalCode": "10101",
+      "phone": "0981234569"
+    },
+    "shipping": {
+      "method": "standard",
+      "methodLabel": "จัดส่งมาตรฐาน",
+      "cost": 0,
+      "carrier": "Kerry Express",
+      "trackingNumber": "KER-240662602",
+      "estimatedDeliveryStart": "2026-07-15T08:53:42.437Z",
+      "estimatedDeliveryEnd": "2026-07-17T08:53:42.437Z"
+    },
+    "payment": {
+      "paymentId": "PAY-ORD-1004",
+      "method": "บัตรเครดิต",
+      "amount": 4092.75,
+      "status": "Paid",
+      "paymentDate": "2026-07-12T08:53:42.437Z",
+      "transactionId": "TXN-1783846422437-2171"
+    }
   }
 ]

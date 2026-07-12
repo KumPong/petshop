@@ -174,11 +174,23 @@ function Profile() {
         });
     };
 
-    if (loading) return <div className="min-h-screen flex justify-center items-center">กำลังโหลดข้อมูล...</div>
-    if (!profile) return <div className="min-h-screen flex justify-center items-center">ไม่พบข้อมูลผู้ใช้</div>
+    if (loading) {
+        return (
+            <div className="min-h-[70vh] flex justify-center items-center text-gray-500">
+                กำลังโหลดข้อมูล...
+            </div>
+        );
+    }
+    if (!profile) {
+        return (
+            <div className="min-h-screen flex justify-center items-center">
+                ไม่พบข้อมูลผู้ใช้
+            </div>
+        ) 
+    } 
 
     return(
-        <div className="max-w-7xl mx-auto px-4 py-4 w-full flex gap-8">
+        <div className="max-w-7xl mx-auto px-4 py-4 w-full flex gap-8 min-h-[70vh]">
             <div className="w-1/4">
                 <CustomerSidebar />
             </div>

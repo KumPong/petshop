@@ -32,10 +32,16 @@ function OrderHistory() {
         navigate('/payment', { state: { reorderItems: orderItems } });
     };
 
-    if (loading) return <div className="min-h-screen flex justify-center items-center">กำลังโหลดประวัติการสั่งซื้อ...</div>;
+    if (loading) {
+        return(
+            <div className="min-h-[70vh] flex justify-center items-center text-gray-500">
+                กำลังโหลดประวัติการสั่งซื้อ...
+            </div>
+        );
+    } 
     
     return(
-        <div className="max-w-7xl mx-auto px-4 py-4 w-full flex gap-8">
+        <div className="max-w-7xl mx-auto px-4 py-4 w-full flex gap-8 min-h-[70vh]">
             <div className="w-1/4">
                 <CustomerSidebar />
             </div>
