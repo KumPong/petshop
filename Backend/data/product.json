@@ -46,5 +46,197 @@
     "price": 65,
     "category": "ขนม",
     "status": "Active"
+  },
+  {
+    "productId": "PD-007",
+    "name": "HappyPaw: เนื้อไก่ในซอสกราวี่",
+    "description": "อาหารสุนัขชนิดเปียก • 400 กรัม",
+    "price": 85,
+    "category": "อาหารเปียก",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-008",
+    "name": "Beef & Bowl: เนื้อวัวสับในน้ำซุป",
+    "description": "อาหารสุนัขชนิดเปียก • 375 กรัม",
+    "price": 90,
+    "category": "อาหารเปียก",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-009",
+    "name": "WildBite: เนื้อแกะไร้ธัญพืช",
+    "description": "อาหารสุนัขไร้ธัญพืช • 10 ปอนด์",
+    "price": 620,
+    "category": "ไม่มีธัญพืช",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-010",
+    "name": "Barkwell: ไก่และผักสวนครัวไร้ธัญพืช",
+    "description": "สูตรไม่มีธัญพืช • 12 ปอนด์",
+    "price": 590,
+    "category": "ไม่มีธัญพืช",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-011",
+    "name": "PetStop Essential: สูตรลูกสุนัข",
+    "description": "อาหารเม็ดสำหรับลูกสุนัข • 5 ปอนด์",
+    "price": 320,
+    "category": "อาหารเม็ด",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-012",
+    "name": "PuppyStart: สูตรลูกสุนัขพันธุ์เล็ก",
+    "description": "อาหารเม็ดลูกสุนัขพันธุ์เล็ก • 3 กก.",
+    "price": 380,
+    "category": "อาหารเม็ด",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-013",
+    "name": "GoldenYears: อาหารสุนัขสูงอายุ",
+    "description": "สูตรสุนัขสูงอายุ • 8 ปอนด์",
+    "price": 430,
+    "category": "อาหารแห้ง",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-014",
+    "name": "EarthBound: ออร์แกนิกรสไก่งวง",
+    "description": "อาหารสุนัขออร์แกนิก • 5 กก.",
+    "price": 690,
+    "category": "อาหารแห้ง",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-015",
+    "name": "Purrrfect Choice: แซลมอนและทูน่า",
+    "description": "อาหารแมวชนิดแห้ง • 1.5 กก.",
+    "price": 290,
+    "category": "อาหารแห้ง",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-016",
+    "name": "Royal Feline: Adult Chicken",
+    "description": "อาหารแมวผู้ใหญ่ • 2 กก.",
+    "price": 340,
+    "category": "อาหารแห้ง",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-017",
+    "name": "MeowFeast: ปลาแซลมอนในซอสครีม",
+    "description": "อาหารแมวชนิดเปียก • 80 กรัม/ซอง",
+    "price": 38,
+    "category": "อาหารเปียก",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-018",
+    "name": "PurrSoup: ไก่หั่นชิ้นในซุป",
+    "description": "อาหารแมวชนิดเปียก • 70 กรัม/ซอง",
+    "price": 35,
+    "category": "อาหารเปียก",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-019",
+    "name": "Nature's Bowl: ทูน่าไร้ธัญพืช",
+    "description": "อาหารแมวไร้ธัญพืช • 1 กก.",
+    "price": 310,
+    "category": "ไม่มีธัญพืช",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-020",
+    "name": "NatureCat: ไก่และปลาไร้ธัญพืช",
+    "description": "อาหารแมวไร้ธัญพืช • 1.5 กก.",
+    "price": 360,
+    "category": "ไม่มีธัญพืช",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-021",
+    "name": "KittenStart: อาหารเม็ดสำหรับลูกแมว",
+    "description": "อาหารเม็ดลูกแมว • 1 กก.",
+    "price": 260,
+    "category": "อาหารเม็ด",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-022",
+    "name": "SilverPaw: อาหารแมวสูงอายุ",
+    "description": "สูตรแมวสูงอายุ • 1.5 กก.",
+    "price": 320,
+    "category": "อาหารแห้ง",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-023",
+    "name": "OrganicMeow: อาหารแมวออร์แกนิกรสทูน่า",
+    "description": "อาหารแมวออร์แกนิก • 1 กก.",
+    "price": 420,
+    "category": "อาหารแห้ง",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-024",
+    "name": "แปรงขนไม้ไผ่",
+    "description": "อุปกรณ์ดูแลขน",
+    "price": 12,
+    "category": "ของใช้ดูแลขน",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-025",
+    "name": "ขนมทูน่าโฮมเมด",
+    "description": "ขนมสัตว์เลี้ยง",
+    "price": 8.5,
+    "category": "ขนม",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-026",
+    "name": "ของเล่นหนูแคทนิป",
+    "description": "ของเล่นแมว",
+    "price": 3.5,
+    "category": "ของเล่น",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-027",
+    "name": "สายจูงสุนัขสะท้อนแสง",
+    "description": "อุปกรณ์เสริม",
+    "price": 9,
+    "category": "อุปกรณ์เสริม",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-028",
+    "name": "ชามอาหารเซรามิก",
+    "description": "อุปกรณ์เสริม",
+    "price": 11.5,
+    "category": "อุปกรณ์เสริม",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-029",
+    "name": "เบาะนอนออร์โธปิดิกส์ทรงคลาวด์ (ไซส์ M)",
+    "description": "เบาะนอนสัตว์เลี้ยง",
+    "price": 45,
+    "category": "อุปกรณ์เสริม",
+    "status": "Active"
+  },
+  {
+    "productId": "PD-030",
+    "name": "ของเล่นเชือกฝ้ายสำหรับดึงเล่น (ไซส์ L)",
+    "description": "ของเล่นสุนัข",
+    "price": 8.2,
+    "category": "ของเล่น",
+    "status": "Active"
   }
 ]

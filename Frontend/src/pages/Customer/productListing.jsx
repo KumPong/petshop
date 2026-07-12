@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { getInventory } from '../../services/inventory.service.js'
 
 function ProductListing({ selectedSegment = 'all' }) {
   const [sort, setSort] = useState('all')
+  const [searchParams] = useSearchParams()
+  const search = searchParams.get('q') || ''
   const titleMap = {
     all: 'สินค้าทั้งหมด',
     dogs: 'สินค้าสุนัข',
@@ -18,21 +20,27 @@ function ProductListing({ selectedSegment = 'all' }) {
       <div className="container mx-auto p-4 flex gap-8">
         {/* Sidebar for Categories */}
         <aside className="w-1/4 bg-other rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-bold mb-4">{title}</h2>
+          <h2 className="text-xl font-bold mb-4">หมวดหมู่</h2>
           <nav>
-            <ul>
-              <li>
-                <Link to="/products" className="block py-2 px-4 hover:bg-secondary rounded-md transition duration-200">ทั้งหมด</Link>
-              </li>
-              <li>
-                <Link to="/products/dogs" className="block py-2 px-4 hover:bg-secondary rounded-md transition duration-200">หมา</Link>
-              </li>
-              <li>
-                <Link to="/products/cats" className="block py-2 px-4 hover:bg-secondary rounded-md transition duration-200">แมว</Link>
-              </li>
-              <li>
-                <Link to="/products/accessories" className="block py-2 px-4 hover:bg-secondary rounded-md transition duration-200">อุปกรณ์อื่นๆ</Link>
-              </li>
+            <ul className="space-y-1">
+              {[
+                { to: '/products',            segment: 'all',         label: 'ทั้งหมด' },
+                { to: '/products/dogs',       segment: 'dogs',        label: 'หมา' },
+                { to: '/products/cats',       segment: 'cats',        label: 'แมว' },
+                { to: '/products/accessories',segment: 'accessories', label: 'อุปกรณ์อื่นๆ' },
+              ].map(({ to, segment, label }) => (
+                <li key={segment}>
+                  <Link
+                    to={to}
+                    className={`block py-2 px-4 rounded-md transition duration-200 font-medium
+                      ${selectedSegment === segment
+                        ? 'bg-primary text-white'
+                        : 'hover:bg-secondary text-gray-700'}`}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
         </aside>
@@ -55,7 +63,7 @@ function ProductListing({ selectedSegment = 'all' }) {
 
           {/* Product Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <InventoryGrid sort={sort} selectedSegment={selectedSegment} />
+            <InventoryGrid sort={sort} selectedSegment={selectedSegment} search={search} />
           </div>
         </main>
       </div>
@@ -64,7 +72,7 @@ function ProductListing({ selectedSegment = 'all' }) {
 }
 
 
-function InventoryGrid({ sort, selectedSegment }) {
+function InventoryGrid({ sort, selectedSegment, search }) {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -88,19 +96,28 @@ function InventoryGrid({ sort, selectedSegment }) {
     return () => { canceled = true }
   }, [])
 
-  // reset page when sort changes
+  // reset page when sort/segment/search changes
   useEffect(() => {
     setPage(1)
-  }, [sort, selectedSegment])
+  }, [sort, selectedSegment, search])
 
-  const filteredItems = selectedSegment === 'all'
+  const segmentFiltered = selectedSegment === 'all'
     ? items
     : items.filter((item) => item['id-type'] === selectedSegment)
+
+  const q = search.trim().toLowerCase()
+  const filteredItems = q
+    ? segmentFiltered.filter((item) =>
+        (item.name || '').toLowerCase().includes(q) ||
+        (item.subtitle || '').toLowerCase().includes(q) ||
+        (item.category || '').toLowerCase().includes(q)
+      )
+    : segmentFiltered
 
   if (loading) return <div className="col-span-full p-6">กำลังโหลดข้อมูลสินค้า...</div>
   if (error) return <div className="col-span-full p-6 text-red-600">{error}</div>
 
-  // apply sorting
+  // apply sorting — Best Seller items always first, then apply chosen sort within each group
   let sorted = [...filteredItems]
   if (sort === 'price-asc') {
     sorted.sort((a, b) => (a.unitCost ?? a.price ?? 0) - (b.unitCost ?? b.price ?? 0))
@@ -109,6 +126,7 @@ function InventoryGrid({ sort, selectedSegment }) {
   } else if (sort === 'name-asc') {
     sorted.sort((a, b) => ('' + (a.name || '')).localeCompare('' + (b.name || ''), undefined, { sensitivity: 'base' }))
   }
+  sorted.sort((a, b) => (b.bestSeller ? 1 : 0) - (a.bestSeller ? 1 : 0))
 
   const totalPages = Math.max(1, Math.ceil(sorted.length / ITEMS_PER_PAGE))
   const start = (page - 1) * ITEMS_PER_PAGE
@@ -126,14 +144,13 @@ function InventoryGrid({ sort, selectedSegment }) {
         <Link key={p.id} to={`/products/${p.id}`} className="block bg-white rounded-lg shadow-md overflow-hidden">
           <div className="relative">
             <img src={p.image || 'https://via.placeholder.com/400x300?text=Product+Image'} alt={p.name} className="w-full h-48 object-cover" />
-            <span className="absolute top-2 right-2 bg-primary text-white text-xs font-semibold px-3 py-1 rounded-full">favorite</span>
+            {p.bestSeller && (
+              <span className="absolute top-2 right-2 bg-primary text-white text-xs font-semibold px-3 py-1 rounded-full">Best Seller</span>
+            )}
           </div>
           <div className="p-4">
             <h3 className="text-lg font-semibold mb-1">{p.name}</h3>
             <p className="text-gray-700 text-sm mb-2">{p.subtitle || p.description || ''}</p>
-            <div className="flex items-center text-sm text-gray-500 mb-3">
-              <span className="text-yellow-500">★★★★☆</span>
-            </div>
             <div className="flex justify-between items-center">
               <span className="text-xl font-bold text-green-700">{p.unitCost ? `$${p.unitCost}` : (p.price ? `$${p.price}` : 'ราคาไม่ระบุ')}</span>
               <button aria-label="Add to cart" className="bg-primary hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 flex items-center gap-2">
