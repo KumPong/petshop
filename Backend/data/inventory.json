@@ -3,327 +3,324 @@
     "id": "DG-DRY-001",
     "sku": "DG-DRY-001",
     "productId": "PD-001",
-    "name": "Nomad Kitchen: แซลมอนและมันหวาน",
-    "subtitle": "อาหารสุนัขชนิดแห้ง • 12 ปอนด์",
-    "unitLabel": "1 ถุง บรรจุ 12 ปอนด์",
+    "name": "Royal Canin Mini Adult",
+    "subtitle": "อาหารสุนัขชนิดแห้ง • 2 กก.",
+    "unitLabel": "1 ถุง บรรจุ 2 กก.",
     "category": "อาหารแห้ง",
     "supplier": "Wholesome Pet Foods",
     "stock": 65,
     "threshold": 20,
-    "unitCost": 480,
+    "unitCost": 800,
     "lastUpdated": "2026-07-06T16:28:47.368Z",
     "bestSeller": true,
     "id-type": "dogs",
     "specifications": {
-      "brand": "Nomad Pet Foods",
-      "ingredients": "แซลมอน ข้าว มันหวาน",
+      "brand": "Royal Canin",
+      "ingredients": "Chicken",
       "type": "อาหารแห้ง",
-      "size": "12 ปอนด์",
-      "proteinContent": "25%"
+      "size": "2 กก.",
+      "proteinContent": "27%"
     },
+    "image": "https://www.feedmeplease.com/images/pdimg/24/1.webp",
     "careInstructions": [
-      "ให้อาหารตามคำแนะนำบนถุง",
-      "หลีกเลี่ยงความชื้นและแสงแดด",
-      "เก็บไว้ในที่เย็นอบแห้ง",
-      "หลังเปิดถุง ใช้ให้หมดภายใน 30 วัน"
+      "เก็บในที่แห้ง"
     ]
   },
   {
     "id": "DG-DRY-002",
     "sku": "DG-DRY-002",
     "productId": "PD-002",
-    "name": "Oak & Harvest: เนื้อวัวออร์แกนิกและข้าว",
-    "subtitle": "อาหารแห้งพรีเมียม • 12 ปอนด์",
-    "unitLabel": "1 ถุง บรรจุ 12 ปอนด์",
+    "name": "Hill's Adult Lamb & Rice",
+    "subtitle": "อาหารสุนัขชนิดแห้ง • 2 กก.",
+    "unitLabel": "1 ถุง บรรจุ 2 กก.",
     "category": "อาหารแห้ง",
     "supplier": "Wholesome Pet Foods",
     "stock": 40,
     "threshold": 20,
-    "unitCost": 550,
+    "unitCost": 1000,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
-      "brand": "Oak & Harvest",
-      "ingredients": "เนื้อวัว ข้าว ผัก",
+      "brand": "Hill's",
+      "ingredients": "Lamb",
       "type": "อาหารแห้ง",
-      "size": "12 ปอนด์",
-      "proteinContent": "28%"
+      "size": "2 กก.",
+      "proteinContent": "24%"
     },
+    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYZmd8hsmQ0eoAfVWmIcUaTLWafyGQV-tEVecotk39_w&s",
     "careInstructions": [
-      "ให้อาหารตามอายุและน้ำหนักสุนัข",
-      "ให้น้ำสะอาดตลอดเวลา",
-      "เก็บในที่อบแห้ง"
+      "ปิดภาชนะให้สนิท"
     ]
   },
   {
     "id": "DG-WET-001",
     "sku": "DG-WET-001",
     "productId": "PD-007",
-    "name": "HappyPaw: เนื้อไก่ในซอสกราวี่",
-    "subtitle": "อาหารสุนัขชนิดเปียก • 400 กรัม",
-    "unitLabel": "1 กระป๋อง 400 กรัม",
+    "name": "Royal Canin Puppy Loaf",
+    "subtitle": "อาหารสุนัขชนิดเปียก • 85 กรัม/ซอง",
+    "unitLabel": "1 แพ็ก บรรจุ 24 ซอง",
     "category": "อาหารเปียก",
     "supplier": "Pawsome Suppliers Co.",
     "stock": 80,
     "threshold": 25,
-    "unitCost": 85,
+    "unitCost": 50,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "bestSeller": true,
     "id-type": "dogs",
     "specifications": {
-      "brand": "HappyPaw",
-      "ingredients": "เนื้อไก่ แครอท มันฝรั่ง",
+      "brand": "Royal Canin",
+      "ingredients": "Chicken",
       "type": "อาหารเปียก",
-      "size": "400 กรัม",
-      "proteinContent": "18%"
+      "size": "85 กรัม/ซอง",
+      "proteinContent": "10%"
     },
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpyyswhwiMHYEEO4RlU2NFJyyEIFIbCj99OiTWTP0f3flYbJjBvz0hrSc&s=10",
     "careInstructions": [
-      "เปิดแล้วใช้ให้หมดภายใน 24 ชั่วโมง",
-      "เก็บส่วนที่เหลือในตู้เย็น",
-      "ให้ในอุณหภูมิห้อง"
+      "แช่เย็นหลังเปิด"
     ]
   },
   {
     "id": "DG-WET-002",
     "sku": "DG-WET-002",
     "productId": "PD-008",
-    "name": "Beef & Bowl: เนื้อวัวสับในน้ำซุป",
-    "subtitle": "อาหารสุนัขชนิดเปียก • 375 กรัม",
-    "unitLabel": "1 กระป๋อง 375 กรัม",
+    "name": "Pedigree Beef Pouch",
+    "subtitle": "อาหารสุนัขชนิดเปียก • 130 กรัม/ซอง",
+    "unitLabel": "1 แพ็ก บรรจุ 12 ซอง",
     "category": "อาหารเปียก",
     "supplier": "Eco-Pet Exports",
     "stock": 55,
     "threshold": 20,
-    "unitCost": 90,
+    "unitCost": 35,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
-      "brand": "Beef & Bowl",
-      "ingredients": "เนื้อวัว น้ำซุปกระดูก ผัก",
+      "brand": "Pedigree",
+      "ingredients": "Beef",
       "type": "อาหารเปียก",
-      "size": "375 กรัม",
-      "proteinContent": "20%"
+      "size": "130 กรัม/ซอง",
+      "proteinContent": "8%"
     },
+    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtIFjtca-esO7TKcQGwrZ_0XkywX5ciinOaJ8MpPf0Lyj_YAry0viO5dI&s=10",
     "careInstructions": [
-      "เปิดแล้วใช้ให้หมดภายใน 24 ชั่วโมง",
-      "เก็บส่วนที่เหลือในตู้เย็น"
+      "ใช้ทันทีหลังเปิด"
     ]
   },
   {
     "id": "DG-GRF-001",
     "sku": "DG-GRF-001",
     "productId": "PD-009",
-    "name": "WildBite: เนื้อแกะไร้ธัญพืช",
-    "subtitle": "อาหารสุนัขไร้ธัญพืช • 10 ปอนด์",
-    "unitLabel": "1 ถุง บรรจุ 10 ปอนด์",
-    "category": "ไม่มีธัญพืช",
+    "name": "Orijen Original Dog",
+    "subtitle": "อาหารสุนัขชนิดแห้ง • 2 กก.",
+    "unitLabel": "1 ถุง บรรจุ 2 กก.",
+    "category": "อาหารแห้ง",
     "supplier": "Eco-Pet Exports",
     "stock": 30,
     "threshold": 15,
-    "unitCost": 620,
+    "unitCost": 1700,
     "lastUpdated": "2026-07-05T07:07:32.335Z",
     "id-type": "dogs",
     "specifications": {
-      "brand": "WildBite",
-      "ingredients": "เนื้อแกะ มันเทศ ถั่วลันเตา",
-      "type": "ไม่มีธัญพืช",
-      "size": "10 ปอนด์",
-      "proteinContent": "30%"
+      "brand": "Orijen",
+      "ingredients": "Chicken, Turkey",
+      "type": "อาหารแห้ง",
+      "size": "2 กก.",
+      "proteinContent": "38%"
     },
+    "image":"https://tailybuddy.com/products/3375/2kg.jpg",
     "careInstructions": [
-      "เก็บในที่เย็นอบแห้ง",
-      "ปิดถุงให้แน่นหลังใช้งาน"
+      "เก็บในที่แห้ง"
     ]
   },
   {
     "id": "DG-GRF-002",
     "sku": "DG-GRF-002",
     "productId": "PD-010",
-    "name": "Barkwell: ไก่และผักสวนครัวไร้ธัญพืช",
-    "subtitle": "สูตรไม่มีธัญพืช • 12 ปอนด์",
-    "unitLabel": "1 ถุง บรรจุ 12 ปอนด์",
-    "category": "ไม่มีธัญพืช",
+    "name": "SmartHeart Adult Beef",
+    "subtitle": "อาหารสุนัขชนิดแห้ง • 3 กก.",
+    "unitLabel": "1 ถุง บรรจุ 3 กก.",
+    "category": "อาหารแห้ง",
     "supplier": "Eco-Pet Exports",
     "stock": 15,
     "threshold": 15,
-    "unitCost": 590,
+    "unitCost": 300,
     "lastUpdated": "2026-07-05T07:07:32.335Z",
     "bestSeller": true,
     "id-type": "dogs",
     "specifications": {
-      "brand": "Barkwell",
-      "ingredients": "ไก่ บรอกโคลี แครอท มันหวาน",
-      "type": "ไม่มีธัญพืช",
-      "size": "12 ปอนด์",
-      "proteinContent": "26%"
+      "brand": "SmartHeart",
+      "ingredients": "Beef",
+      "type": "อาหารแห้ง",
+      "size": "3 กก.",
+      "proteinContent": "24%"
     },
+    "image":"https://cdn.shopify.com/s/files/1/0386/4113/9843/files/10265290-SmartHeart-Adult-Roast-Beef-3kg_d_480x480.jpg?v=1601291702",
     "careInstructions": [
-      "เก็บในที่เย็นอบแห้ง",
-      "หลังเปิดถุง ใช้ให้หมดภายใน 30 วัน"
+      "ปิดถุงหลังใช้"
     ]
   },
   {
     "id": "DG-PUP-001",
     "sku": "DG-PUP-001",
     "productId": "PD-011",
-    "name": "PetStop Essential: สูตรลูกสุนัข",
-    "subtitle": "อาหารเม็ดสำหรับลูกสุนัข • 5 ปอนด์",
-    "unitLabel": "1 ถุง บรรจุ 5 ปอนด์",
-    "category": "อาหารเม็ด",
+    "name": "Cesar Chicken",
+    "subtitle": "อาหารสุนัขชนิดเปียก • 100 กรัม/ถาด",
+    "unitLabel": "1 แพ็ก บรรจุ 12 ถาด",
+    "category": "อาหารเปียก",
     "supplier": "Pawsome Suppliers Co.",
     "stock": 70,
     "threshold": 30,
-    "unitCost": 320,
+    "unitCost": 50,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
-      "brand": "PetStop",
-      "ingredients": "ไก่ ข้าว DHA",
-      "type": "อาหารเม็ดลูกสุนัข",
-      "size": "5 ปอนด์",
-      "proteinContent": "28%"
+      "brand": "Cesar",
+      "ingredients": "Chicken",
+      "type": "อาหารเปียก",
+      "size": "100 กรัม/ถาด",
+      "proteinContent": "8%"
     },
+    "image":"https://tailybuddy.com/products/570/%E0%B8%A3%E0%B8%AA%E0%B9%80%E0%B8%99%E0%B8%B7%E0%B9%89%E0%B8%AD%E0%B9%84%E0%B8%81%E0%B9%88.jpg",
     "careInstructions": [
-      "เหมาะสำหรับลูกสุนัขอายุ 2-12 เดือน",
-      "เก็บในที่เย็นอบแห้ง"
+      "แช่เย็นหลังเปิด"
     ]
   },
   {
     "id": "DG-PUP-002",
     "sku": "DG-PUP-002",
     "productId": "PD-012",
-    "name": "PuppyStart: สูตรลูกสุนัขพันธุ์เล็ก",
-    "subtitle": "อาหารเม็ดลูกสุนัขพันธุ์เล็ก • 3 กก.",
-    "unitLabel": "1 ถุง บรรจุ 3 กก.",
-    "category": "อาหารเม็ด",
+    "name": "Purina Pro Plan Sensitive Skin",
+    "subtitle": "อาหารสุนัขชนิดแห้ง • 2.5 กก.",
+    "unitLabel": "1 ถุง บรรจุ 2.5 กก.",
+    "category": "อาหารแห้ง",
     "supplier": "Wholesome Pet Foods",
     "stock": 45,
     "threshold": 20,
-    "unitCost": 380,
+    "unitCost": 1200,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
-      "brand": "PuppyStart",
-      "ingredients": "ไก่ นม DHA โอเมก้า-3",
-      "type": "อาหารเม็ดลูกสุนัขพันธุ์เล็ก",
-      "size": "3 กก.",
-      "proteinContent": "30%"
+      "brand": "Purina",
+      "ingredients": "Salmon",
+      "type": "อาหารแห้ง",
+      "size": "2.5 กก.",
+      "proteinContent": "29%"
     },
+    "image":"https://m.media-amazon.com/images/I/81m2MULtxgL._AC_UF350,350_QL80_.jpg",
     "careInstructions": [
-      "เหมาะสำหรับลูกสุนัขพันธุ์เล็กอายุต่ำกว่า 1 ปี",
-      "ให้วันละ 3-4 มื้อ"
+      "เก็บในภาชนะปิด"
     ]
   },
   {
     "id": "DG-SEN-001",
     "sku": "DG-SEN-001",
     "productId": "PD-013",
-    "name": "GoldenYears: อาหารสุนัขสูงอายุ",
-    "subtitle": "สูตรสุนัขสูงอายุ • 8 ปอนด์",
-    "unitLabel": "1 ถุง บรรจุ 8 ปอนด์",
+    "name": "Taste of the Wild High Prairie",
+    "subtitle": "อาหารสุนัขชนิดแห้ง • 2 กก.",
+    "unitLabel": "1 ถุง บรรจุ 2 กก.",
     "category": "อาหารแห้ง",
     "supplier": "Wholesome Pet Foods",
     "stock": 25,
     "threshold": 10,
-    "unitCost": 430,
+    "unitCost": 1400,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
-      "brand": "GoldenYears",
-      "ingredients": "ไก่ ข้าว กลูโคซามีน โอเมก้า-3",
-      "type": "อาหารสุนัขสูงอายุ",
-      "size": "8 ปอนด์",
-      "proteinContent": "22%"
+      "brand": "Taste of the Wild",
+      "ingredients": "Bison",
+      "type": "อาหารแห้ง",
+      "size": "2 กก.",
+      "proteinContent": "32%"
     },
+    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB_gwtSiJABZqqeudp0jTa7XyCmvyfrtHMcp4AX8HQNFdK-rQcIX43avKy&s=10",
     "careInstructions": [
-      "เหมาะสำหรับสุนัขอายุ 7 ปีขึ้นไป",
-      "ปรึกษาสัตวแพทย์เกี่ยวกับปริมาณที่เหมาะสม"
+      "เก็บในที่แห้ง"
     ]
   },
   {
     "id": "DG-ORG-001",
     "sku": "DG-ORG-001",
     "productId": "PD-014",
-    "name": "EarthBound: ออร์แกนิกรสไก่งวง",
-    "subtitle": "อาหารสุนัขออร์แกนิก • 5 กก.",
-    "unitLabel": "1 ถุง บรรจุ 5 กก.",
+    "name": "IAMS Adult Chicken",
+    "subtitle": "อาหารสุนัขชนิดแห้ง • 3 กก.",
+    "unitLabel": "1 ถุง บรรจุ 3 กก.",
     "category": "อาหารแห้ง",
     "supplier": "Wholesome Pet Foods",
     "stock": 20,
     "threshold": 10,
-    "unitCost": 690,
+    "unitCost": 800,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
-      "brand": "EarthBound",
-      "ingredients": "ไก่งวงออร์แกนิก ควินัว ผักโขม",
-      "type": "ออร์แกนิก",
-      "size": "5 กก.",
-      "proteinContent": "27%"
+      "brand": "IAMS",
+      "ingredients": "Chicken",
+      "type": "อาหารแห้ง",
+      "size": "3 กก.",
+      "proteinContent": "25%"
     },
+    "image":"https://www.petloverscentre.com/Admin/Public/Getimage.ashx?width=300&&format=webp&image=/Files/Images/Ecom/Products/70970.jpg",
     "careInstructions": [
-      "เก็บในที่เย็นอบแห้ง",
-      "หลีกเลี่ยงความชื้น"
+      "ปิดถุงให้สนิท"
     ]
   },
   {
     "id": "CT-DRY-001",
     "sku": "CT-DRY-001",
     "productId": "PD-015",
-    "name": "Purrrfect Choice: แซลมอนและทูน่า",
-    "subtitle": "อาหารแมวชนิดแห้ง • 1.5 กก.",
-    "unitLabel": "1 ถุง บรรจุ 1.5 กก.",
+    "name": "Royal Canin Indoor",
+    "subtitle": "อาหารแมวชนิดแห้ง • 2 กก.",
+    "unitLabel": "1 ถุง บรรจุ 2 กก.",
     "category": "อาหารแห้ง",
     "supplier": "Purrfect Suppliers",
     "stock": 48,
     "threshold": 15,
-    "unitCost": 290,
+    "unitCost": 1000,
     "lastUpdated": "2026-07-06T09:00:00.000Z",
     "bestSeller": true,
     "id-type": "cats",
     "specifications": {
-      "brand": "Purrrfect Choice",
-      "ingredients": "แซลมอน ทูน่า ข้าว",
+      "brand": "Royal Canin",
+      "ingredients": "Chicken, Rice",
       "type": "อาหารแห้ง",
-      "size": "1.5 กก.",
-      "proteinContent": "32%"
+      "size": "2 กก.",
+      "proteinContent": "27%"
     },
+    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3nHujcKPeMCPcvaMMTkhTWFCMOIDD0kGGEYspObhB5oM4RnpxbauAGu4T&s=10",
     "careInstructions": [
-      "เก็บในที่เย็นอบแห้ง",
-      "ปิดถุงให้แน่นหลังใช้งาน"
+      "ปิดถุงให้สนิท",
+      "เก็บในที่แห้ง"
     ]
   },
   {
     "id": "CT-DRY-002",
     "sku": "CT-DRY-002",
     "productId": "PD-016",
-    "name": "Royal Feline: Adult Chicken",
-    "subtitle": "อาหารแมวผู้ใหญ่ • 2 กก.",
-    "unitLabel": "1 ถุง บรรจุ 2 กก.",
+    "name": "Hill's Science Diet Adult Chicken",
+    "subtitle": "อาหารแมวชนิดแห้ง • 1.5 กก.",
+    "unitLabel": "1 ถุง บรรจุ 1.5 กก.",
     "category": "อาหารแห้ง",
     "supplier": "Royal Pet Foods",
     "stock": 35,
     "threshold": 15,
-    "unitCost": 340,
+    "unitCost": 900,
     "lastUpdated": "2026-07-06T09:05:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "Royal Feline",
-      "ingredients": "เนื้อไก่ ข้าว วิตามินรวม",
+      "brand": "Hill's",
+      "ingredients": "Chicken Meal",
       "type": "อาหารแห้ง",
-      "size": "2 กก.",
-      "proteinContent": "30%"
+      "size": "1.5 กก.",
+      "proteinContent": "32%"
     },
+    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkQvGCVtxHmvw7YZLAZQNTEI0M-mPI_iJ9fM0fDKkn_23dk0GMvLJwrbPG&s=10",
     "careInstructions": [
-      "เก็บในที่เย็นอบแห้ง",
-      "ให้น้ำสะอาดตลอดเวลา"
+      "เก็บในภาชนะปิดสนิท"
     ]
   },
   {
     "id": "CT-WET-001",
     "sku": "CT-WET-001",
     "productId": "PD-003",
-    "name": "Whisker Delight: ทูน่าเนื้อแน่นในเยลลี่",
+    "name": "Royal Canin Kitten Loaf",
     "subtitle": "อาหารแมวชนิดเปียก • 85 กรัม/ซอง",
     "unitLabel": "1 แพ็ก บรรจุ 24 ซอง",
     "category": "อาหารเปียก",
@@ -335,390 +332,389 @@
     "bestSeller": true,
     "id-type": "cats",
     "specifications": {
-      "brand": "Whisker Delight",
-      "ingredients": "ทูน่า เยลลี่",
+      "brand": "Royal Canin",
+      "ingredients": "Chicken, Pork",
       "type": "อาหารเปียก",
       "size": "85 กรัม/ซอง",
       "quantity": "24 ซอง"
     },
+    "image":"https://www.petloverscentre.co.th/Admin/Public/Getimage.ashx?width=300&height=300&compression=60&Crop=5&image=/Files/Images/Ecom/Products/23871.jpg",
     "careInstructions": [
-      "ให้ในอุณหภูมิห้อง",
-      "เปิดแล้วให้ใช้ภายใน 24 ชั่วโมง",
-      "เก็บเศษอาหารที่เหลือในตู้เย็น"
+      "แช่เย็นหลังเปิด"
     ]
   },
   {
     "id": "CT-WET-002",
     "sku": "CT-WET-002",
     "productId": "PD-017",
-    "name": "MeowFeast: ปลาแซลมอนในซอสครีม",
-    "subtitle": "อาหารแมวชนิดเปียก • 80 กรัม/ซอง",
+    "name": "Hill's Tender Ocean Fish",
+    "subtitle": "อาหารแมวชนิดเปียก • 82 กรัม/ซอง",
     "unitLabel": "1 แพ็ก บรรจุ 12 ซอง",
     "category": "อาหารเปียก",
     "supplier": "Purrfect Suppliers",
     "stock": 50,
     "threshold": 20,
-    "unitCost": 38,
+    "unitCost": 80,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "MeowFeast",
-      "ingredients": "ปลาแซลมอน ครีม",
+      "brand": "Hill's",
+      "ingredients": "Ocean Fish",
       "type": "อาหารเปียก",
-      "size": "80 กรัม/ซอง",
+      "size": "82 กรัม/ซอง",
       "quantity": "12 ซอง"
     },
+    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDhpC0DluV4tICDGbcsOUmX9FxADDn_IgLQUp3-YlVs9PkWpYRj7XDVRlS&s=10",
     "careInstructions": [
-      "ให้ในอุณหภูมิห้อง",
-      "เปิดแล้วใช้ภายใน 24 ชั่วโมง"
+      "ใช้ภายใน 24 ชม. หลังเปิด"
     ]
   },
   {
     "id": "CT-WET-003",
     "sku": "CT-WET-003",
     "productId": "PD-018",
-    "name": "PurrSoup: ไก่หั่นชิ้นในซุป",
-    "subtitle": "อาหารแมวชนิดเปียก • 70 กรัม/ซอง",
+    "name": "Me-O Tuna",
+    "subtitle": "อาหารแมวชนิดเปียก • 80 กรัม/ซอง",
     "unitLabel": "1 แพ็ก บรรจุ 12 ซอง",
     "category": "อาหารเปียก",
     "supplier": "Pawsome Suppliers Co.",
     "stock": 42,
     "threshold": 15,
-    "unitCost": 35,
+    "unitCost": 18,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "PurrSoup",
-      "ingredients": "ไก่ น้ำซุป แครอท",
+      "brand": "Me-O",
+      "ingredients": "Tuna",
       "type": "อาหารเปียก",
-      "size": "70 กรัม/ซอง",
+      "size": "80 กรัม/ซอง",
       "quantity": "12 ซอง"
     },
+    "image":"https://media.allonline.7eleven.co.th/pdmain/350948-01-allonline-sm-new1.jpg",
     "careInstructions": [
-      "ให้ในอุณหภูมิห้อง",
-      "เก็บส่วนที่เหลือในตู้เย็น"
+      "แช่เย็นหลังเปิด"
     ]
   },
   {
     "id": "CT-GRF-001",
     "sku": "CT-GRF-001",
     "productId": "PD-019",
-    "name": "Nature's Bowl: ทูน่าไร้ธัญพืช",
-    "subtitle": "อาหารแมวไร้ธัญพืช • 1 กก.",
-    "unitLabel": "1 ถุง บรรจุ 1 กก.",
-    "category": "ไม่มีธัญพืช",
+    "name": "Orijen Cat & Kitten",
+    "subtitle": "อาหารแมวชนิดแห้ง • 1.8 กก.",
+    "unitLabel": "1 ถุง บรรจุ 1.8 กก.",
+    "category": "อาหารแห้ง",
     "supplier": "Nature's Pet Co.",
     "stock": 28,
     "threshold": 10,
-    "unitCost": 310,
+    "unitCost": 1800,
     "lastUpdated": "2026-07-06T09:10:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "Nature's Bowl",
-      "ingredients": "ทูน่า มันเทศ ถั่วลันเตา",
-      "type": "ไม่มีธัญพืช",
-      "size": "1 กก.",
-      "proteinContent": "34%"
+      "brand": "Orijen",
+      "ingredients": "Fresh Chicken, Turkey",
+      "type": "อาหารแห้ง",
+      "size": "1.8 กก.",
+      "proteinContent": "40%"
     },
+    "image":"https://www.feedmeplease.com/images/pdimg/2091/1.webp",
     "careInstructions": [
-      "เก็บในที่เย็นอบแห้ง",
-      "ปิดถุงให้แน่นหลังใช้งาน"
+      "เก็บในที่แห้ง"
     ]
   },
   {
     "id": "CT-GRF-002",
     "sku": "CT-GRF-002",
     "productId": "PD-020",
-    "name": "NatureCat: ไก่และปลาไร้ธัญพืช",
-    "subtitle": "อาหารแมวไร้ธัญพืช • 1.5 กก.",
-    "unitLabel": "1 ถุง บรรจุ 1.5 กก.",
-    "category": "ไม่มีธัญพืช",
+    "name": "Me-O Adult Seafood",
+    "subtitle": "อาหารแมวชนิดแห้ง • 1.2 กก.",
+    "unitLabel": "1 ถุง บรรจุ 1.2 กก.",
+    "category": "อาหารแห้ง",
     "supplier": "Nature's Pet Co.",
     "stock": 18,
     "threshold": 10,
-    "unitCost": 360,
+    "unitCost": 300,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "NatureCat",
-      "ingredients": "ไก่ ปลาขาว มันเทศ",
-      "type": "ไม่มีธัญพืช",
-      "size": "1.5 กก.",
-      "proteinContent": "36%"
+      "brand": "Me-O",
+      "ingredients": "Fish Meal",
+      "type": "อาหารแห้ง",
+      "size": "1.2 กก.",
+      "proteinContent": "30%"
     },
+    "image":"https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/52/88/8850477056152/8850477056152_1-20260609141213-.jpg",
     "careInstructions": [
-      "เก็บในที่เย็นอบแห้ง",
-      "หลีกเลี่ยงความชื้น"
+      "ปิดซิปถุง"
     ]
   },
   {
     "id": "CT-KIT-001",
     "sku": "CT-KIT-001",
     "productId": "PD-021",
-    "name": "KittenStart: อาหารเม็ดสำหรับลูกแมว",
-    "subtitle": "อาหารเม็ดลูกแมว • 1 กก.",
-    "unitLabel": "1 ถุง บรรจุ 1 กก.",
-    "category": "อาหารเม็ด",
+    "name": "Purina ONE Indoor",
+    "subtitle": "อาหารแมวชนิดแห้ง • 1.4 กก.",
+    "unitLabel": "1 ถุง บรรจุ 1.4 กก.",
+    "category": "อาหารแห้ง",
     "supplier": "Purrfect Suppliers",
     "stock": 55,
     "threshold": 20,
-    "unitCost": 260,
+    "unitCost": 500,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "KittenStart",
-      "ingredients": "ไก่ นม DHA โอเมก้า-3",
-      "type": "อาหารเม็ดลูกแมว",
-      "size": "1 กก.",
-      "proteinContent": "35%"
+      "brand": "Purina",
+      "ingredients": "Chicken",
+      "type": "อาหารแห้ง",
+      "size": "1.4 กก.",
+      "proteinContent": "34%"
     },
+    "image":"https://thonglorpetshop.com/wp-content/uploads/2025/04/8850127004847_C1L2_AOA.jpg",
     "careInstructions": [
-      "เหมาะสำหรับลูกแมวอายุ 2-12 เดือน",
-      "ให้วันละ 3-4 มื้อ"
+      "เก็บให้พ้นความชื้น"
     ]
   },
   {
     "id": "CT-SEN-001",
     "sku": "CT-SEN-001",
     "productId": "PD-022",
-    "name": "SilverPaw: อาหารแมวสูงอายุ",
-    "subtitle": "สูตรแมวสูงอายุ • 1.5 กก.",
-    "unitLabel": "1 ถุง บรรจุ 1.5 กก.",
-    "category": "อาหารแห้ง",
+    "name": "Fancy Feast Grilled Tuna",
+    "subtitle": "อาหารแมวชนิดเปียก • 85 กรัม/กระป๋อง",
+    "unitLabel": "1 แพ็ก บรรจุ 12 กระป๋อง",
+    "category": "อาหารเปียก",
     "supplier": "Royal Pet Foods",
     "stock": 22,
     "threshold": 10,
-    "unitCost": 320,
+    "unitCost": 40,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "SilverPaw",
-      "ingredients": "ไก่ ข้าว กลูโคซามีน วิตามิน E",
-      "type": "อาหารสูงอายุ",
-      "size": "1.5 กก.",
-      "proteinContent": "28%"
+      "brand": "Fancy Feast",
+      "ingredients": "Tuna",
+      "type": "อาหารเปียก",
+      "size": "85 กรัม/กระป๋อง",
+      "proteinContent": "12%"
     },
+    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRe4kDIVE12FyKd-CSWUmCB35w1drhV7LfML-hLRCABaA&s",
     "careInstructions": [
-      "เหมาะสำหรับแมวอายุ 7 ปีขึ้นไป",
-      "ปรึกษาสัตวแพทย์เกี่ยวกับปริมาณที่เหมาะสม"
+      "เสิร์ฟทันทีหลังเปิด"
     ]
   },
   {
     "id": "CT-ORG-001",
     "sku": "CT-ORG-001",
     "productId": "PD-023",
-    "name": "OrganicMeow: อาหารแมวออร์แกนิกรสทูน่า",
-    "subtitle": "อาหารแมวออร์แกนิก • 1 กก.",
-    "unitLabel": "1 ถุง บรรจุ 1 กก.",
+    "name": "Whiskas Ocean Fish",
+    "subtitle": "อาหารแมวชนิดแห้ง • 1.1 กก.",
+    "unitLabel": "1 ถุง บรรจุ 1.1 กก.",
     "category": "อาหารแห้ง",
     "supplier": "Nature's Pet Co.",
     "stock": 15,
     "threshold": 8,
-    "unitCost": 420,
+    "unitCost": 200,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "OrganicMeow",
-      "ingredients": "ทูน่าออร์แกนิก สาหร่าย วิตามิน",
-      "type": "ออร์แกนิก",
-      "size": "1 กก.",
-      "proteinContent": "33%"
+      "brand": "Whiskas",
+      "ingredients": "Fish",
+      "type": "อาหารแห้ง",
+      "size": "1.1 กก.",
+      "proteinContent": "30%"
     },
+    "image":"https://s20022.lnwfile.com/_b/fu/_raw/tv/mg/0h.jpg",
     "careInstructions": [
-      "เก็บในที่เย็นอบแห้ง",
-      "หลีกเลี่ยงแสงแดดโดยตรง"
+      "ปิดถุงหลังใช้งาน"
     ]
   },
   {
     "id": "PC-LSH-ADJ-004",
     "sku": "PC-LSH-ADJ-004",
     "productId": "PD-004",
-    "name": "PawComfort: เชือกจูงสุนัขปรับความยาวได้",
-    "subtitle": "อุปกรณ์เดินเล่น • ปรับความยาวได้",
+    "name": "Kong Classic",
+    "subtitle": "ของเล่นเคี้ยวสุนัข • L",
     "unitLabel": "1 ชิ้น",
-    "category": "อุปกรณ์",
+    "category": "ของเล่นเคี้ยว",
     "supplier": "Eco-Pet Exports",
     "stock": 25,
     "threshold": 10,
-    "unitCost": 180,
+    "unitCost": 500,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "bestSeller": true,
     "id-type": "accessories",
     "specifications": {
-      "brand": "PawComfort",
-      "material": "ไนลอนยืดหยุ่น",
-      "adjustable": "ความยาว 1.5 - 3 เมตร",
-      "weight": "0.3 กก.",
-      "type": "เชือกจูง",
-      "color": "ดำ ม่วง แดง"
+      "brand": "KONG",
+      "material": "ยางธรรมชาติ",
+      "adjustable": "L",
+      "weight": "ตามขนาด",
+      "type": "ของเล่นเคี้ยว",
+      "color": "Red"
     },
+    "image":"https://m.media-amazon.com/images/I/61eVAqrR7uL._AC_UF894,1000_QL80_.jpg",
     "careInstructions": [
-      "ล้างด้วยน้ำอุ่นและสบู่อ่อน",
-      "ป้องกันไม่ให้เปียกนาน",
-      "ตากแห้งอย่างสมบูรณ์",
-      "ตรวจสอบการสึกหรอเป็นประจำ",
-      "ไม่ใช้ความร้อนสูงทำความสะอาด"
+      "ล้างด้วยน้ำอุ่น"
     ]
   },
   {
     "id": "CN-BED-M-005",
     "sku": "CN-BED-M-005",
     "productId": "PD-005",
-    "name": "Cozy Nap: เบาะนอนสัตว์เลี้ยงไซส์กลาง",
-    "subtitle": "เบาะนอนสัตว์เลี้ยง • ไซส์กลาง",
+    "name": "Kong Cat Kickeroo",
+    "subtitle": "ของเล่นแมว • 30 ซม.",
     "unitLabel": "1 ชิ้น",
-    "category": "อุปกรณ์",
+    "category": "ของเล่นแมว",
     "supplier": "Pawsome Suppliers Co.",
     "stock": 16,
     "threshold": 8,
-    "unitCost": 380,
+    "unitCost": 400,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "specifications": {
-      "brand": "PetStop Luxe",
-      "material": "หน่วยความจำโฟม",
-      "base": "ยางกันลื่น กันน้ำ",
-      "size": "30x20x4 นิ้ว",
-      "weight": "4.5 ปอนด์"
+      "brand": "KONG",
+      "material": "ผ้า + Catnip",
+      "base": "ผ้าฝ้าย",
+      "size": "30 ซม.",
+      "weight": "ตามขนาด"
     },
+    "image":"https://pdsapetstore.org.uk/cdn/shop/files/kong-cat-kickeroo-giraffe-7990061.png?v=1753283398",
     "careInstructions": [
-      "ใช้ผ้าชื้นทำความสะอาดเบาๆ",
-      "อย่าแช่ในน้ำ",
-      "หลีกเลี่ยงแสงแดดโดยตรง",
-      "ตากแห้งตามธรรมชาติ"
+      "ซักมือ"
     ]
   },
   {
     "id": "FB-CAT-006",
     "sku": "FB-CAT-006",
     "productId": "PD-006",
-    "name": "FreshBite: ขนมขบเคี้ยวสำหรับแมว",
-    "subtitle": "ขนมแมวกรอบ",
-    "unitLabel": "1 ซอง",
-    "category": "ขนม",
+    "name": "Chuckit! Ultra Ball",
+    "subtitle": "ลูกบอลสุนัข • ไซส์ M",
+    "unitLabel": "1 ชิ้น",
+    "category": "ลูกบอล",
     "supplier": "Pawsome Suppliers Co.",
     "stock": 60,
     "threshold": 20,
-    "unitCost": 32,
+    "unitCost": 350,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "specifications": {
-      "brand": "FreshBite",
-      "type": "ขนมแมวกรอบ",
-      "flavor": "ปลาสลิด",
-      "weight": "100 กรัม",
-      "ingredients": "ปลาแห้ง ไก่",
-      "nutrition": "โปรตีน 35%"
+      "brand": "Chuckit!",
+      "type": "ลูกบอล",
+      "flavor": "ไม่ระบุ",
+      "weight": "ไซส์ M",
+      "ingredients": "ยาง"
     },
+    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAmS2MKvyK3Dz0UMaqgOQfRm9BJnUsd3SMfQ2-1oSVcmil4iP1Jlu9UNg&s=10",
     "careInstructions": [
-      "เก็บในที่เย็นอบแห้ง",
-      "หลีกเลี่ยงแสงแดดโดยตรง",
-      "เปิดแล้วให้ใช้ภายใน 2 สัปดาห์"
+      "ล้างน้ำสะอาด"
     ]
   },
   {
     "id": "GR-BAM-01",
     "sku": "GR-BAM-01",
     "productId": "PD-024",
-    "name": "แปรงขนไม้ไผ่",
-    "subtitle": "อุปกรณ์ดูแลขน",
-    "unitLabel": "1 เคส บรรจุ 12 ชิ้น",
-    "category": "ของใช้ดูแลขน",
+    "name": "Catit Senses Ball Track",
+    "subtitle": "ของเล่นแมว • 24 ซม.",
+    "unitLabel": "1 ชิ้น",
+    "category": "ของเล่น",
     "supplier": "Eco-Pet Exports",
     "stock": 10,
     "threshold": 10,
-    "unitCost": 12,
+    "unitCost": 1200,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
-    "id-type": "accessories"
+    "id-type": "accessories",
+    "image":"https://cdnpublic.budgetpetproducts.com.au/products_pictures/2023/08/24/96fc5a82-1236-46a8-a9d9-8b3c14f53811.jpg"
   },
   {
     "id": "TR-TUN-01",
     "sku": "TR-TUN-01",
     "productId": "PD-025",
-    "name": "ขนมทูน่าโฮมเมด",
-    "subtitle": "ขนมสัตว์เลี้ยง",
-    "unitLabel": "1 เคส บรรจุ 24 ชิ้น",
-    "category": "ขนม",
+    "name": "PetSafe Drinkwell Fountain",
+    "subtitle": "น้ำพุสัตว์เลี้ยง • 2 ลิตร",
+    "unitLabel": "1 เครื่อง",
+    "category": "น้ำพุสัตว์เลี้ยง",
     "supplier": "Pawsome Suppliers Co.",
     "stock": 2,
     "threshold": 20,
-    "unitCost": 8.5,
+    "unitCost": 2400,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
-    "id-type": "accessories"
+    "id-type": "accessories",
+    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdyWtU-KeunI6N8pEl7rm7woukzeA_9iZE0aBAo5WN9M0Mv4jbJC-g3yY&s=10"
   },
   {
     "id": "TY-CAT-04",
     "sku": "TY-CAT-04",
     "productId": "PD-026",
-    "name": "ของเล่นหนูแคทนิป",
-    "subtitle": "ของเล่นแมว",
-    "unitLabel": "1 แพ็ก บรรจุ 6 ชิ้น",
-    "category": "ของเล่น",
+    "name": "FURminator Deshedding Tool",
+    "subtitle": "แปรงขนสัตว์เลี้ยง • ไซส์ M",
+    "unitLabel": "1 ชิ้น",
+    "category": "แปรง",
     "supplier": "Pawsome Suppliers Co.",
     "stock": 34,
     "threshold": 10,
-    "unitCost": 3.5,
+    "unitCost": 1500,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
-    "id-type": "accessories"
+    "id-type": "accessories",
+    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDLCkMu0OE8aLC98eDJswu1n9z_WstwhMmPFWxFBVhSzmDKXamjxcvCMk&s=10"
   },
   {
     "id": "AC-LSH-02",
     "sku": "AC-LSH-02",
     "productId": "PD-027",
-    "name": "สายจูงสุนัขสะท้อนแสง",
-    "subtitle": "อุปกรณ์เสริม",
+    "name": "Flexi New Classic Leash",
+    "subtitle": "สายจูงสุนัข • 5 เมตร",
     "unitLabel": "1 ชิ้น",
-    "category": "อุปกรณ์เสริม",
+    "category": "สายจูง",
     "supplier": "Eco-Pet Exports",
     "stock": 20,
     "threshold": 10,
-    "unitCost": 9,
+    "unitCost": 1000,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
-    "id-type": "accessories"
+    "id-type": "accessories",
+    "image":"https://m.media-amazon.com/images/I/71hdG7p2IQL._AC_UF1000,1000_QL80_.jpg"
   },
   {
     "id": "AC-BWL-03",
     "sku": "AC-BWL-03",
     "productId": "PD-028",
-    "name": "ชามอาหารเซรามิก",
-    "subtitle": "อุปกรณ์เสริม",
+    "name": "Petkit Smart Bowl",
+    "subtitle": "ชามอาหารสัตว์เลี้ยง • 1 ลิตร",
     "unitLabel": "1 ชิ้น",
-    "category": "อุปกรณ์เสริม",
+    "category": "ชามอาหาร",
     "supplier": "Wholesome Pet Foods",
     "stock": 15,
     "threshold": 10,
-    "unitCost": 11.5,
+    "unitCost": 500,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
-    "id-type": "accessories"
+    "id-type": "accessories",
+    "image":"https://www.jib.co.th/img_master/product/original/20220127090332_50946_24_1.jpg"
   },
   {
     "id": "orthopedic-bed",
     "sku": "BD-ORT-14",
     "productId": "PD-029",
-    "name": "เบาะนอนออร์โธปิดิกส์ทรงคลาวด์ (ไซส์ M)",
-    "subtitle": "เบาะนอนสัตว์เลี้ยง",
+    "name": "Trixie Scratching Post",
+    "subtitle": "เสาลับเล็บแมว • 60 ซม.",
     "unitLabel": "1 ชิ้น",
-    "category": "อุปกรณ์เสริม",
+    "category": "เสาลับเล็บ",
     "supplier": "Pawsome Suppliers Co.",
     "stock": 12,
     "threshold": 8,
-    "unitCost": 45,
+    "unitCost": 1800,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
-    "id-type": "accessories"
+    "id-type": "accessories",
+    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr39XsN3o-sBmQtBcJGdcbtVbbNtxxGhhyqIz6VLX05-UQ4owGY6Vs0Ac&s=10"
   },
   {
     "id": "tug-toy",
     "sku": "TY-TUG-07",
     "productId": "PD-030",
-    "name": "ของเล่นเชือกฝ้ายสำหรับดึงเล่น (ไซส์ L)",
-    "subtitle": "ของเล่นสุนัข",
+    "name": "Zee.Dog Air Mesh Harness",
+    "subtitle": "สายรัดอกสุนัข • L",
     "unitLabel": "1 ชิ้น",
-    "category": "ของเล่น",
+    "category": "สายรัดอก",
     "supplier": "Eco-Pet Exports",
     "stock": 6,
     "threshold": 10,
-    "unitCost": 8.2,
+    "unitCost": 1300,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
-    "id-type": "accessories"
+    "id-type": "accessories",
+    "image":"https://tailybuddy.com/products/8979/mesh-gotham.jpg"
   }
 ]
