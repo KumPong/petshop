@@ -112,11 +112,11 @@ function ProductDetail() {
     <div className="min-h-screen bg-background text-gray-800 p-6">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 bg-white rounded-lg shadow-md p-6">
-          <img src={product.image || 'https://via.placeholder.com/800x600?text=Product'} alt={product.name} className="w-full h-96 object-cover rounded-md mb-4" />
+          <img src={product.image || 'https://via.placeholder.com/800x600?text=Product'} alt={product.name} className="w-full h-96 object-contain bg-white p-4 rounded-md mb-4" />
           <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
           <p className="text-gray-700 mb-4">{product.description || 'ไม่มีคำอธิบายสำหรับสินค้านี้'}</p>
           <div className="flex items-center gap-4 mb-8">
-            <span className="text-3xl font-extrabold text-green-700">{product.price ? `$${product.price}` : 'ราคาไม่ระบุ'}</span>
+            <span className="text-3xl font-extrabold text-green-700">{product.price ? `฿${product.price}` : 'ราคาไม่ระบุ'}</span>
             <span className="text-sm text-gray-500">(รหัสสินค้า: {product.id || id})</span>
           </div>
 

@@ -391,7 +391,7 @@ function Navbar() {
                                                 {/* ราคา และ ปุ่มลบ (ถังขยะ) */}
                                                 <div className="flex flex-col items-end justify-between h-full gap-2">
                                                     <span className="font-semibold text-green-700">
-                                                        ${(item.price * item.quantity).toFixed(2)}
+                                                        ฿{(item.price * item.quantity).toFixed(2)}
                                                     </span>
                                                     <button 
                                                         onClick={(e) => handleRemoveItem(e, itemId)}
