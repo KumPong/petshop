@@ -74,7 +74,8 @@ function App() {
         </ProtectedRoute>
       }>
         <Route index element={<ManagerDashboard />} />
-        <Route path='inventory' element={<RestockOrder />} />
+        {/* path เป็น "suppliers" ให้ตรงกับลิงก์ "Suppliers" ใน managerSidebar.jsx (เดิมเป็น "inventory" ซึ่งไม่ตรงกับ label) */}
+        <Route path='suppliers' element={<RestockOrder />} />
         <Route path='users' element={<ManageUsers />} />
         {/* ตรงกับลิงก์ "Report" ที่มีอยู่แล้วใน managerSidebar.jsx (/manager/reports) แต่ไม่เคยมี route จริงมาก่อน */}
         <Route path='reports' element={<Report />} />

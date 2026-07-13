@@ -10,8 +10,6 @@ import {
   PackageX,
   Wallet,
   Coins,
-  Printer,
-  Download,
   Tag,
 } from 'lucide-react';
 import {
@@ -57,25 +55,6 @@ function money(n) {
   return `฿${(n ?? 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-// แปลง array ของ object ธรรมดาเป็นไฟล์ CSV แล้วสั่งดาวน์โหลดทันที — ไม่ใช้ library ตามที่ตัดสินใจไว้ในแผน
-// (ใส่ BOM นำหน้ากันข้อความภาษาไทยเพี้ยนตอนเปิดด้วย Excel)
-function downloadCsv(filename, rows) {
-  if (!rows.length) return;
-  const escape = (v) => {
-    const s = String(v ?? '');
-    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-  };
-  const headers = Object.keys(rows[0]);
-  const lines = [headers.join(','), ...rows.map((r) => headers.map((h) => escape(r[h])).join(','))];
-  const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
 function EmptyState({ text }) {
   return <p className="py-10 text-center text-sm text-gray-400">{text}</p>;
 }
@@ -100,7 +79,7 @@ function TrendBadge({ trend }) {
 
 function StatCard({ icon, label, value, caption, trend, tone = 'text-gray-900' }) {
   return (
-    <div className="break-inside-avoid rounded-2xl bg-other p-6 print:bg-gray-50">
+    <div className="rounded-2xl bg-other p-6">
       <div className="mb-5 flex items-center justify-between">
         <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-gray-700">{icon}</span>
         <TrendBadge trend={trend} />
@@ -202,7 +181,7 @@ function SalesTab({ period, onPeriodChange }) {
       </div>
 
       <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 break-inside-avoid rounded-2xl bg-other p-6 shadow-sm">
+        <div className="col-span-2 rounded-2xl bg-other p-6 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
             <div>
               <h2 className="text-lg font-bold text-gray-900">แนวโน้มยอดขาย</h2>
@@ -239,7 +218,7 @@ function SalesTab({ period, onPeriodChange }) {
           )}
         </div>
 
-        <div className="break-inside-avoid rounded-2xl bg-other p-6 shadow-sm">
+        <div className="rounded-2xl bg-other p-6 shadow-sm">
           <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-gray-900">
             <Tag size={18} className="text-gray-500" />
             หมวดหมู่สินค้า
@@ -262,29 +241,8 @@ function SalesTab({ period, onPeriodChange }) {
         </div>
       </div>
 
-      <div className="break-inside-avoid rounded-2xl bg-other p-6 shadow-sm">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900">ผลงานแยกตามหมวดหมู่</h2>
-          <button
-            onClick={() =>
-              downloadCsv(
-                'sales-by-category.csv',
-                data.categoryBreakdown.map((c) => ({
-                  หมวดหมู่: c.category,
-                  จำนวนออเดอร์: c.orders,
-                  ยอดขายรวม: c.revenue,
-                  สัดส่วน: `${c.share.toFixed(1)}%`,
-                  สถานะ: c.status,
-                }))
-              )
-            }
-            disabled={data.categoryBreakdown.length === 0}
-            className="no-print flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            <Download size={14} />
-            Export CSV
-          </button>
-        </div>
+      <div className="rounded-2xl bg-other p-6 shadow-sm">
+        <h2 className="mb-4 text-lg font-bold text-gray-900">ผลงานแยกตามหมวดหมู่</h2>
         {data.categoryBreakdown.length === 0 ? (
           <EmptyState text="ยังไม่มีข้อมูลการขาย" />
         ) : (
@@ -321,7 +279,7 @@ function SalesTab({ period, onPeriodChange }) {
         )}
       </div>
 
-      <div className="break-inside-avoid rounded-2xl bg-other p-6 shadow-sm">
+      <div className="rounded-2xl bg-other p-6 shadow-sm">
         <h2 className="mb-4 text-lg font-bold text-gray-900">สินค้าขายดี{categoryFilter !== 'ทั้งหมด' && ` — ${categoryFilter}`}</h2>
         {filteredTopProducts.length === 0 ? (
           <EmptyState text="ไม่มีข้อมูลสินค้าในหมวดหมู่นี้" />
@@ -390,37 +348,17 @@ function InventoryTab() {
         />
       </div>
 
-      <div className="break-inside-avoid rounded-2xl bg-white p-6 shadow-sm">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="flex items-center gap-2 text-lg font-bold text-gray-900">
-            <AlertTriangle className="text-orange-500" size={18} />
-            สินค้าใกล้หมด / หมดสต็อก
-          </h2>
-          <button
-            onClick={() =>
-              downloadCsv(
-                'inventory-attention.csv',
-                attentionItems.map((i) => ({
-                  ชื่อสินค้า: i.name,
-                  คงเหลือ: i.stock,
-                  เกณฑ์ขั้นต่ำ: i.threshold,
-                  สถานะ: i.stock === 0 ? 'หมดสต็อก' : 'ใกล้หมด',
-                }))
-              )
-            }
-            disabled={attentionItems.length === 0}
-            className="no-print flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            <Download size={14} />
-            Export CSV
-          </button>
-        </div>
+      <div className="rounded-2xl bg-other p-6 shadow-sm">
+        <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-gray-900">
+          <AlertTriangle className="text-orange-500" size={18} />
+          สินค้าใกล้หมด / หมดสต็อก
+        </h2>
         {attentionItems.length === 0 ? (
           <EmptyState text="ไม่มีสินค้าใกล้หมดหรือหมดสต็อกตอนนี้" />
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-400">
+              <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-700">
                 <th className="py-3 font-medium">ชื่อสินค้า</th>
                 <th className="py-3 font-medium">คงเหลือ</th>
                 <th className="py-3 font-medium">เกณฑ์ขั้นต่ำ</th>
@@ -515,7 +453,7 @@ function ProfitTab({ period, onPeriodChange }) {
       </div>
 
       <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 break-inside-avoid rounded-2xl bg-white p-6 shadow-sm">
+        <div className="col-span-2 rounded-2xl bg-other p-6 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-bold text-gray-900">รายรับ vs ต้นทุนตามช่วงเวลา</h2>
             <PeriodToggle period={period} onChange={onPeriodChange} />
@@ -537,7 +475,7 @@ function ProfitTab({ period, onPeriodChange }) {
           )}
         </div>
 
-        <div className="break-inside-avoid rounded-2xl bg-white p-6 shadow-sm">
+        <div className="rounded-2xl bg-other p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-bold text-gray-900">สัดส่วนต้นทุน vs กำไร</h2>
           {hasRevenue ? (
             <ResponsiveContainer width="100%" height={300}>
@@ -574,22 +512,13 @@ function Report() {
   const currentTab = TABS.find((t) => t.key === activeTab);
 
   return (
-    <div className="-m-6 min-h-screen bg-background p-10 print:m-0 print:bg-white print:p-0">
-      <div className="mb-8 flex items-start justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Report</h1>
-          <p className="mt-1 text-sm text-gray-500">{currentTab?.subtitle}</p>
-        </div>
-        <button
-          onClick={() => window.print()}
-          className="no-print flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-gray-900 shadow-sm hover:brightness-95"
-        >
-          <Printer size={18} />
-          Export PDF
-        </button>
+    <div className="-m-6 min-h-screen bg-background p-10">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Report</h1>
+        <p className="mt-1 text-sm text-gray-500">{currentTab?.subtitle}</p>
       </div>
 
-      <div className="mb-8 no-print">
+      <div className="mb-8">
         <div className="flex w-fit gap-2 rounded-full bg-other p-1">
           {TABS.map((tab) => (
             <button
@@ -605,22 +534,9 @@ function Report() {
         </div>
       </div>
 
-      {/* หัวข้อสำหรับตอนพิมพ์ — บอกว่ากำลังดูรายงานไหน ช่วงเวลาไหน เพราะ tab ถูกซ่อนไปหมด (.no-print) */}
-      <h2 className="mb-6 hidden text-xl font-bold text-gray-900 print:block">
-        รายงาน{currentTab?.label}
-        {activeTab !== 'inventory' && ` (${PERIODS.find((p) => p.key === period)?.label})`}
-      </h2>
-
       {activeTab === 'sales' && <SalesTab period={period} onPeriodChange={setPeriod} />}
       {activeTab === 'inventory' && <InventoryTab />}
       {activeTab === 'profit' && <ProfitTab period={period} onPeriodChange={setPeriod} />}
-
-      <style>{`
-        @media print {
-          .no-print { display: none !important; }
-          * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        }
-      `}</style>
     </div>
   );
 }

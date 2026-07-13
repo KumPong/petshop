@@ -28,7 +28,7 @@ function ManagerSidebar() {
         { name: 'Dashboard', path: '/manager', icon: <LayoutDashboard size={20} /> },
         { name: 'Manage Users', path: '/manager/users', icon: <Users size={20} /> },
         { name: 'Products', path: '/manager/products', icon: <Package size={20} /> },
-        { name: 'Suppliers', path: '/manager/inventory', icon: <Truck size={20} /> },
+        { name: 'Suppliers', path: '/manager/suppliers', icon: <Truck size={20} /> },
         { name: 'Report', path: '/manager/reports', icon: <FileBarChart size={20} /> },
     ]
 
