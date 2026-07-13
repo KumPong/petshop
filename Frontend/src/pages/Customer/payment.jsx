@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Truck, CreditCard, QrCode, Landmark, ShieldCheck, BadgeCheck, MessageCircle, Plus, Minus, Trash2, Image as ImageIcon } from 'lucide-react';
 import { createOrder } from '../../services/order.service.js';
+import { getUserAddresses, updateUserAddresses } from "../../services/auth.service.js";
 import Swal from 'sweetalert2'
 
 // ตะกร้าจำลอง — ยังไม่มี Cart/Context กลางใช้ร่วมกับ navbar.jsx เลยแยกทำงานเดี่ยวๆ ไปก่อน
@@ -36,32 +37,20 @@ function Payment() {
   const navigate = useNavigate();
 
   const [cart, setCart] = useState(INITIAL_CART);
-  const [address, setAddress] = useState(() => {
-    const stored = JSON.parse(localStorage.getItem('userAddresses')) || [];
-    if (stored.length === 1) {
-      return{
-        fullName: stored[0].fullName,
-        street: stored[0].street,
-        city: stored[0].city,
-        postalCode: stored[0].postalCode,
-        phone: stored[0].phone
-      };
-    }
-    return { fullName: '', street: '', city: '', postalCode: '', phone: ''};
-  });
+  const [address, setAddress] = useState({ fullName: '', street: '', city: '', postalCode: '', phone: '' });
   const [shippingMethod, setShippingMethod] = useState('standard');
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_TABS[0].value);
   const [card, setCard] = useState({ name: '', number: '', expiry: '', cvv: '' });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [savedAddresses, setSavedAddresses] = useState(() => {
-    return JSON.parse(localStorage.getItem('userAddresses')) || [];
-  });
+  const [savedAddresses, setSavedAddresses] = useState([]);
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shippingCost = SHIPPING_METHODS.find((m) => m.value === shippingMethod).cost;
   const tax = Math.round(subtotal * TAX_RATE * 100) / 100;
   const total = subtotal + shippingCost + tax;
+
+  
 
   // เอาไว้กรองให้เหลือแต่ตัวเลข ใช้กับช่องหมายเลขบัตร/วันหมดอายุ/CVV ที่ห้ามพิมพ์ตัวอักษรปน
   const onlyDigits = (value) => value.replace(/\D/g, '');
@@ -133,24 +122,58 @@ function Payment() {
   }
 
   const openAddressSelector = async () => {
-    // ดึงที่อยู่มาทำเป็นตัวเลือกใน SweetAlert2
-    const inputOptions = {};
-    savedAddresses.forEach(addr => {
-      inputOptions[addr.id] = `${addr.fullName} - ${addr.street} ${addr.city}`;
-    });
+    // สร้าง Html โครงสร้างกล่องที่อยู่
+    const addressCardsHTML = savedAddresses.map (addr => `
+        <label class="block cursor-pointer mb-3 relative">
+        <div class="bg-other p-4 rounded-xl border border-gray-200 hover:border-gray-300 transition-all text-left flex gap-4">
+          
+          <div class="mt-1 shrink-0">
+            <input type="radio" name="addressSelect" value="${addr.id}" class="w-5 h-5 accent-blue-600 cursor-pointer">
+          </div>
+          
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+                <h3 class="font-bold text-gray-900">${addr.fullName}</h3>
+                <span class="text-gray-600 text-sm">${addr.phone}</span>
+                ${addr.isDefault ? '<span class="px-2 py-0.5 bg-secondary text-gray-700 text-xs rounded-full font-medium">ค่าเริ่มต้น</span>' : ''}
+            </div>
+            <p class="text-gray-600 text-sm leading-relaxed">${addr.street} ${addr.city} ${addr.postalCode}</p>
+          </div>
+          
+        </div>
+      </label>
+      `).join('');
 
-    const { value: selectedId } = await Swal.fire({
-      title: 'เลือกที่อยู่จัดส่ง',
-      input: 'radio',
-      inputOptions,
-      showCancelButton: true,
-      confirmButtonText: 'เลือก'
-    });
+      const { value: selectedId } = await Swal.fire({
+        title: 'เลือกที่อยู่จัดส่ง',
+        html: `
+          <div class="max-h-96 overflow-y-auto pr-2 mt-4 custom-scrollbar">
+            ${addressCardsHTML}
+          </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#4A5D23',
+        width: '600px',
+        customClass: {
+        popup: '!bg-background rounded-3xl' 
+        },
+        preConfirm: () => {
+          // ดึงค่า value จาก input radio ที่ถูกเลือก
+          const selectRadio = Swal.getPopup().querySelector(`input[name="addressSelect"]:checked`);
+          if (!selectRadio) {
+            Swal.showValidationMessage('กรุณาเลือกที่อยู่ 1 รายการ');
+            return false;
+          }
+          return selectRadio.value;
+        }
+      });
 
-    if (selectedId) {
-      const selected = savedAddresses.find(a => a.id.toString() === selectedId);
-      if (selected) handleSelectAddress(selected);
-    }
+      if (selectedId) {
+        const selected = savedAddresses.find(a => a.id.toString() === selectedId);
+        if (selected) handleSelectAddress(selected);
+      }
   };
 
   const handlePlaceOrder = async () => {
@@ -158,15 +181,16 @@ function Payment() {
     setError(null);
     setSubmitting(true);
 
-    // บันทึกที่อยู่ใหม่ลง localStorage (เช็กก่อนว่าซ้ำไหม)
-    const stored = JSON.parse(localStorage.getItem('userAddresses')) || [];
-    const exists = stored.find(a => a.street === address.street && a.postalCode === address.postalCode);
-    if (!exists) {
-      stored.push({ ...address, id: Date.now(), isDefault: stored.length === 0});
-      localStorage.setItem('userAddresses', JSON.stringify(stored));
-    }
-
     try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const exists = savedAddresses.find(a => a.street === address.street && a.postalCode === address.postalCode);
+        if (!exists) {
+          const newSavedAddresses = [...savedAddresses, { ...address, id: Date.now(), isDefault: savedAddresses.length === 0}];
+          await updateUserAddresses(token, newSavedAddresses);
+        }
+      }
+
       const items = cart.map(({ productId, quantity }) => ({ productId, quantity }));
       const order = await createOrder(items, paymentMethod, address, shippingMethod);
       navigate(`/confirmation/${order.orderId}`);
@@ -175,6 +199,34 @@ function Payment() {
       setSubmitting(false);
     }
   };
+
+  // ดึงที่อยู่จาก Backend ตอนเปิดหน้า Payment
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        const data = await getUserAddresses(token);
+        setSavedAddresses(data);
+    
+        if (data.length > 0) {
+          // ค้นหาที่อยู่ที่ถูกตั้งเป็น isDefault = true
+          const defaultAddress = data.find(addr => addr.isDefault === true);
+
+          if (defaultAddress) {
+            // ถ้าเจอที่อยู่เริ่มต้น ให้ดึงมาใส่ฟอร์ม
+            handleSelectAddress(defaultAddress);
+          } else if (data.length === 1) {
+            // ถ้าไม่มีที่อยู่เริ่มต้น แต่มีแค่ 1 ที่อยู่ ก็ดึงอันนั้นมาเลย
+            handleSelectAddress(data[0]);
+          }
+        }
+      } catch (error) {
+        console,error(error);
+      }
+    };
+    fetchAddresses();
+  }, []);
 
   return (
     <div className="-m-6 min-h-screen bg-background p-10">

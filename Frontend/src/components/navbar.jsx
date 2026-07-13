@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
-import Logo from "../assets/Logo.png"
+import Logo from "../assets/Logo.png";
 
 function Navbar() {
     const navigate = useNavigate();
@@ -12,15 +12,81 @@ function Navbar() {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [IsProfileOpen, setIsProfileOpen] = useState(false);
 
-    // จำลองข้อมูลตะกร้าสินค้า (ในของจริงคุณอาจจะดึงมาจาก Context API หรือ Redux)
-    // พอ Logout ไป ข้อมูลนี้ยังอยู่ แต่เราแค่เช็คเงื่อนไขไม่ให้แสดงผล
+    // จำลองข้อมูลตะกร้าสินค้า
     const [cartItems, setCartItems] = useState([]);
+
+    // โหลดตะกร้าจาก localStorage เมื่อ component mount
+    useEffect(() => {
+        const loadCart = () => {
+            try {
+                const savedCart = localStorage.getItem('cart');
+                if (savedCart) {
+                    const parsed = JSON.parse(savedCart);
+                    setCartItems(parsed);
+                } else {
+                    setCartItems([]);
+                }
+            } catch (error) {
+                console.error('Error loading cart:', error);
+                setCartItems([]);
+            }
+        };
+
+        loadCart();
+
+        // ฟังการเปลี่ยนแปลงใน localStorage (เมื่ออื่น tab เปลี่ยนแปลง)
+        const handleStorageChange = (e) => {
+            if (e.key === 'cart') {
+                loadCart();
+            }
+        };
+
+        // สร้าง custom event listener สำหรับการอัพเดตตะกร้าจากหน้าเดียวกัน
+        const handleCustomCartUpdate = () => {
+            loadCart();
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        window.addEventListener('cartUpdated', handleCustomCartUpdate);
+        
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener('cartUpdated', handleCustomCartUpdate);
+        };
+    }, []); // เอา setCartItems ออกจาก dependency เพราะเป็น stable reference
+
+    // ฟังก์ชันปรับจำนวนสินค้า
+    const handleUpdateQuantity = (e, targetId, change) => {
+        e.preventDefault();
+        e.stopPropagation(); // ป้องกันการคลิกแล้วไปปิด Dropdown
+        const updatedCart = cartItems.map(item => {
+            const currentId = item.productId || item.id;
+            if (currentId === targetId) {
+                const newQuantity = item.quantity + change;
+                return { ...item, quantity: Math.max(1, newQuantity) };
+            }
+            return item;
+        });
+        setCartItems(updatedCart);
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+        window.dispatchEvent(new Event('cartUpdated')); 
+    };
+
+    // ฟังก์ชันลบสินค้าออกจากตะกร้า
+    const handleRemoveItem = (e, targetId) => {
+        e.preventDefault();
+        e.stopPropagation(); // ป้องกันการคลิกแล้วไปปิด Dropdown
+        const updatedCart = cartItems.filter(item => (item.productId || item.id) !== targetId);
+        setCartItems(updatedCart);
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+        window.dispatchEvent(new Event('cartUpdated'));
+    };
 
     // ระบบค้นหา
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [isSearchOpen, setIsSeartchOpen] = useState(false);
-    const searchRef = useRef(null) // ไว้เช็คการคลิกนอกกรอบ
+    const searchRef = useRef(null);
 
     // สร้าง State สำหรับเก็บข้อมูลสินค้าที่จะดึงจาก Backend
     const [products, setProducts] = useState([]);
@@ -36,19 +102,19 @@ function Navbar() {
         const fetchProduct = async () => {
             try {
                 /*
-                const response = await fetch('http://localhost:XXXX/api/products'); // ใส่ URL ของ Backend
+                const response = await fetch('http://localhost:XXXX/api/products');
                 if (response.ok) {
                     const data = await response.json();
-                    setProducts(data); // นำข้อมูลจาก JSON มาใส่ใน State
+                    setProducts(data);
                 }
                 */
             } catch (error) {
-                console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", error)
+                console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", error);
             }
         };
 
         fetchProduct();
-    }, [])
+    }, []);
 
     // เช็กและอัปเดตรูปโปรไฟล์
     useEffect(() => {
@@ -83,24 +149,27 @@ function Navbar() {
 
         setIsSeartchOpen(true);
 
-        // เช็คคำกว้างๆ
         const isDogFoodKeyword = ["อาหารหมา", "อาหารสุนัข", "หมา", "สุนัข"].some((kw) => 
             query.toLowerCase().includes(kw)
         );
 
         const finalResults = isDogFoodKeyword 
-            // ถ้าหาหมวดหมู่ ให้ดึงเฉพาะ ประเภท เรียงตามยอดขาย จากมากไปน้อย
             ? products
                 .filter((p) => p.category === "อาหารหมา")
                 .sort((a, b) => b.sales - a.sales)
                 .slice(0, 5)
-            // ถ้าเป็นการพิมแบบเจาะจงสินค้า 
             : products
-            .filter((p) => p.name.toLowerCase().includes(query.toLowerCase()))
-            .slice(0, 5);
-    
+                .filter((p) => p.name.toLowerCase().includes(query.toLowerCase()))
+                .slice(0, 5);
 
         setSearchResults(finalResults);
+    };
+
+    const handleSearchKeyDown = (e) => {
+        if (e.key === 'Enter' && searchQuery.trim()) {
+            setIsSeartchOpen(false);
+            navigate(`/products?q=${encodeURIComponent(searchQuery.trim())}`);
+        }
     };
 
     // ปิดกล่องค้นหาเมื่อคลิกจุดอื่น
@@ -125,13 +194,17 @@ function Navbar() {
         window.location.reload();
     };
 
-    // ฟังก์ชันจำลองการชำระเงิน (เคลียร์ตะกร้า)
+    // ฟังก์ชันจำลองการชำระเงิน (ไปหน้า Payment)
     const handleCheckout = () => {
-        setCartItems([]);
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert("กรุณาเข้าสู่ระบบก่อนชำระเงิน");
+            navigate('/login');
+            return;
+        }
+        navigate('/payment');
         setIsCartOpen(false);
-        alert("ชำระเงินแล้ว");
     };
-
 
     return (
         <nav className="flex items-center justify-between px-8 py-4 bg-secondary shadow-sm border-b border-gray-200">
@@ -153,7 +226,6 @@ function Navbar() {
                     <Link to='/products' className="hover:text-green-700 hover:underline transition-all pb-4">
                         รายการสินค้า
                     </Link>
-                    {/* Dropdown Menu */}
                     <div className="absolute left-0 top-full mt-1 w-48 bg-other border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                         <ul>
                             <li><Link to='/products/dogs' className="block px-4 py-2 hover:bg-background rounded-lg text-sm">สินค้าสุนัข</Link></li>
@@ -175,7 +247,9 @@ function Navbar() {
                 <div className="relative" ref={searchRef}>
                     <input 
                         type="text"
+                        value={searchQuery}
                         onChange={handleSearch}
+                        onKeyDown={handleSearchKeyDown}
                         onFocus={() => searchQuery.trim() && setIsSeartchOpen(true)}
                         placeholder="Search..."
                         className="pl-10 pr-4 py-2 bg-orange-50 border-none rounded-full text-sm focus:outline-none focus:ring-1 focus:ring-orange-200 w-48"
@@ -279,23 +353,63 @@ function Navbar() {
 
                     {/* Cart DropDown */}
                     {isCartOpen && (
-                        <div className="absolute right-0 mt-2 w-72 bg-other border border-gray-200 rounded-md shadow-lg z-50 p-4">
+                        <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-100 rounded-md shadow-lg z-50 p-4">
                             <h3 className="font-semibold text-gray-700 mb-3 border-b pb-2">ตะกร้าสินค้าของคุณ</h3>
 
                             {!isLoggedIn || cartItems.length === 0 ? (
                                 <p className="text-sm text-gray-600 text-center py-4">ตะกร้าสินค้าว่างเปล่า</p>
                             ) : (
                                 <div className="space-y-3">
-                                    {cartItems.map((item) => (
-                                        <div key={item.id} className="flex justify-between text-sm">
-                                            <span className="truncate w-3/4">{item.name}</span>
-                                            <span className="font-medium w-1/4 text-right">${item.price}</span>
-                                        </div>
-                                    ))}
+                                    {cartItems.map((item) => {
+                                        const itemId = item.productId || item.id; 
+                                        return (
+                                            <div key={itemId} className="flex justify-between items-center text-sm border-b border-gray-100 py-3 first:pt-0">
+                                                
+                                                {/* ชื่อสินค้า และ ปุ่ม + - */}
+                                                <div className="flex-1 pr-4">
+                                                    <p className="truncate font-medium text-gray-800">{item.name}</p>
+                                                    <div className="flex items-center gap-3 mt-2">
+                                                        <div className="flex items-center border border-gray-200 rounded-md">
+                                                            <button 
+                                                                onClick={(e) => handleUpdateQuantity(e, itemId, -1)}
+                                                                className="w-6 h-6 flex items-center justify-center text-gray-500 hover:bg-gray-100 disabled:opacity-50"
+                                                                disabled={item.quantity <= 1}
+                                                            >
+                                                                -
+                                                            </button>
+                                                            <span className="w-8 text-center text-xs font-medium text-gray-700">{item.quantity}</span>
+                                                            <button 
+                                                                onClick={(e) => handleUpdateQuantity(e, itemId, 1)}
+                                                                className="w-6 h-6 flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                                                            >
+                                                                +
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* ราคา และ ปุ่มลบ (ถังขยะ) */}
+                                                <div className="flex flex-col items-end justify-between h-full gap-2">
+                                                    <span className="font-semibold text-green-700">
+                                                        ฿{(item.price * item.quantity).toFixed(2)}
+                                                    </span>
+                                                    <button 
+                                                        onClick={(e) => handleRemoveItem(e, itemId)}
+                                                        className="text-red-400 hover:text-red-600 transition-colors p-1"
+                                                        title="ลบสินค้า"
+                                                    >
+                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                     <hr className="my-2"/>
                                     <div className="flex justify-between font-bold text-sm mb-4">
                                         <span>ยอดรวม:</span>
-                                        <span>฿{cartItems.reduce((acc, curr) => acc + curr.price, 0)}</span>
+                                        <span>${cartItems.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0).toFixed(2)}</span>
                                     </div>
                                     <button
                                         onClick={handleCheckout}
@@ -306,11 +420,11 @@ function Navbar() {
                                 </div>
                             )}
                         </div>
-                    )}
-                </div>
-            </div>
-        </nav>
+            )}
+       </div>
+     </div>
+  </nav>
     );
-};
+}
 
 export default Navbar;

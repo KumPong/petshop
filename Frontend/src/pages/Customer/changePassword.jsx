@@ -55,7 +55,7 @@ function ChangePassword() {
     };
 
     return(
-        <div className="max-w-7xl mx-auto px-4 py-4 w-full flex gap-8">
+        <div className="max-w-7xl mx-auto px-4 py-4 w-full flex gap-8 min-h-[70vh]">
             <div className="w-1/4">
                 <CustomerSidebar />
             </div>

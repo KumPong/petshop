@@ -28,6 +28,7 @@ import OrderHistory from './pages/Customer/orderHistory';
 import ChangePassword from './pages/Customer/changePassword';
 import ManageUsers from './pages/Manager/manageUsers.jsx';
 import Report from './pages/Manager/report.jsx';
+import ProductManagement from './pages/Manager/productManagement.jsx';
 
 function App() {
   return (
@@ -58,7 +59,7 @@ function App() {
       {/* ของ Staff */}
       <Route path='/staff' element={
         <ProtectedRoute allowedRoles={['Staff']}>
-          <StaffLayout /> 
+          <StaffLayout />
         </ProtectedRoute>
       }>
         <Route index element={<StaffDashBoard />} />
@@ -79,6 +80,7 @@ function App() {
         <Route path='users' element={<ManageUsers />} />
         {/* ตรงกับลิงก์ "Report" ที่มีอยู่แล้วใน managerSidebar.jsx (/manager/reports) แต่ไม่เคยมี route จริงมาก่อน */}
         <Route path='reports' element={<Report />} />
+        <Route path='products' element={<ProductManagement />} />
       </Route>
     </Routes>
   )

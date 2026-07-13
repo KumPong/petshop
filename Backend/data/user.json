@@ -20,6 +20,26 @@
     "password": "jane1122",
     "role": "Customer",
     "status": "ACTIVE",
-    "profileImage": "http://localhost:4000/uploads/Profile/Profile-1783679764006-25130873.jpg"
+    "profileImage": "http://localhost:4000/uploads/Profile/Profile-1783848529667-816646763.jpg",
+    "addresses": [
+      {
+        "fullName": "เจน โด",
+        "street": "67 Goon Mar Solar system",
+        "city": "Galaxy",
+        "postalCode": "10101",
+        "phone": "0981234569",
+        "id": 1783846422411,
+        "isDefault": false
+      },
+      {
+        "fullName": "Abud Ta Cum",
+        "street": "69 Goon.St NewYork ",
+        "city": "Ohio",
+        "postalCode": "69069",
+        "phone": "0966956547",
+        "id": 1783846750946,
+        "isDefault": true
+      }
+    ]
   }
 ]

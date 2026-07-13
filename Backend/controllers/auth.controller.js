@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
+import { profile } from 'console';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -93,7 +94,10 @@ export const login = (req, res) => {
             user: {
                 id: user.id,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                profileImage: user.profileImage
             },
             token: token
         });
@@ -222,6 +226,52 @@ export const changePassword = (req, res) => {
 
         res.status(200).json({ message: "เปลี่ยนรหัสผ่านสำเร็จ" });
 
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+export const getAddresses = (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: "ไม่พบ Token ยืนยันตัวตน" });
+        }
+
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, 'YOUR_SECRET_KEY_PETSTOP');
+
+        const users = readUsers();
+        const user = users.find(u => u.id === decoded.id);
+
+        if (!user) return res.status(404).json({ message: "ไม่พบข้อมูลผู้ใช้งาน" });
+
+        res.status(200).json(user.addresses || []);
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+export const updateAddresses = (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: "ไม่พบ Token ยืนยันตัวตน" });
+        }
+
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, 'YOUR_SECRET_KEY_PETSTOP');
+
+        const users = readUsers();
+        const userIndex = users.findIndex(u => u.id === decoded.id);
+
+        if (userIndex === -1) return res.status(404).json({ message: "ไม่พบข้อมูลผู้ใช้งาน" });
+
+        const { addresses } = req.body;
+        users[userIndex].addresses = addresses;
+
+        writeUsers(users);
+        res.status(200).json({ message: "อัปเดตที่อยู่สำเร็จ", addresses: users[userIndex].addresses });
     } catch (error) {
         res.status(500).json({ message: "Server Error", error: error.message });
     }
