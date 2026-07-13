@@ -33,7 +33,7 @@ function ManagerSidebar() {
     ]
 
     return(
-        <aside className="w-64 h-screen bg-other flex flex-col border-r border-gray-200 print:hidden">
+        <aside className="w-64 h-screen bg-other flex flex-col border-r border-gray-200">
             {/* Header & Logo */}
             <div className="p-6 flex items-center gap-3">
                 <NavLink className="shrink-0">
