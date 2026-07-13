@@ -5,6 +5,7 @@ import purchaseOrderRoutes from '../routes/purchaseOrder.route.js';
 import orderRoutes from '../routes/order.route.js';
 import authRoutes from '../routes/auth.route.js';
 import productRoutes from '../routes/product.route.js';
+import userRoutes from '../routes/user.route.js';
 
 // สามารถดึงรูปจากโฟลเดอร์ uploads ไปโชว์ได้
 import path from 'path';
@@ -30,6 +31,7 @@ app.use('/api/purchase-orders', purchaseOrderRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
 
 // อ่าน port จาก env ถ้ามี ไม่งั้น fallback 4000 (เลี่ยง 5000 เพราะชนกับ AirPlay Receiver บน macOS)
 const PORT = process.env.PORT || 4000;

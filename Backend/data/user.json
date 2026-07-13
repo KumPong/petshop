@@ -1,18 +1,40 @@
 [
   {
     "id": "PS0001",
+    "prefix": "นางสาว",
+    "firstName": "โฮชิมิ",
+    "lastName": "มิยาบิ",
     "email": "manager@petstop.com",
     "password": "Stop0012",
-    "role": "Manager"
+    "role": "Manager",
+    "status": "ACTIVE",
+    "bloodGroup": "O",
+    "emergencyContact": {
+      "name": "ซึกิชิโระ ยานากิ",
+      "phone": "0811234567",
+      "relationship": "ญาติ"
+    },
+    "profileImage": "http://localhost:4000/uploads/Profile/User-1783948388997-880377135.png"
   },
   {
     "id": "PS0002",
+    "prefix": "นาย",
+    "firstName": "เซธ",
+    "lastName": "โลเวลล์",
     "email": "staff@petstop.com",
     "password": "Pet0012",
-    "role": "Staff"
+    "role": "Staff",
+    "status": "ACTIVE",
+    "bloodGroup": "B",
+    "emergencyContact": {
+      "name": "ซิง อี้",
+      "phone": "0898765432",
+      "relationship": "พี่สาว"
+    },
+    "profileImage": "http://localhost:4000/uploads/Profile/User-1783948396559-697129077.webp"
   },
   {
-    "id": "PS0003",
+    "id": "CPS0001",
     "firstName": "เจน",
     "lastName": "โด",
     "email": "jane.doe@example.com",
@@ -41,5 +63,43 @@
         "isDefault": true
       }
     ]
+  },
+  {
+    "id": "PS0003",
+    "prefix": "นางสาว",
+    "firstName": "เบอร์นิส",
+    "lastName": "ไวท์",
+    "email": "staff2@petstop.com",
+    "phone": "0879551123",
+    "idCard": "1234567890234",
+    "role": "Staff",
+    "status": "ACTIVE",
+    "bloodGroup": "A",
+    "password": "Pet0034",
+    "profileImage": "http://localhost:4000/uploads/Profile/User-1783952929600-705079480.jpg",
+    "emergencyContact": {
+      "name": "ซีซาร์ คิง",
+      "phone": "0869511112",
+      "relationship": "พี่สาว"
+    }
+  },
+  {
+    "id": "PS0004",
+    "prefix": "นาย",
+    "firstName": "Test",
+    "lastName": "Test",
+    "email": "Test@Test.com",
+    "phone": "0987654321",
+    "idCard": "1234567890123",
+    "role": "Staff",
+    "status": "LEAVE",
+    "bloodGroup": "AB",
+    "password": "Test1234",
+    "profileImage": "http://localhost:4000/uploads/Profile/User-1783953783513-477842475.jpg",
+    "emergencyContact": {
+      "name": "Test",
+      "phone": "0123456789",
+      "relationship": "Test"
+    }
   }
 ]
