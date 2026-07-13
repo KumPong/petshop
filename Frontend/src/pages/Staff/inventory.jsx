@@ -234,7 +234,7 @@ function Inventory() {
         />
       </div>
 
-      <div className="rounded-2xl bg-white shadow-sm">
+      <div className="rounded-2xl bg-other shadow-sm">
         <div className="flex items-center justify-between border-b border-gray-100 p-6">
           <h2 className="text-lg font-semibold text-gray-900">รายการสินค้า</h2>
           <button
@@ -292,7 +292,7 @@ function Inventory() {
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-xs uppercase tracking-wide text-gray-400">
+            <tr className="text-left text-xs uppercase tracking-wide text-gray-700">
               <th className="px-6 py-3 font-medium">สินค้า</th>
               <th className="px-6 py-3 font-medium">SKU</th>
               <th className="px-6 py-3 font-medium">หมวดหมู่</th>

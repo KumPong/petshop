@@ -75,5 +75,28 @@
       }
     ],
     "receivedAt": "2026-07-06T13:53:42.299Z"
+  },
+  {
+    "id": "PO-8826",
+    "createdAt": "2026-07-09T02:37:41.403Z",
+    "supplier": "Eco-Pet Exports",
+    "status": "Received",
+    "items": [
+      {
+        "id": "GR-BAM-01",
+        "name": "แปรงขนไม้ไผ่",
+        "supplier": "Eco-Pet Exports",
+        "qty": 1,
+        "unitCost": 12
+      },
+      {
+        "id": "tug-toy",
+        "name": "ของเล่นเชือกฝ้ายสำหรับดึงเล่น (ไซส์ L)",
+        "supplier": "Eco-Pet Exports",
+        "qty": 4,
+        "unitCost": 8.2
+      }
+    ],
+    "receivedAt": "2026-07-09T02:37:46.633Z"
   }
 ]

@@ -1,46 +1,58 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from "react";
 import {
   Plus,
   Minus,
   Trash2,
   Search,
   AlertTriangle,
-  ArrowRight,
   Image as ImageIcon,
   CircleCheck,
   Circle,
   X,
   Check,
-} from 'lucide-react';
-import { getInventory } from '../../services/inventory.service.js';
+} from "lucide-react";
+import { getInventory } from "../../services/inventory.service.js";
 import {
   getPurchaseOrders,
   createPurchaseOrder,
   receivePurchaseOrder,
-} from '../../services/purchaseOrder.service.js';
+} from "../../services/purchaseOrder.service.js";
 
 // สถานะ PO มี 3 แบบ: Pending, Shipped, Received — flow จริงมีแค่ Pending -> Received (ข้าม Shipped เพราะ
 // ยังไม่มีระบบแจ้งจัดส่งจริง, เหลือไว้เพราะมีอยู่ในข้อมูลตัวอย่างเท่านั้น)
-const PENDING_LABEL = 'รอดำเนินการ';
+const PENDING_LABEL = "รอดำเนินการ";
 
 const STATUS_LABELS = {
-  Shipped: 'จัดส่งแล้ว',
-  Received: 'ได้รับแล้ว',
+  Shipped: "จัดส่งแล้ว",
+  Received: "ได้รับแล้ว",
   Pending: PENDING_LABEL,
 };
 
 // สี + ไอคอนของป้ายสถานะแต่ละแบบ ในตาราง "ใบสั่งซื้อล่าสุด"
 const STATUS_PILL = {
-  Shipped: { bg: 'bg-primary/40', text: 'text-gray-800', Icon: Circle },
-  Received: { bg: 'bg-green-100', text: 'text-green-700', Icon: CircleCheck },
-  Pending: { bg: 'bg-gray-100', text: 'text-gray-600', Icon: Circle },
+  Shipped: { bg: "bg-primary/40", text: "text-gray-800", Icon: Circle },
+  Received: { bg: "bg-green-100", text: "text-green-700", Icon: CircleCheck },
+  Pending: { bg: "bg-gray-100", text: "text-gray-600", Icon: Circle },
 };
 
-const THAI_MONTHS_SHORT = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+const THAI_MONTHS_SHORT = [
+  "ม.ค.",
+  "ก.พ.",
+  "มี.ค.",
+  "เม.ย.",
+  "พ.ค.",
+  "มิ.ย.",
+  "ก.ค.",
+  "ส.ค.",
+  "ก.ย.",
+  "ต.ค.",
+  "พ.ย.",
+  "ธ.ค.",
+];
 
 // แปลงตัวเลขเป็นข้อความราคาแบบไทย เช่น 1234.5 -> "฿1,234.50"
 function money(n) {
-  return `฿${n.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return `฿${n.toLocaleString("th-TH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 // แปลง ISO string ของ backend เป็นข้อความไทยอ่านง่าย เช่น "5 ก.ค. 2026" (ไม่มีวันที่ -> โชว์ PENDING_LABEL)
@@ -61,8 +73,8 @@ function RestockOrder() {
 
   // state ของ modal "เลือกสินค้าที่จะเพิ่ม"
   const [showProductModal, setShowProductModal] = useState(false);
-  const [productSearch, setProductSearch] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('ทุกหมวดหมู่');
+  const [productSearch, setProductSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("ทุกหมวดหมู่");
   const [selections, setSelections] = useState({}); // { productId: จำนวนที่เลือกไว้ใน modal } ก่อนกด "เพิ่มเข้ารายการสั่งซื้อ"
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -78,7 +90,10 @@ function RestockOrder() {
           setRecentOrders(orders);
         })
         .catch(() => {
-          if (!cancelled) setError('โหลดข้อมูลไม่สำเร็จ กรุณาตรวจสอบว่า Backend รันอยู่หรือไม่');
+          if (!cancelled)
+            setError(
+              "โหลดข้อมูลไม่สำเร็จ กรุณาตรวจสอบว่า Backend รันอยู่หรือไม่",
+            );
         })
         .finally(() => {
           if (!cancelled) setLoading(false);
@@ -88,43 +103,51 @@ function RestockOrder() {
     loadData();
     // Staff/Manager ต่างคนต่างโหลด inventory เอง (ไม่มี state กลางร่วมกัน) — รีเฟรชอัตโนมัติทุกครั้งที่
     // กลับมาโฟกัสหน้านี้ กันข้อมูลค้างเก่าเวลาอีกฝั่งปรับสต็อกไปแล้ว
-    window.addEventListener('focus', loadData);
+    window.addEventListener("focus", loadData);
     return () => {
       cancelled = true;
-      window.removeEventListener('focus', loadData);
+      window.removeEventListener("focus", loadData);
     };
   }, []);
 
   // "แจ้งเตือนสินค้าใกล้หมด" กรองจาก products ที่โหลดมา ไม่เรียก /low-stock แยก (logic ซ้ำกับ backend
   // controller — แก้เกณฑ์ต้องแก้ทั้งคู่)
-  const lowStockItems = useMemo(() => products.filter((p) => p.stock <= p.threshold), [products]);
+  const lowStockItems = useMemo(
+    () => products.filter((p) => p.stock <= p.threshold),
+    [products],
+  );
 
   const categoryOptions = useMemo(
-    () => ['ทุกหมวดหมู่', ...new Set(products.map((p) => p.category))],
-    [products]
+    () => ["ทุกหมวดหมู่", ...new Set(products.map((p) => p.category))],
+    [products],
   );
 
   const subtotal = useMemo(
     () => orderItems.reduce((sum, item) => sum + item.qty * item.unitCost, 0),
-    [orderItems]
+    [orderItems],
   );
 
   const filteredCatalog = useMemo(() => {
     const q = productSearch.trim().toLowerCase();
     return products.filter((p) => {
       const matchesQuery =
-        !q || p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q);
-      const matchesCategory = categoryFilter === 'ทุกหมวดหมู่' || p.category === categoryFilter;
+        !q ||
+        p.name.toLowerCase().includes(q) ||
+        p.sku.toLowerCase().includes(q);
+      const matchesCategory =
+        categoryFilter === "ทุกหมวดหมู่" || p.category === categoryFilter;
       return matchesQuery && matchesCategory;
     });
   }, [products, productSearch, categoryFilter]);
 
-  const selectedCount = Object.values(selections).filter((qty) => qty > 0).length;
+  const selectedCount = Object.values(selections).filter(
+    (qty) => qty > 0,
+  ).length;
 
   const openProductModal = () => {
     setSelections({});
-    setProductSearch('');
-    setCategoryFilter('ทุกหมวดหมู่');
+    setProductSearch("");
+    setCategoryFilter("ทุกหมวดหมู่");
     setShowProductModal(true);
   };
 
@@ -143,7 +166,7 @@ function RestockOrder() {
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {
         return prev.map((item) =>
-          item.id === product.id ? { ...item, qty: item.qty + qty } : item
+          item.id === product.id ? { ...item, qty: item.qty + qty } : item,
         );
       }
       return [
@@ -179,8 +202,8 @@ function RestockOrder() {
   const changeQty = (id, delta) => {
     setOrderItems((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item
-      )
+        item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item,
+      ),
     );
   };
 
@@ -202,13 +225,13 @@ function RestockOrder() {
     try {
       // ส่งแค่ id/qty ไป backend — backend ไปดึงชื่อ/ราคา/ผู้จัดจำหน่ายจริงมาเติมเอง
       const newOrder = await createPurchaseOrder(
-        orderItems.map((item) => ({ id: item.id, qty: item.qty }))
+        orderItems.map((item) => ({ id: item.id, qty: item.qty })),
       );
       setRecentOrders((prev) => [newOrder, ...prev]); // โผล่บนสุดของตารางทันที ไม่ต้อง refetch ใหม่ทั้งหมด
       setOrderItems([]); // เคลียร์ร่างใบสั่งซื้อ
       closeConfirmModal();
     } catch {
-      setError('สร้างใบสั่งซื้อไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+      setError("สร้างใบสั่งซื้อไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
     } finally {
       setSubmitting(false);
     }
@@ -220,11 +243,13 @@ function RestockOrder() {
     setReceivingId(id);
     try {
       const { order, inventory } = await receivePurchaseOrder(id);
-      setRecentOrders((prev) => prev.map((po) => (po.id === order.id ? order : po)));
+      setRecentOrders((prev) =>
+        prev.map((po) => (po.id === order.id ? order : po)),
+      );
       // อัปเดต products ทั้งชุดจาก inventory ล่าสุด — การ์ด "แจ้งเตือนสินค้าใกล้หมด" หายไปเองถ้าพ้น threshold แล้ว
       setProducts(inventory);
     } catch {
-      setError('รับสินค้าเข้าคลังไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+      setError("รับสินค้าเข้าคลังไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
     } finally {
       setReceivingId(null);
     }
@@ -257,55 +282,54 @@ function RestockOrder() {
           <AlertTriangle className="text-red-500" size={20} />
           แจ้งเตือนสินค้าใกล้หมด
         </h2>
-        {/* ยังไม่มีหน้า "การแจ้งเตือนทั้งหมด" แยกต่างหาก ปิดปุ่มไว้ก่อนกันดูเหมือนกดได้แต่ไม่ทำอะไร */}
-        <button
-          disabled
-          className="flex cursor-not-allowed items-center gap-1 text-sm font-medium text-gray-300"
-        >
-          ดูการแจ้งเตือนทั้งหมด
-          <ArrowRight size={14} />
-        </button>
       </div>
 
       <div className="mb-10 grid grid-cols-3 gap-6">
         {lowStockItems.map((item) => {
           const isInOrder = orderItems.some((oi) => oi.id === item.id);
           return (
-          <div key={item.id} className="relative rounded-2xl bg-other p-5">
-            {item.stock === 0 && (
-              <span className="absolute right-5 top-5 rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-600">
-                วิกฤต
+            <div key={item.id} className="relative rounded-2xl bg-other p-5">
+              {item.stock === 0 && (
+                <span className="absolute right-5 top-5 rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-600">
+                  วิกฤต
+                </span>
+              )}
+              <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg bg-white text-gray-300">
+                <ImageIcon size={22} />
               </span>
-            )}
-            <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg bg-white text-gray-300">
-              <ImageIcon size={22} />
-            </span>
-            <p className="mb-2 font-semibold text-gray-900">{item.name}</p>
-            <p className="text-sm text-gray-600">
-              คงเหลือปัจจุบัน:{' '}
-              <span className="font-semibold text-red-600">{item.stock} หน่วย</span>
-            </p>
-            <p className="mb-4 text-sm text-gray-600">
-              เกณฑ์ขั้นต่ำ: <span className="text-gray-700">{item.threshold} หน่วย</span>
-            </p>
-            <button
-              onClick={() => quickRestock(item)}
-              disabled={isInOrder}
-              className="w-full rounded-full bg-primary py-2 text-sm font-medium text-gray-900 hover:brightness-95 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
-            >
-              {isInOrder ? 'เพิ่มเข้ารายการแล้ว' : 'เติมสต็อกด่วน'}
-            </button>
-          </div>
+              <p className="mb-2 font-semibold text-gray-900">{item.name}</p>
+              <p className="text-sm text-gray-600">
+                คงเหลือปัจจุบัน:{" "}
+                <span className="font-semibold text-red-600">
+                  {item.stock} หน่วย
+                </span>
+              </p>
+              <p className="mb-4 text-sm text-gray-600">
+                เกณฑ์ขั้นต่ำ:{" "}
+                <span className="text-gray-700">{item.threshold} หน่วย</span>
+              </p>
+              <button
+                onClick={() => quickRestock(item)}
+                disabled={isInOrder}
+                className="w-full rounded-full bg-primary py-2 text-sm font-medium text-gray-900 hover:brightness-95 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
+              >
+                {isInOrder ? "เพิ่มเข้ารายการแล้ว" : "เติมสต็อกด่วน"}
+              </button>
+            </div>
           );
         })}
         {!loading && lowStockItems.length === 0 && (
-          <p className="col-span-3 text-center text-sm text-gray-400">ไม่มีสินค้าที่ใกล้หมดสต็อกตอนนี้</p>
+          <p className="col-span-3 text-center text-sm text-gray-400">
+            ไม่มีสินค้าที่ใกล้หมดสต็อกตอนนี้
+          </p>
         )}
       </div>
 
-      <div className="mb-10 rounded-2xl bg-white p-6 shadow-sm">
+      <div className="mb-10 rounded-2xl bg-other p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900">รายการสั่งซื้อปัจจุบัน</h2>
+          <h2 className="text-lg font-bold text-gray-900">
+            รายการสั่งซื้อปัจจุบัน
+          </h2>
           <button
             onClick={openProductModal}
             className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900"
@@ -317,7 +341,7 @@ function RestockOrder() {
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-400">
+            <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-700">
               <th className="py-3 font-medium">ชื่อสินค้า</th>
               <th className="py-3 font-medium">ผู้จัดจำหน่าย</th>
               <th className="py-3 font-medium">คงเหลือปัจจุบัน</th>
@@ -335,7 +359,9 @@ function RestockOrder() {
                     <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-300">
                       <ImageIcon size={16} />
                     </span>
-                    <span className="font-medium text-gray-900">{item.name}</span>
+                    <span className="font-medium text-gray-900">
+                      {item.name}
+                    </span>
                   </div>
                 </td>
                 <td className="py-4 text-gray-600">{item.supplier}</td>
@@ -348,7 +374,9 @@ function RestockOrder() {
                     >
                       <Minus size={14} />
                     </button>
-                    <span className="w-6 text-center font-medium text-gray-800">{item.qty}</span>
+                    <span className="w-6 text-center font-medium text-gray-800">
+                      {item.qty}
+                    </span>
                     <button
                       onClick={() => changeQty(item.id, 1)}
                       className="text-gray-500 hover:text-gray-800"
@@ -373,8 +401,9 @@ function RestockOrder() {
             ))}
             {orderItems.length === 0 && (
               <tr>
-                <td colSpan={7} className="py-10 text-center text-gray-400">
-                  ยังไม่มีสินค้าใน order — กด "เติมสต็อกด่วน" หรือ "ค้นหาเพื่อเพิ่มสินค้า"
+                <td colSpan={7} className="py-10 text-center text-gray-700">
+                  ยังไม่มีสินค้าใน order — กด "เติมสต็อกด่วน" หรือ
+                  "ค้นหาเพื่อเพิ่มสินค้า"
                 </td>
               </tr>
             )}
@@ -383,22 +412,20 @@ function RestockOrder() {
 
         <div className="mt-4 flex items-center justify-end gap-4 rounded-lg bg-gray-50 px-6 py-4">
           <span className="font-semibold text-gray-700">ยอดรวมคำสั่งซื้อ:</span>
-          <span className="text-2xl font-bold text-gray-900">{money(subtotal)}</span>
+          <span className="text-2xl font-bold text-gray-900">
+            {money(subtotal)}
+          </span>
         </div>
       </div>
 
-      <div className="rounded-2xl bg-white p-6 shadow-sm">
+      <div className="rounded-2xl bg-other p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-bold text-gray-900">ใบสั่งซื้อล่าสุด</h2>
-          {/* ยังไม่มีหน้า "ประวัติทั้งหมด" แยกต่างหาก ปิดปุ่มไว้ก่อนกันดูเหมือนกดได้แต่ไม่ทำอะไร */}
-          <button disabled className="cursor-not-allowed text-sm font-medium text-gray-300">
-            ดูประวัติทั้งหมด
-          </button>
         </div>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-400">
+            <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-700">
               <th className="py-3 font-medium">เลขที่ใบสั่งซื้อ</th>
               <th className="py-3 font-medium">วันที่สร้าง</th>
               <th className="py-3 font-medium">ผู้จัดจำหน่าย</th>
@@ -412,7 +439,9 @@ function RestockOrder() {
               return (
                 <tr key={po.id} className="border-b border-gray-50">
                   <td className="py-4 font-semibold text-gray-900">{po.id}</td>
-                  <td className="py-4 text-gray-600">{formatDateTH(po.createdAt)}</td>
+                  <td className="py-4 text-gray-600">
+                    {formatDateTH(po.createdAt)}
+                  </td>
                   <td className="py-4 text-gray-600">{po.supplier}</td>
                   <td className="py-4">
                     <span
@@ -423,7 +452,7 @@ function RestockOrder() {
                     </span>
                   </td>
                   <td className="py-4 font-medium">
-                    {po.status === 'Received' ? (
+                    {po.status === "Received" ? (
                       <span className="text-gray-700">ดูใบเสร็จ</span>
                     ) : (
                       <button
@@ -431,7 +460,9 @@ function RestockOrder() {
                         disabled={receivingId === po.id}
                         className="font-medium text-gray-700 underline decoration-dotted hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        {receivingId === po.id ? 'กำลังรับสินค้า...' : 'รับสินค้าเข้าคลัง'}
+                        {receivingId === po.id
+                          ? "กำลังรับสินค้า..."
+                          : "รับสินค้าเข้าคลัง"}
                       </button>
                     )}
                   </td>
@@ -446,15 +477,23 @@ function RestockOrder() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
           <div className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
             <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
-              <h3 className="text-2xl font-semibold text-gray-900">เลือกสินค้าที่จะเพิ่ม</h3>
-              <button onClick={closeProductModal} className="text-gray-400 hover:text-gray-700">
+              <h3 className="text-2xl font-semibold text-gray-900">
+                เลือกสินค้าที่จะเพิ่ม
+              </h3>
+              <button
+                onClick={closeProductModal}
+                className="text-gray-400 hover:text-gray-700"
+              >
                 <X size={20} />
               </button>
             </div>
 
             <div className="flex gap-3 border-b border-gray-100 px-6 py-4">
               <div className="relative flex-1">
-                <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                <Search
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  size={16}
+                />
                 <input
                   autoFocus
                   value={productSearch}
@@ -483,7 +522,7 @@ function RestockOrder() {
                   <div
                     key={p.id}
                     className={`flex items-center justify-between border-b border-gray-50 px-6 py-4 ${
-                      qty > 0 ? 'bg-primary/10' : ''
+                      qty > 0 ? "bg-primary/10" : ""
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -500,9 +539,20 @@ function RestockOrder() {
                     <div className="flex items-center gap-8">
                       <div className="text-right text-sm">
                         <p className="text-gray-600">
-                          คงเหลือ: <span className={p.stock <= p.threshold ? 'font-semibold text-red-500' : 'text-gray-700'}>{p.stock}</span>
+                          คงเหลือ:{" "}
+                          <span
+                            className={
+                              p.stock <= p.threshold
+                                ? "font-semibold text-red-500"
+                                : "text-gray-700"
+                            }
+                          >
+                            {p.stock}
+                          </span>
                         </p>
-                        <p className="font-medium text-gray-900">{money(p.unitCost)}</p>
+                        <p className="font-medium text-gray-900">
+                          {money(p.unitCost)}
+                        </p>
                       </div>
                       <div className="flex items-center gap-3 rounded-full bg-gray-100 px-2 py-1">
                         <button
@@ -511,7 +561,9 @@ function RestockOrder() {
                         >
                           <Minus size={14} />
                         </button>
-                        <span className="w-4 text-center font-medium text-gray-800">{qty}</span>
+                        <span className="w-4 text-center font-medium text-gray-800">
+                          {qty}
+                        </span>
                         <button
                           onClick={() => changeSelection(p.id, 1)}
                           className="text-gray-500 hover:text-gray-800"
@@ -524,12 +576,16 @@ function RestockOrder() {
                 );
               })}
               {filteredCatalog.length === 0 && (
-                <p className="px-6 py-10 text-center text-sm text-gray-400">ไม่พบสินค้าที่ตรงกับเงื่อนไข</p>
+                <p className="px-6 py-10 text-center text-sm text-gray-400">
+                  ไม่พบสินค้าที่ตรงกับเงื่อนไข
+                </p>
               )}
             </div>
 
             <div className="flex items-center justify-between border-t border-gray-100 px-6 py-4">
-              <span className="text-sm text-gray-500">เลือกแล้ว {selectedCount} รายการ</span>
+              <span className="text-sm text-gray-500">
+                เลือกแล้ว {selectedCount} รายการ
+              </span>
               <div className="flex gap-3">
                 <button
                   onClick={closeProductModal}
@@ -554,19 +610,28 @@ function RestockOrder() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
           <div className="flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
             <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
-              <h3 className="text-2xl font-semibold text-gray-900">ยืนยันการสั่งซื้อ</h3>
-              <button onClick={closeConfirmModal} className="text-gray-400 hover:text-gray-700">
+              <h3 className="text-2xl font-semibold text-gray-900">
+                ยืนยันการสั่งซื้อ
+              </h3>
+              <button
+                onClick={closeConfirmModal}
+                className="text-gray-400 hover:text-gray-700"
+              >
                 <X size={20} />
               </button>
             </div>
 
             <div className="flex-1 overflow-y-auto px-6 py-4">
               <p className="mb-4 text-sm text-gray-500">
-                กรุณาตรวจสอบรายการสั่งซื้อก่อนยืนยัน — เมื่อยืนยันแล้วจะสร้างใบสั่งซื้อใหม่ทันที
+                กรุณาตรวจสอบรายการสั่งซื้อก่อนยืนยัน —
+                เมื่อยืนยันแล้วจะสร้างใบสั่งซื้อใหม่ทันที
               </p>
               <div className="divide-y divide-gray-100 rounded-xl border border-gray-100">
                 {orderItems.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between px-4 py-3 text-sm">
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between px-4 py-3 text-sm"
+                  >
                     <div>
                       <p className="font-medium text-gray-900">{item.name}</p>
                       <p className="text-xs text-gray-500">
@@ -580,8 +645,12 @@ function RestockOrder() {
                 ))}
               </div>
               <div className="mt-4 flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3">
-                <span className="font-semibold text-gray-700">ยอดรวมคำสั่งซื้อ:</span>
-                <span className="text-xl font-bold text-gray-900">{money(subtotal)}</span>
+                <span className="font-semibold text-gray-700">
+                  ยอดรวมคำสั่งซื้อ:
+                </span>
+                <span className="text-xl font-bold text-gray-900">
+                  {money(subtotal)}
+                </span>
               </div>
             </div>
 
@@ -598,7 +667,7 @@ function RestockOrder() {
                 className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-gray-900 hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <Check size={16} />
-                {submitting ? 'กำลังสร้างใบสั่งซื้อ...' : 'ยืนยันการสั่งซื้อ'}
+                {submitting ? "กำลังสร้างใบสั่งซื้อ..." : "ยืนยันการสั่งซื้อ"}
               </button>
             </div>
           </div>

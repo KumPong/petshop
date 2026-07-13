@@ -146,7 +146,7 @@ function OrderManage() {
         <StatCard icon={<FlagIcon size={20} />} value={flaggedCount} label="ออเดอร์ที่มีปัญหา" />
       </div>
 
-      <div className="mt-6 rounded-2xl bg-white shadow-sm">
+      <div className="mt-6 rounded-2xl bg-other shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 p-6">
           <div className="flex flex-wrap items-center gap-2">
             {FILTERS.map((f) => (
@@ -184,7 +184,7 @@ function OrderManage() {
           <>
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs uppercase tracking-wide text-gray-400">
+                <tr className="text-left text-xs uppercase tracking-wide text-gray-700">
                   <th className="px-6 py-3">เลขที่ออเดอร์</th>
                   <th className="px-6 py-3">ชื่อลูกค้า</th>
                   <th className="px-6 py-3">วันที่ & เวลา</th>
