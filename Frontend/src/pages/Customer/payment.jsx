@@ -1,17 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Truck, CreditCard, QrCode, Landmark, ShieldCheck, BadgeCheck, MessageCircle, Plus, Minus, Trash2, Image as ImageIcon } from 'lucide-react';
 import { createOrder } from '../../services/order.service.js';
 import { getUserAddresses, updateUserAddresses } from "../../services/auth.service.js";
+import { getCart, saveCart, clearCart } from '../../services/cart.service.js';
 import Swal from 'sweetalert2'
-
-// ตะกร้าจำลอง — ยังไม่มี Cart/Context กลางใช้ร่วมกับ navbar.jsx เลยแยกทำงานเดี่ยวๆ ไปก่อน
-// (productId อ้างอิงของจริงจาก Backend/data/product.json)
-const INITIAL_CART = [
-  { productId: 'PD-002', name: 'Oak & Harvest: เนื้อวัวออร์แกนิกและข้าว', price: 950, quantity: 1 },
-  { productId: 'PD-005', name: 'Cozy Nap: เบาะนอนสัตว์เลี้ยงไซส์กลาง', price: 750, quantity: 1 },
-  { productId: 'PD-003', name: 'Whisker Delight: ทูน่าเนื้อแน่นในเยลลี่', price: 45, quantity: 2 },
-];
 
 const SHIPPING_METHODS = [
   { value: 'standard', label: 'จัดส่งมาตรฐาน', detail: '3-5 วันทำการ', cost: 0 },
@@ -24,8 +17,6 @@ const PAYMENT_TABS = [
   { value: 'โอนเงินผ่านธนาคาร', label: 'โอนเงินผ่านธนาคาร', Icon: Landmark },
 ];
 
-const STEPS = ['ตะกร้า', 'จัดส่ง', 'ชำระเงิน', 'ยืนยัน'];
-
 const TAX_RATE = 0.07;
 
 // แปลงตัวเลขเป็นข้อความราคาแบบไทย เช่น 1234.5 -> "฿1,234.50"
@@ -36,7 +27,7 @@ function money(n) {
 function Payment() {
   const navigate = useNavigate();
 
-  const [cart, setCart] = useState(INITIAL_CART);
+  const [cart, setCart] = useState(() => getCart());
   const [address, setAddress] = useState({ fullName: '', street: '', city: '', postalCode: '', phone: '' });
   const [shippingMethod, setShippingMethod] = useState('standard');
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_TABS[0].value);
@@ -85,7 +76,7 @@ function Payment() {
   };
 
   const removeItem = (productId) => {
-    setCart((prev) => prev.filter((item) => item.productId !== productId));
+    setCart((prev) => saveCart(prev.filter((item) => item.productId !== productId)));
   };
 
   // ใช้ทั้งตอนพิมพ์เลขเองและกด +/- — ตั้งเป็น 0 หรือต่ำกว่า = ลบออกจากตะกร้าเลย (ไม่ clamp ไว้ที่ 1)
@@ -95,7 +86,7 @@ function Payment() {
       removeItem(productId);
       return;
     }
-    setCart((prev) => prev.map((item) => (item.productId === productId ? { ...item, quantity: qty } : item)));
+    setCart((prev) => saveCart(prev.map((item) => (item.productId === productId ? { ...item, quantity: qty } : item))));
   };
 
   const changeQty = (productId, delta) => {
@@ -193,9 +184,11 @@ function Payment() {
 
       const items = cart.map(({ productId, quantity }) => ({ productId, quantity }));
       const order = await createOrder(items, paymentMethod, address, shippingMethod);
+      clearCart();
       navigate(`/confirmation/${order.orderId}`);
-    } catch {
-      setError('ชำระเงินไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+    } catch (err) {
+      // โชว์เหตุผลจริงจาก backend ถ้ามี (เช่น สต็อกไม่พอ/สินค้าไม่มี) แทนข้อความทั่วไปที่กลืนสาเหตุจริงไปหมด
+      setError(err.response?.data?.message || 'ชำระเงินไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
       setSubmitting(false);
     }
   };
@@ -222,7 +215,7 @@ function Payment() {
           }
         }
       } catch (error) {
-        console,error(error);
+        console.error(error);
       }
     };
     fetchAddresses();
@@ -230,42 +223,23 @@ function Payment() {
 
   return (
     <div className="-m-6 min-h-screen bg-background p-10">
-      {/* Stepper — Cart ถือว่าผ่านมาแล้ว (ไม่มีหน้า Cart จริงในสโคปนี้), หน้านี้คือขั้น Shipping/Payment รวมกัน */}
-      <div className="mx-auto mb-10 flex max-w-3xl items-center justify-between">
-        {STEPS.map((label, i) => {
-          const stepIndex = i + 1;
-          const isDone = stepIndex === 1;
-          const isCurrent = stepIndex === 2;
-          return (
-            <div key={label} className="flex flex-1 flex-col items-center">
-              <div className="flex w-full items-center">
-                <div
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
-                    isDone
-                      ? 'bg-primary text-gray-900'
-                      : isCurrent
-                      ? 'border-2 border-primary bg-white text-gray-900'
-                      : 'bg-gray-100 text-gray-400'
-                  }`}
-                >
-                  {isDone ? '✓' : stepIndex}
-                </div>
-                {i < STEPS.length - 1 && <div className="mx-2 h-px flex-1 bg-gray-200" />}
-              </div>
-              <span className={`mt-2 text-xs ${isCurrent ? 'font-semibold text-gray-900' : 'text-gray-500'}`}>
-                {label}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-
       {error && (
         <div className="mx-auto mb-6 max-w-5xl rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
           {error}
         </div>
       )}
 
+      {cart.length === 0 ? (
+        <div className="mx-auto max-w-5xl rounded-2xl bg-white p-12 text-center shadow-sm">
+          <p className="mb-4 text-gray-600">ตะกร้าสินค้าของคุณว่างเปล่า</p>
+          <Link
+            to="/products"
+            className="inline-block rounded-full bg-primary px-5 py-3 text-sm font-medium text-gray-900 shadow-sm hover:brightness-95"
+          >
+            เลือกซื้อสินค้า
+          </Link>
+        </div>
+      ) : (
       <div className="mx-auto grid max-w-5xl grid-cols-3 gap-6">
         <div className="col-span-2 space-y-6">
           <div className="rounded-2xl bg-other p-6 shadow-sm">
@@ -451,9 +425,13 @@ function Payment() {
             <div className="space-y-3">
               {cart.map((item) => (
                 <div key={item.productId} className="flex items-center gap-3 text-sm">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-gray-300">
-                    <ImageIcon size={18} />
-                  </span>
+                  {item.image ? (
+                    <img src={item.image} alt={item.name} className="h-12 w-12 shrink-0 rounded-lg object-cover" />
+                  ) : (
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-gray-300">
+                      <ImageIcon size={18} />
+                    </span>
+                  )}
                   <div className="flex-1">
                     <p className="font-medium text-gray-900">{item.name}</p>
                     <div className="mt-1 flex items-center gap-2">
@@ -543,6 +521,7 @@ function Payment() {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }

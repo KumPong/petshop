@@ -308,9 +308,13 @@ function Inventory() {
               <tr key={p.id} className="border-t border-gray-100">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 text-gray-300">
-                      <ImageIcon size={20} />
-                    </span>
+                    {p.image ? (
+                      <img src={p.image} alt={p.name} className="h-12 w-12 rounded-lg object-cover" />
+                    ) : (
+                      <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 text-gray-300">
+                        <ImageIcon size={20} />
+                      </span>
+                    )}
                     <div>
                       <p className="font-semibold text-gray-900">{p.name}</p>
                       <p className="text-xs text-gray-400">{p.subtitle}</p>
@@ -408,9 +412,17 @@ function Inventory() {
 
             <div className="p-6">
               <div className="mb-6 flex items-center gap-4 rounded-xl bg-other px-4 py-3">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-gray-300">
-                  <ImageIcon size={20} />
-                </span>
+                {editingProduct.image ? (
+                  <img
+                    src={editingProduct.image}
+                    alt={editingProduct.name}
+                    className="h-12 w-12 shrink-0 rounded-lg object-cover"
+                  />
+                ) : (
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-gray-300">
+                    <ImageIcon size={20} />
+                  </span>
+                )}
                 <div>
                   <p className="font-semibold text-gray-900">{editingProduct.name}</p>
                   <p className="text-xs text-gray-500">SKU: {editingProduct.id}</p>

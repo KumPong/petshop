@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import Logo from "../assets/Logo.png";
+import { getCart, saveCart } from "../services/cart.service.js";
 import { getAllProducts } from "../services/product.service";
 
 function Navbar() {
@@ -19,18 +20,7 @@ function Navbar() {
     // โหลดตะกร้าจาก localStorage เมื่อ component mount
     useEffect(() => {
         const loadCart = () => {
-            try {
-                const savedCart = localStorage.getItem('cart');
-                if (savedCart) {
-                    const parsed = JSON.parse(savedCart);
-                    setCartItems(parsed);
-                } else {
-                    setCartItems([]);
-                }
-            } catch (error) {
-                console.error('Error loading cart:', error);
-                setCartItems([]);
-            }
+            setCartItems(getCart());
         };
 
         loadCart();
@@ -69,8 +59,7 @@ function Navbar() {
             return item;
         });
         setCartItems(updatedCart);
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
-        window.dispatchEvent(new Event('cartUpdated')); 
+        saveCart(updatedCart);
     };
 
     // ฟังก์ชันลบสินค้าออกจากตะกร้า
@@ -79,8 +68,7 @@ function Navbar() {
         e.stopPropagation(); // ป้องกันการคลิกแล้วไปปิด Dropdown
         const updatedCart = cartItems.filter(item => (item.productId || item.id) !== targetId);
         setCartItems(updatedCart);
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
-        window.dispatchEvent(new Event('cartUpdated'));
+        saveCart(updatedCart);
     };
 
     // ระบบค้นหา
@@ -341,7 +329,7 @@ function Navbar() {
                         </svg>
                         <span className="font-medium">Cart</span>
                         {/* Show Count in Cart */}
-                        {isLoggedIn && cartItems.length > 0 && (
+                        {cartItems.length > 0 && (
                             <span className="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center absolute -top-2 -right-2">
                                 {cartItems.length}
                             </span>
@@ -353,7 +341,7 @@ function Navbar() {
                         <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-100 rounded-md shadow-lg z-50 p-4">
                             <h3 className="font-semibold text-gray-700 mb-3 border-b pb-2">ตะกร้าสินค้าของคุณ</h3>
 
-                            {!isLoggedIn || cartItems.length === 0 ? (
+                            {cartItems.length === 0 ? (
                                 <p className="text-sm text-gray-600 text-center py-4">ตะกร้าสินค้าว่างเปล่า</p>
                             ) : (
                                 <div className="space-y-3">

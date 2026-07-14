@@ -178,6 +178,7 @@ function RestockOrder() {
           currentStock: product.stock, // เก็บ snapshot stock ตอนที่เพิ่มเข้ามา (ถ้า stock จริงเปลี่ยนทีหลัง เลขนี้จะไม่อัปเดตตาม)
           qty,
           unitCost: product.unitCost,
+          image: product.image,
         },
       ];
     });
@@ -294,9 +295,13 @@ function RestockOrder() {
                   วิกฤต
                 </span>
               )}
-              <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg bg-white text-gray-300">
-                <ImageIcon size={22} />
-              </span>
+              {item.image ? (
+                <img src={item.image} alt={item.name} className="mb-4 h-14 w-14 rounded-lg object-cover" />
+              ) : (
+                <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg bg-white text-gray-300">
+                  <ImageIcon size={22} />
+                </span>
+              )}
               <p className="mb-2 font-semibold text-gray-900">{item.name}</p>
               <p className="text-sm text-gray-600">
                 คงเหลือปัจจุบัน:{" "}
@@ -356,9 +361,13 @@ function RestockOrder() {
               <tr key={item.id} className="border-b border-gray-50">
                 <td className="py-4">
                   <div className="flex items-center gap-3">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-300">
-                      <ImageIcon size={16} />
-                    </span>
+                    {item.image ? (
+                      <img src={item.image} alt={item.name} className="h-10 w-10 rounded-lg object-cover" />
+                    ) : (
+                      <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-300">
+                        <ImageIcon size={16} />
+                      </span>
+                    )}
                     <span className="font-medium text-gray-900">
                       {item.name}
                     </span>
@@ -526,9 +535,13 @@ function RestockOrder() {
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 text-gray-300">
-                        <ImageIcon size={18} />
-                      </span>
+                      {p.image ? (
+                        <img src={p.image} alt={p.name} className="h-12 w-12 rounded-lg object-cover" />
+                      ) : (
+                        <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 text-gray-300">
+                          <ImageIcon size={18} />
+                        </span>
+                      )}
                       <div>
                         <p className="font-semibold text-gray-900">{p.name}</p>
                         <p className="text-xs text-gray-500">SKU: {p.sku}</p>

@@ -2,325 +2,56 @@
   {
     "orderId": "ORD-1001",
     "orderNo": "ORD-1001",
-    "customerId": "GUEST",
-    "orderDate": "2026-07-05T09:56:54.536Z",
-    "status": "Delivered",
-    "subtotal": 1790,
+    "customerId": "CPS0002",
+    "orderDate": "2026-07-14T14:59:23.705Z",
+    "status": "Confirmed",
+    "statusHistory": [
+      {
+        "status": "Confirmed",
+        "at": "2026-07-14T14:59:23.705Z"
+      }
+    ],
+    "courierNotes": "",
+    "flagReason": "",
+    "statusBeforeFlag": null,
+    "subtotal": 500,
     "shippingAmount": 0,
-    "taxAmount": 125.3,
-    "totalAmount": 1915.3,
+    "taxAmount": 35,
+    "totalAmount": 535,
     "items": [
       {
-        "orderItemId": "OI-PD-002-1783245414536",
-        "productId": "PD-002",
-        "name": "Oak & Harvest: เนื้อวัวออร์แกนิกและข้าว",
+        "orderItemId": "OI-PD-004-1784041163703",
+        "productId": "PD-004",
+        "name": "Kong Classic",
         "quantity": 1,
-        "unitPrice": 950,
-        "subTotal": 950,
-        "picked": false
-      },
-      {
-        "orderItemId": "OI-PD-005-1783245414536",
-        "productId": "PD-005",
-        "name": "Cozy Nap: เบาะนอนสัตว์เลี้ยงไซส์กลาง",
-        "quantity": 1,
-        "unitPrice": 750,
-        "subTotal": 750,
-        "picked": false
-      },
-      {
-        "orderItemId": "OI-PD-003-1783245414536",
-        "productId": "PD-003",
-        "name": "Whisker Delight: ทูน่าเนื้อแน่นในเยลลี่",
-        "quantity": 2,
-        "unitPrice": 45,
-        "subTotal": 90,
+        "unitPrice": 500,
+        "subTotal": 500,
         "picked": false
       }
     ],
     "shippingAddress": {
-      "fullName": "สมชาย ใจดี",
-      "street": "test",
-      "city": "เชียงใหม่",
-      "postalCode": "50200",
-      "phone": "0888888888"
+      "fullName": "Dora",
+      "street": "1234",
+      "city": "Pluto",
+      "postalCode": "99999",
+      "phone": "1234567890"
     },
     "shipping": {
       "method": "standard",
       "methodLabel": "จัดส่งมาตรฐาน",
       "cost": 0,
       "carrier": "Kerry Express",
-      "trackingNumber": "KER-611552631",
-      "estimatedDeliveryStart": "2026-07-08T09:56:54.536Z",
-      "estimatedDeliveryEnd": "2026-07-10T09:56:54.536Z"
+      "trackingNumber": "KER-687567400",
+      "estimatedDeliveryStart": "2026-07-17T14:59:23.705Z",
+      "estimatedDeliveryEnd": "2026-07-19T14:59:23.705Z"
     },
     "payment": {
       "paymentId": "PAY-ORD-1001",
-      "method": "บัตรเครดิต",
-      "amount": 1915.3,
+      "method": "พร้อมเพย์",
+      "amount": 535,
       "status": "Paid",
-      "paymentDate": "2026-07-05T09:56:54.536Z",
-      "transactionId": "TXN-1783245414536-9555"
-    },
-    "statusHistory": [
-      {
-        "status": "Confirmed",
-        "at": "2026-07-05T09:56:54.536Z"
-      },
-      {
-        "status": "Processing",
-        "at": "2026-07-09T08:30:11.052Z"
-      },
-      {
-        "status": "Packed",
-        "at": "2026-07-09T08:32:10.813Z"
-      },
-      {
-        "status": "Shipped",
-        "at": "2026-07-09T08:32:16.346Z"
-      },
-      {
-        "status": "Delivered",
-        "at": "2026-07-09T08:32:19.193Z"
-      }
-    ],
-    "courierNotes": "",
-    "flagReason": "",
-    "statusBeforeFlag": null
-  },
-  {
-    "orderId": "ORD-1002",
-    "orderNo": "ORD-1002",
-    "customerId": "GUEST",
-    "orderDate": "2026-07-06T14:07:21.152Z",
-    "status": "Delivered",
-    "subtotal": 1790,
-    "shippingAmount": 150,
-    "taxAmount": 125.3,
-    "totalAmount": 2065.3,
-    "items": [
-      {
-        "orderItemId": "OI-PD-002-1783346841151",
-        "productId": "PD-002",
-        "name": "Oak & Harvest: เนื้อวัวออร์แกนิกและข้าว",
-        "quantity": 1,
-        "unitPrice": 950,
-        "subTotal": 950,
-        "picked": true
-      },
-      {
-        "orderItemId": "OI-PD-005-1783346841151",
-        "productId": "PD-005",
-        "name": "Cozy Nap: เบาะนอนสัตว์เลี้ยงไซส์กลาง",
-        "quantity": 1,
-        "unitPrice": 750,
-        "subTotal": 750,
-        "picked": true
-      },
-      {
-        "orderItemId": "OI-PD-003-1783346841151",
-        "productId": "PD-003",
-        "name": "Whisker Delight: ทูน่าเนื้อแน่นในเยลลี่",
-        "quantity": 2,
-        "unitPrice": 45,
-        "subTotal": 90,
-        "picked": true
-      }
-    ],
-    "shippingAddress": {
-      "fullName": "l",
-      "street": "s",
-      "city": "s",
-      "postalCode": "s",
-      "phone": "s"
-    },
-    "shipping": {
-      "method": "express",
-      "methodLabel": "จัดส่งด่วน",
-      "cost": 150,
-      "carrier": "Kerry Express",
-      "trackingNumber": "KER-590385916",
-      "estimatedDeliveryStart": "2026-07-07T14:07:21.152Z",
-      "estimatedDeliveryEnd": "2026-07-08T14:07:21.152Z"
-    },
-    "payment": {
-      "paymentId": "PAY-ORD-1002",
-      "method": "บัตรเครดิต",
-      "amount": 2065.3,
-      "status": "Paid",
-      "paymentDate": "2026-07-06T14:07:21.152Z",
-      "transactionId": "TXN-1783346841152-5657"
-    },
-    "statusHistory": [
-      {
-        "status": "Confirmed",
-        "at": "2026-07-06T14:07:21.152Z"
-      },
-      {
-        "status": "Processing",
-        "at": "2026-07-09T02:46:20.789Z"
-      },
-      {
-        "status": "Packed",
-        "at": "2026-07-09T02:46:57.887Z"
-      },
-      {
-        "status": "Shipped",
-        "at": "2026-07-09T02:47:04.525Z"
-      },
-      {
-        "status": "Delivered",
-        "at": "2026-07-09T02:47:11.740Z"
-      }
-    ],
-    "courierNotes": "",
-    "flagReason": "",
-    "statusBeforeFlag": null
-  },
-  {
-    "orderId": "ORD-1003",
-    "orderNo": "ORD-1003",
-    "customerId": "GUEST",
-    "orderDate": "2026-07-10T10:39:57.547Z",
-    "status": "Confirmed",
-    "statusHistory": [
-      {
-        "status": "Confirmed",
-        "at": "2026-07-10T10:39:57.547Z"
-      }
-    ],
-    "courierNotes": "",
-    "flagReason": "",
-    "statusBeforeFlag": null,
-    "subtotal": 1790,
-    "shippingAmount": 0,
-    "taxAmount": 125.3,
-    "totalAmount": 1915.3,
-    "items": [
-      {
-        "orderItemId": "OI-PD-002-1783679997546",
-        "productId": "PD-002",
-        "name": "Oak & Harvest: เนื้อวัวออร์แกนิกและข้าว",
-        "quantity": 1,
-        "unitPrice": 950,
-        "subTotal": 950,
-        "picked": false
-      },
-      {
-        "orderItemId": "OI-PD-005-1783679997546",
-        "productId": "PD-005",
-        "name": "Cozy Nap: เบาะนอนสัตว์เลี้ยงไซส์กลาง",
-        "quantity": 1,
-        "unitPrice": 750,
-        "subTotal": 750,
-        "picked": false
-      },
-      {
-        "orderItemId": "OI-PD-003-1783679997546",
-        "productId": "PD-003",
-        "name": "Whisker Delight: ทูน่าเนื้อแน่นในเยลลี่",
-        "quantity": 2,
-        "unitPrice": 45,
-        "subTotal": 90,
-        "picked": false
-      }
-    ],
-    "shippingAddress": {
-      "fullName": "เจน โด",
-      "street": "67 Goon Mar Solar system",
-      "city": "Galaxy",
-      "postalCode": "10101",
-      "phone": "0981234567"
-    },
-    "shipping": {
-      "method": "standard",
-      "methodLabel": "จัดส่งมาตรฐาน",
-      "cost": 0,
-      "carrier": "Kerry Express",
-      "trackingNumber": "KER-393851449",
-      "estimatedDeliveryStart": "2026-07-13T10:39:57.547Z",
-      "estimatedDeliveryEnd": "2026-07-15T10:39:57.547Z"
-    },
-    "payment": {
-      "paymentId": "PAY-ORD-1003",
-      "method": "บัตรเครดิต",
-      "amount": 1915.3,
-      "status": "Paid",
-      "paymentDate": "2026-07-10T10:39:57.547Z",
-      "transactionId": "TXN-1783679997547-9631"
-    }
-  },
-  {
-    "orderId": "ORD-1004",
-    "orderNo": "ORD-1004",
-    "customerId": "GUEST",
-    "orderDate": "2026-07-12T08:53:42.437Z",
-    "status": "Confirmed",
-    "statusHistory": [
-      {
-        "status": "Confirmed",
-        "at": "2026-07-12T08:53:42.437Z"
-      }
-    ],
-    "courierNotes": "",
-    "flagReason": "",
-    "statusBeforeFlag": null,
-    "subtotal": 3825,
-    "shippingAmount": 0,
-    "taxAmount": 267.75,
-    "totalAmount": 4092.75,
-    "items": [
-      {
-        "orderItemId": "OI-PD-002-1783846422436",
-        "productId": "PD-002",
-        "name": "Oak & Harvest: เนื้อวัวออร์แกนิกและข้าว",
-        "quantity": 3,
-        "unitPrice": 950,
-        "subTotal": 2850,
-        "picked": false
-      },
-      {
-        "orderItemId": "OI-PD-005-1783846422436",
-        "productId": "PD-005",
-        "name": "Cozy Nap: เบาะนอนสัตว์เลี้ยงไซส์กลาง",
-        "quantity": 1,
-        "unitPrice": 750,
-        "subTotal": 750,
-        "picked": false
-      },
-      {
-        "orderItemId": "OI-PD-003-1783846422436",
-        "productId": "PD-003",
-        "name": "Whisker Delight: ทูน่าเนื้อแน่นในเยลลี่",
-        "quantity": 5,
-        "unitPrice": 45,
-        "subTotal": 225,
-        "picked": false
-      }
-    ],
-    "shippingAddress": {
-      "fullName": "เจน โด",
-      "street": "67 Goon Mar Solar system",
-      "city": "Galaxy",
-      "postalCode": "10101",
-      "phone": "0981234569"
-    },
-    "shipping": {
-      "method": "standard",
-      "methodLabel": "จัดส่งมาตรฐาน",
-      "cost": 0,
-      "carrier": "Kerry Express",
-      "trackingNumber": "KER-240662602",
-      "estimatedDeliveryStart": "2026-07-15T08:53:42.437Z",
-      "estimatedDeliveryEnd": "2026-07-17T08:53:42.437Z"
-    },
-    "payment": {
-      "paymentId": "PAY-ORD-1004",
-      "method": "บัตรเครดิต",
-      "amount": 4092.75,
-      "status": "Paid",
-      "paymentDate": "2026-07-12T08:53:42.437Z",
-      "transactionId": "TXN-1783846422437-2171"
+      "paymentDate": "2026-07-14T14:59:23.705Z",
+      "transactionId": "TXN-1784041163705-1910"
     }
   }
 ]
