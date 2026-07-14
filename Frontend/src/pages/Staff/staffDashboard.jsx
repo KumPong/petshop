@@ -35,7 +35,7 @@ function StatCard({ icon, label, value, sub, subColor, accent }) {
     return (
         <div className="bg-other rounded-2xl p-5 flex flex-col gap-3 relative overflow-hidden">
             <div className="flex items-start justify-between">
-                <p className="text-sm text-gray-600 font-medium leading-tight max-w-[120px]">{label}</p>
+                <p className="text-sm text-gray-600 font-medium leading-tight max-w-30">{label}</p>
                 <div className="p-2 rounded-xl bg-white/60">{icon}</div>
             </div>
             <div>

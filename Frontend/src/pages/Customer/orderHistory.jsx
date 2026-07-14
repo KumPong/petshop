@@ -13,8 +13,14 @@ function OrderHistory() {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
+                const token = localStorage.getItem('token');
+
                 // เรียกข้อมูลออเดอร์ทั้งหมดจาก Backend
-                const response = await api.get('/orders');
+                const response = await api.get('/orders', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
                 // กรองเอาเฉพาะออเดอร์ที่มีสถานะ "Delivered" (จัดส่งสำเร็จ) เท่านั้น
                 const deliveredOrders = response.data.filter(order => 
