@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import api from '../../services/api.js'
 import { getInventory } from '../../services/inventory.service.js'
+import { addToCart } from '../../services/cart.service.js'
 
 function ProductDetail() {
   const { id } = useParams()
@@ -36,8 +37,11 @@ function ProductDetail() {
         }
 
         // สร้างออบเจ็กต์ product แบบง่ายจากข้อมูล inventory
+        // เก็บ productId (PD-xxx) แยกจาก id (SKU ของ inventory) — ตะกร้า/checkout ต้องใช้ productId เพราะ
+        // order.controller.js อ้างอิง product.json ด้วย productId ไม่ใช่ SKU ของ inventory
         const productFromInventory = {
           id: item.id,
+          productId: item.productId,
           name: item.name,
           description: item.subtitle || item.description || '',
           price: item.unitCost,
@@ -68,34 +72,8 @@ function ProductDetail() {
       return
     }
     
-    // ดึงตะกร้าจาก localStorage
-    const existingCart = JSON.parse(localStorage.getItem('cart') || '[]')
-    
-    // ตรวจสอบว่าสินค้านี้มีในตะกร้าหรือไม่ — ใช้ productId ให้สอดคล้องกับ product.json
-    const existingItem = existingCart.find(item => item.productId === product.id)
-    
-    if (existingItem) {
-      // ถ้ามีแล้วให้เพิ่มจำนวน
-      existingItem.quantity += quantity
-    } else {
-      // ถ้าไม่มีให้เพิ่มรายการใหม่
-      existingCart.push({
-        productId: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.image,
-        quantity: quantity
-      })
-    }
-    
-    // บันทึกลงตะกร้า localStorage
-    localStorage.setItem('cart', JSON.stringify(existingCart))
-    console.log('Cart updated:', existingCart)
-    
-    // ส่ง custom event เพื่อให้ navbar อัพเดต
-    window.dispatchEvent(new Event('cartUpdated'))
-    console.log('cartUpdated event dispatched')
-    
+    addToCart(product, quantity)
+
     // แสดงข้อความยืนยัน
     setAddedToCart(true)
     setTimeout(() => {

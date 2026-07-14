@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom'
 import { getInventory } from '../../services/inventory.service.js'
+import { addToCart } from '../../services/cart.service.js'
 
 function ProductListing({ selectedSegment = 'all' }) {
   const [sort, setSort] = useState('all')
@@ -138,6 +139,12 @@ function InventoryGrid({ sort, selectedSegment, search }) {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  function handleAddToCart(e, item) {
+    e.preventDefault()
+    e.stopPropagation()
+    addToCart({ productId: item.productId, name: item.name, price: item.unitCost ?? item.price, image: item.image })
+  }
+
   return (
     <>
       {pagedItems.map((p) => (
@@ -153,7 +160,12 @@ function InventoryGrid({ sort, selectedSegment, search }) {
             <p className="text-gray-700 text-sm mb-3 line-clamp-2 flex-1">{p.subtitle || p.description || ''}</p>
             <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
               <span className="text-xl font-bold text-green-700">{p.unitCost ? `฿${p.unitCost}` : (p.price ? `฿${p.price}` : 'ราคาไม่ระบุ')}</span>
-              <button aria-label="Add to cart" className="bg-primary hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 flex items-center gap-2 shrink-0">
+              <button
+                aria-label="Add to cart"
+                onClick={(e) => handleAddToCart(e, p)}
+                disabled={p.stock === 0}
+                className="bg-primary hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded-md transition duration-300 flex items-center gap-2 shrink-0"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="M6 6h15l-1.5 9h-13z" />
                   <circle cx="9" cy="20" r="1" />

@@ -45,8 +45,8 @@ function App() {
         <Route path='/products/cats' element={<ProductListing selectedSegment="cats" />} />
         <Route path='/products/accessories' element={<ProductListing selectedSegment="accessories" />} />
         <Route path='/products/:id' element={<ProductDetail />} />
-        <Route path='/payment' element={<Payment />} />
-        <Route path='/confirmation/:orderId' element={<Confirmation />} />
+        <Route path='/payment' element={<ProtectedRoute><Payment /></ProtectedRoute>} />
+        <Route path='/confirmation/:orderId' element={<ProtectedRoute><Confirmation /></ProtectedRoute>} />
         <Route path='/tracking' element={<Tracking />} />
         <Route path='/tracking/:orderId' element={<Tracking />} />
         {/* หน้าอื่นๆ ของลูกค้าในอนาคต เช่น /shop, /cart ก็ใส่ในนี้ได้เลย */}

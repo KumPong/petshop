@@ -35,7 +35,7 @@
     "unitLabel": "1 ถุง บรรจุ 2 กก.",
     "category": "อาหารแห้ง",
     "supplier": "Wholesome Pet Foods",
-    "stock": 40,
+    "stock": 46,
     "threshold": 20,
     "unitCost": 1000,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
@@ -47,7 +47,7 @@
       "size": "2 กก.",
       "proteinContent": "24%"
     },
-    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYZmd8hsmQ0eoAfVWmIcUaTLWafyGQV-tEVecotk39_w&s",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYZmd8hsmQ0eoAfVWmIcUaTLWafyGQV-tEVecotk39_w&s",
     "careInstructions": [
       "ปิดภาชนะให้สนิท"
     ]
@@ -100,7 +100,7 @@
       "size": "130 กรัม/ซอง",
       "proteinContent": "8%"
     },
-    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtIFjtca-esO7TKcQGwrZ_0XkywX5ciinOaJ8MpPf0Lyj_YAry0viO5dI&s=10",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtIFjtca-esO7TKcQGwrZ_0XkywX5ciinOaJ8MpPf0Lyj_YAry0viO5dI&s=10",
     "careInstructions": [
       "ใช้ทันทีหลังเปิด"
     ]
@@ -126,7 +126,7 @@
       "size": "2 กก.",
       "proteinContent": "38%"
     },
-    "image":"https://tailybuddy.com/products/3375/2kg.jpg",
+    "image": "https://tailybuddy.com/products/3375/2kg.jpg",
     "careInstructions": [
       "เก็บในที่แห้ง"
     ]
@@ -153,7 +153,7 @@
       "size": "3 กก.",
       "proteinContent": "24%"
     },
-    "image":"https://cdn.shopify.com/s/files/1/0386/4113/9843/files/10265290-SmartHeart-Adult-Roast-Beef-3kg_d_480x480.jpg?v=1601291702",
+    "image": "https://cdn.shopify.com/s/files/1/0386/4113/9843/files/10265290-SmartHeart-Adult-Roast-Beef-3kg_d_480x480.jpg?v=1601291702",
     "careInstructions": [
       "ปิดถุงหลังใช้"
     ]
@@ -179,7 +179,7 @@
       "size": "100 กรัม/ถาด",
       "proteinContent": "8%"
     },
-    "image":"https://tailybuddy.com/products/570/%E0%B8%A3%E0%B8%AA%E0%B9%80%E0%B8%99%E0%B8%B7%E0%B9%89%E0%B8%AD%E0%B9%84%E0%B8%81%E0%B9%88.jpg",
+    "image": "https://tailybuddy.com/products/570/%E0%B8%A3%E0%B8%AA%E0%B9%80%E0%B8%99%E0%B8%B7%E0%B9%89%E0%B8%AD%E0%B9%84%E0%B8%81%E0%B9%88.jpg",
     "careInstructions": [
       "แช่เย็นหลังเปิด"
     ]
@@ -205,7 +205,7 @@
       "size": "2.5 กก.",
       "proteinContent": "29%"
     },
-    "image":"https://m.media-amazon.com/images/I/81m2MULtxgL._AC_UF350,350_QL80_.jpg",
+    "image": "https://m.media-amazon.com/images/I/81m2MULtxgL._AC_UF350,350_QL80_.jpg",
     "careInstructions": [
       "เก็บในภาชนะปิด"
     ]
@@ -231,7 +231,7 @@
       "size": "2 กก.",
       "proteinContent": "32%"
     },
-    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB_gwtSiJABZqqeudp0jTa7XyCmvyfrtHMcp4AX8HQNFdK-rQcIX43avKy&s=10",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB_gwtSiJABZqqeudp0jTa7XyCmvyfrtHMcp4AX8HQNFdK-rQcIX43avKy&s=10",
     "careInstructions": [
       "เก็บในที่แห้ง"
     ]
@@ -257,7 +257,7 @@
       "size": "3 กก.",
       "proteinContent": "25%"
     },
-    "image":"https://www.petloverscentre.com/Admin/Public/Getimage.ashx?width=300&&format=webp&image=/Files/Images/Ecom/Products/70970.jpg",
+    "image": "https://www.petloverscentre.com/Admin/Public/Getimage.ashx?width=300&&format=webp&image=/Files/Images/Ecom/Products/70970.jpg",
     "careInstructions": [
       "ปิดถุงให้สนิท"
     ]
@@ -284,7 +284,7 @@
       "size": "2 กก.",
       "proteinContent": "27%"
     },
-    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3nHujcKPeMCPcvaMMTkhTWFCMOIDD0kGGEYspObhB5oM4RnpxbauAGu4T&s=10",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3nHujcKPeMCPcvaMMTkhTWFCMOIDD0kGGEYspObhB5oM4RnpxbauAGu4T&s=10",
     "careInstructions": [
       "ปิดถุงให้สนิท",
       "เก็บในที่แห้ง"
@@ -311,7 +311,7 @@
       "size": "1.5 กก.",
       "proteinContent": "32%"
     },
-    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkQvGCVtxHmvw7YZLAZQNTEI0M-mPI_iJ9fM0fDKkn_23dk0GMvLJwrbPG&s=10",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkQvGCVtxHmvw7YZLAZQNTEI0M-mPI_iJ9fM0fDKkn_23dk0GMvLJwrbPG&s=10",
     "careInstructions": [
       "เก็บในภาชนะปิดสนิท"
     ]
@@ -325,7 +325,7 @@
     "unitLabel": "1 แพ็ก บรรจุ 24 ซอง",
     "category": "อาหารเปียก",
     "supplier": "Pawsome Suppliers Co.",
-    "stock": 60,
+    "stock": 71,
     "threshold": 20,
     "unitCost": 45,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
@@ -338,7 +338,7 @@
       "size": "85 กรัม/ซอง",
       "quantity": "24 ซอง"
     },
-    "image":"https://www.petloverscentre.co.th/Admin/Public/Getimage.ashx?width=300&height=300&compression=60&Crop=5&image=/Files/Images/Ecom/Products/23871.jpg",
+    "image": "https://www.petloverscentre.co.th/Admin/Public/Getimage.ashx?width=300&height=300&compression=60&Crop=5&image=/Files/Images/Ecom/Products/23871.jpg",
     "careInstructions": [
       "แช่เย็นหลังเปิด"
     ]
@@ -364,7 +364,7 @@
       "size": "82 กรัม/ซอง",
       "quantity": "12 ซอง"
     },
-    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDhpC0DluV4tICDGbcsOUmX9FxADDn_IgLQUp3-YlVs9PkWpYRj7XDVRlS&s=10",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDhpC0DluV4tICDGbcsOUmX9FxADDn_IgLQUp3-YlVs9PkWpYRj7XDVRlS&s=10",
     "careInstructions": [
       "ใช้ภายใน 24 ชม. หลังเปิด"
     ]
@@ -390,7 +390,7 @@
       "size": "80 กรัม/ซอง",
       "quantity": "12 ซอง"
     },
-    "image":"https://media.allonline.7eleven.co.th/pdmain/350948-01-allonline-sm-new1.jpg",
+    "image": "https://media.allonline.7eleven.co.th/pdmain/350948-01-allonline-sm-new1.jpg",
     "careInstructions": [
       "แช่เย็นหลังเปิด"
     ]
@@ -416,7 +416,7 @@
       "size": "1.8 กก.",
       "proteinContent": "40%"
     },
-    "image":"https://www.feedmeplease.com/images/pdimg/2091/1.webp",
+    "image": "https://www.feedmeplease.com/images/pdimg/2091/1.webp",
     "careInstructions": [
       "เก็บในที่แห้ง"
     ]
@@ -442,7 +442,7 @@
       "size": "1.2 กก.",
       "proteinContent": "30%"
     },
-    "image":"https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/52/88/8850477056152/8850477056152_1-20260609141213-.jpg",
+    "image": "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/52/88/8850477056152/8850477056152_1-20260609141213-.jpg",
     "careInstructions": [
       "ปิดซิปถุง"
     ]
@@ -468,7 +468,7 @@
       "size": "1.4 กก.",
       "proteinContent": "34%"
     },
-    "image":"https://thonglorpetshop.com/wp-content/uploads/2025/04/8850127004847_C1L2_AOA.jpg",
+    "image": "https://thonglorpetshop.com/wp-content/uploads/2025/04/8850127004847_C1L2_AOA.jpg",
     "careInstructions": [
       "เก็บให้พ้นความชื้น"
     ]
@@ -494,7 +494,7 @@
       "size": "85 กรัม/กระป๋อง",
       "proteinContent": "12%"
     },
-    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRe4kDIVE12FyKd-CSWUmCB35w1drhV7LfML-hLRCABaA&s",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRe4kDIVE12FyKd-CSWUmCB35w1drhV7LfML-hLRCABaA&s",
     "careInstructions": [
       "เสิร์ฟทันทีหลังเปิด"
     ]
@@ -520,7 +520,7 @@
       "size": "1.1 กก.",
       "proteinContent": "30%"
     },
-    "image":"https://s20022.lnwfile.com/_b/fu/_raw/tv/mg/0h.jpg",
+    "image": "https://s20022.lnwfile.com/_b/fu/_raw/tv/mg/0h.jpg",
     "careInstructions": [
       "ปิดถุงหลังใช้งาน"
     ]
@@ -534,10 +534,10 @@
     "unitLabel": "1 ชิ้น",
     "category": "ของเล่นเคี้ยว",
     "supplier": "Eco-Pet Exports",
-    "stock": 25,
+    "stock": 24,
     "threshold": 10,
     "unitCost": 500,
-    "lastUpdated": "2026-07-01T00:00:00.000Z",
+    "lastUpdated": "2026-07-14T14:59:23.705Z",
     "bestSeller": true,
     "id-type": "accessories",
     "specifications": {
@@ -548,7 +548,7 @@
       "type": "ของเล่นเคี้ยว",
       "color": "Red"
     },
-    "image":"https://m.media-amazon.com/images/I/61eVAqrR7uL._AC_UF894,1000_QL80_.jpg",
+    "image": "https://m.media-amazon.com/images/I/61eVAqrR7uL._AC_UF894,1000_QL80_.jpg",
     "careInstructions": [
       "ล้างด้วยน้ำอุ่น"
     ]
@@ -562,7 +562,7 @@
     "unitLabel": "1 ชิ้น",
     "category": "ของเล่นแมว",
     "supplier": "Pawsome Suppliers Co.",
-    "stock": 16,
+    "stock": 20,
     "threshold": 8,
     "unitCost": 400,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
@@ -574,7 +574,7 @@
       "size": "30 ซม.",
       "weight": "ตามขนาด"
     },
-    "image":"https://pdsapetstore.org.uk/cdn/shop/files/kong-cat-kickeroo-giraffe-7990061.png?v=1753283398",
+    "image": "https://pdsapetstore.org.uk/cdn/shop/files/kong-cat-kickeroo-giraffe-7990061.png?v=1753283398",
     "careInstructions": [
       "ซักมือ"
     ]
@@ -600,7 +600,7 @@
       "weight": "ไซส์ M",
       "ingredients": "ยาง"
     },
-    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAmS2MKvyK3Dz0UMaqgOQfRm9BJnUsd3SMfQ2-1oSVcmil4iP1Jlu9UNg&s=10",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAmS2MKvyK3Dz0UMaqgOQfRm9BJnUsd3SMfQ2-1oSVcmil4iP1Jlu9UNg&s=10",
     "careInstructions": [
       "ล้างน้ำสะอาด"
     ]
@@ -619,7 +619,7 @@
     "unitCost": 1200,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
-    "image":"https://cdnpublic.budgetpetproducts.com.au/products_pictures/2023/08/24/96fc5a82-1236-46a8-a9d9-8b3c14f53811.jpg"
+    "image": "https://cdnpublic.budgetpetproducts.com.au/products_pictures/2023/08/24/96fc5a82-1236-46a8-a9d9-8b3c14f53811.jpg"
   },
   {
     "id": "TR-TUN-01",
@@ -635,7 +635,7 @@
     "unitCost": 2400,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
-    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdyWtU-KeunI6N8pEl7rm7woukzeA_9iZE0aBAo5WN9M0Mv4jbJC-g3yY&s=10"
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdyWtU-KeunI6N8pEl7rm7woukzeA_9iZE0aBAo5WN9M0Mv4jbJC-g3yY&s=10"
   },
   {
     "id": "TY-CAT-04",
@@ -651,7 +651,7 @@
     "unitCost": 1500,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
-    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDLCkMu0OE8aLC98eDJswu1n9z_WstwhMmPFWxFBVhSzmDKXamjxcvCMk&s=10"
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDLCkMu0OE8aLC98eDJswu1n9z_WstwhMmPFWxFBVhSzmDKXamjxcvCMk&s=10"
   },
   {
     "id": "AC-LSH-02",
@@ -667,7 +667,7 @@
     "unitCost": 1000,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
-    "image":"https://m.media-amazon.com/images/I/71hdG7p2IQL._AC_UF1000,1000_QL80_.jpg"
+    "image": "https://m.media-amazon.com/images/I/71hdG7p2IQL._AC_UF1000,1000_QL80_.jpg"
   },
   {
     "id": "AC-BWL-03",
@@ -683,7 +683,7 @@
     "unitCost": 500,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
-    "image":"https://www.jib.co.th/img_master/product/original/20220127090332_50946_24_1.jpg"
+    "image": "https://www.jib.co.th/img_master/product/original/20220127090332_50946_24_1.jpg"
   },
   {
     "id": "orthopedic-bed",
@@ -699,7 +699,7 @@
     "unitCost": 1800,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
-    "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr39XsN3o-sBmQtBcJGdcbtVbbNtxxGhhyqIz6VLX05-UQ4owGY6Vs0Ac&s=10"
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr39XsN3o-sBmQtBcJGdcbtVbbNtxxGhhyqIz6VLX05-UQ4owGY6Vs0Ac&s=10"
   },
   {
     "id": "tug-toy",
@@ -715,6 +715,6 @@
     "unitCost": 1300,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
-    "image":"https://tailybuddy.com/products/8979/mesh-gotham.jpg"
+    "image": "https://tailybuddy.com/products/8979/mesh-gotham.jpg"
   }
 ]

@@ -30,10 +30,17 @@ function Tracking() {
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  // มี orderId ใน URL -> ดึงออเดอร์นั้นตรงๆ, ไม่มี (เช่นจากลิงก์ "ติดตามสินค้า" ใน navbar) -> ยังไม่มี login
-  // จริง เลยโชว์ออเดอร์ล่าสุดในระบบแทนเป็นค่า default
+  // มี orderId ใน URL -> ดึงออเดอร์นั้นตรงๆ, ไม่มี (เช่นจากลิงก์ "ติดตามสินค้า" ใน navbar) -> โชว์ออเดอร์ล่าสุดของตัวเอง
+  // (ต้อง login เพราะ backend เช็ค customerId จาก token — ไม่มี token เรียก getOrders() ไม่ได้เลย เช็คตัดไว้ก่อนกันขึ้น error ทั่วไป)
   useEffect(() => {
     let cancelled = false;
+
+    if (!orderId && !localStorage.getItem('token')) {
+      setError('กรุณาเข้าสู่ระบบเพื่อดูคำสั่งซื้อล่าสุดของคุณ');
+      setLoading(false);
+      return;
+    }
+
     const load = orderId
       ? getOrder(orderId)
       : getOrders().then((orders) => {
@@ -71,12 +78,19 @@ function Tracking() {
   }
 
   if (error || !order) {
+    const needsLogin = !orderId && !localStorage.getItem('token');
     return (
       <div className="-m-6 flex min-h-screen flex-col items-center justify-center gap-4 bg-background p-10">
         <p className="text-gray-500">{error || 'ไม่พบคำสั่งซื้อที่จะติดตาม'}</p>
-        <Link to="/" className="text-sm font-medium text-green-700 hover:underline">
-          กลับสู่หน้าหลัก
-        </Link>
+        {needsLogin ? (
+          <Link to="/login" className="text-sm font-medium text-green-700 hover:underline">
+            เข้าสู่ระบบ
+          </Link>
+        ) : (
+          <Link to="/" className="text-sm font-medium text-green-700 hover:underline">
+            กลับสู่หน้าหลัก
+          </Link>
+        )}
       </div>
     );
   }

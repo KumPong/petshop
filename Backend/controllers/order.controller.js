@@ -1,11 +1,24 @@
 import { readFile, writeFile } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import jwt from 'jsonwebtoken';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ORDERS_PATH = path.join(__dirname, '..', 'data', 'order.json');
 const PRODUCT_PATH = path.join(__dirname, '..', 'data', 'product.json');
 const INVENTORY_PATH = path.join(__dirname, '..', 'data', 'inventory.json');
+
+// แกะ user จาก Authorization header ถ้ามี (secret key ตัวเดียวกับ auth.controller.js) — คืน null เฉยๆ ถ้าไม่มี/token ไม่ถูกต้อง
+// ไม่มี token ก็ยัง fallback เป็น guest ได้ปกติ (ยังไม่บังคับ login ทุก endpoint)
+function getAuthUser(req) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+  try {
+    return jwt.verify(authHeader.split(' ')[1], 'YOUR_SECRET_KEY_PETSTOP');
+  } catch {
+    return null;
+  }
+}
 
 const TAX_RATE = 0.07; // ภาษี 7% แบบเดียวกับ VAT
 
@@ -108,11 +121,20 @@ function attachLiveTimeline(order) {
 
 const ALLOWED_UPDATE_STATUSES = ['Confirmed', 'Processing', 'Packed', 'Shipped', 'Delivered', 'Flagged'];
 
-// GET /api/orders — ออเดอร์ทั้งหมด (เรียงล่าสุดก่อน) ใช้โดย Tracking ตอนไม่ระบุเลขออเดอร์ (ยังไม่มี login จริง)
+// GET /api/orders — ต้อง login เท่านั้น (เดิมเปิดให้ guest ดึงออเดอร์ "ทุกคน" ได้ตรงๆ รวม PII เต็ม — ปิดช่องนี้แล้ว)
+// Staff/Manager เห็นออเดอร์ทั้งหมด (ใช้ในหน้า Order manage), Customer เห็นแค่ออเดอร์ของตัวเอง (ใช้ใน Tracking ตอนไม่ระบุเลขออเดอร์)
 export async function getOrders(req, res) {
+  const authUser = getAuthUser(req);
+  if (!authUser) {
+    return res.status(401).json({ message: 'กรุณาเข้าสู่ระบบก่อนดูรายการคำสั่งซื้อ' });
+  }
+
   const orders = await readJson(ORDERS_PATH);
-  orders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
-  res.json(orders.map(attachLiveTimeline));
+  const isStaff = authUser.role === 'Staff' || authUser.role === 'Manager';
+  const visibleOrders = isStaff ? orders : orders.filter((o) => o.customerId === authUser.id);
+
+  visibleOrders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+  res.json(visibleOrders.map(attachLiveTimeline));
 }
 
 // GET /api/orders/:id — ดึงออเดอร์เดียว ใช้โดยหน้า Confirmation, Tracking (ระบุเลขออเดอร์ตรงๆ) และ Order manage
@@ -123,13 +145,27 @@ export async function getOrderById(req, res) {
   if (!order) {
     return res.status(404).json({ message: `ไม่พบคำสั่งซื้อ orderId "${id}"` });
   }
+
+  // ถ้า login มา (มี token) ต้องเป็นเจ้าของออเดอร์เอง หรือเป็น Staff/Manager เท่านั้นถึงจะดูได้
+  // ไม่มี token เลย (guest, เช่นหน้า Tracking แบบไม่ login) ยังเข้าดูได้ปกติเหมือนเดิม กันไม่ให้ฟีเจอร์เดิมพัง
+  const authUser = getAuthUser(req);
+  if (authUser) {
+    const isOwner = order.customerId === authUser.id;
+    const isStaff = authUser.role === 'Staff' || authUser.role === 'Manager';
+    if (!isOwner && !isStaff) {
+      return res.status(403).json({ message: 'ไม่มีสิทธิ์เข้าถึงคำสั่งซื้อนี้' });
+    }
+  }
+
   res.json(attachLiveTimeline(order));
 }
 
 // POST /api/orders — ทำครบ checkout ในจุดเดียว: ตรวจสินค้า -> คำนวณราคาจริงฝั่ง backend -> จำลองชำระเงิน
-// (สำเร็จเสมอ ไม่มี gateway จริง) -> สร้างออเดอร์ body: { items, paymentMethod, shippingAddress, shippingMethod, customerId? }
+// (สำเร็จเสมอ ไม่มี gateway จริง) -> สร้างออเดอร์ body: { items, paymentMethod, shippingAddress, shippingMethod }
+// customerId ผูกจาก token เอง (ไม่เชื่อค่าที่ client ส่งมาตรงๆ กันปลอมตัวเป็นคนอื่น) ไม่มี token ก็ยัง fallback เป็น GUEST ได้เหมือนเดิม
 export async function createOrder(req, res) {
-  const { items, paymentMethod, shippingAddress, shippingMethod, customerId } = req.body;
+  const { items, paymentMethod, shippingAddress, shippingMethod } = req.body;
+  const authUser = getAuthUser(req);
 
   if (!Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ message: 'items ต้องเป็น array ที่มีอย่างน้อย 1 รายการ' });
@@ -222,7 +258,7 @@ export async function createOrder(req, res) {
   const newOrder = {
     orderId,
     orderNo: orderId,
-    customerId: customerId || 'GUEST', // ยังไม่มีระบบ login จริง เลยใช้ค่า default ไปก่อน
+    customerId: authUser?.id || 'GUEST', // ผูกจาก token ที่ login มา ไม่มี token (guest checkout) ก็ fallback ไปก่อน
     orderDate,
     status: 'Confirmed',
     statusHistory: [{ status: 'Confirmed', at: orderDate }],
@@ -258,6 +294,11 @@ export async function createOrder(req, res) {
 // status ต้องอยู่ใน ALLOWED_UPDATE_STATUSES — ไม่รองรับ "Cancelled" เพราะการยกเลิกไม่ใช่ use case ของ Staff (S2-S5 ใน README
 // ไม่มีข้อไหนพูดถึงยกเลิกเลย น่าจะเป็นสิทธิ์ของลูกค้าจากหน้า Order History แทน คนละ endpoint/scope)
 export async function updateOrderStatus(req, res) {
+  const authUser = getAuthUser(req);
+  if (!authUser || (authUser.role !== 'Staff' && authUser.role !== 'Manager')) {
+    return res.status(403).json({ message: 'เฉพาะ Staff/Manager เท่านั้นที่อัปเดตสถานะคำสั่งซื้อได้' });
+  }
+
   const { id } = req.params;
   const { status, courierNotes, pickedItems, flagReason } = req.body;
 
