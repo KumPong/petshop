@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
     AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
-    PieChart, Pie, Cell, Legend
+    PieChart, Pie, Cell
 } from 'recharts';
 import { TrendingUp, Clock, Star, AlertTriangle, ShoppingCart } from 'lucide-react';
 import { getInventory } from '../../services/inventory.service';
@@ -23,9 +23,9 @@ const CATEGORY_COLORS = ['#5c6b3a', '#a3b17a', '#d4c9a8', '#8b9d58', '#c4b89a'];
 // ---- sub-components ----
 function StatCard({ icon, label, value, sub, accent }) {
     return (
-        <div className="bg-other rounded-2xl p-5 flex flex-col gap-2 shadow-sm border border-gray-100">
+        <div className="bg-other rounded-2xl p-5 flex flex-col gap-2 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">{label}</span>
+                <span className="text-sm text-gray-700">{label}</span>
                 {accent && (
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${accent.cls}`}>
                         {accent.text}
@@ -45,7 +45,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
             <div className="bg-other border border-gray-200 rounded-lg px-3 py-2 shadow text-sm">
-                <p className="text-gray-500">{label}</p>
+                <p className="text-gray-700">{label}</p>
                 <p className="font-semibold text-[#5c6b3a]">{formatBaht(payload[0].value)}</p>
             </div>
         );
@@ -254,14 +254,14 @@ function ManagerDashboard() {
             {/* Bottom row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Best Selling Products */}
-                <div className="bg-other rounded-2xl p-5 shadow-sm border border-gray-100">
+                <div className="bg-other rounded-2xl p-5 shadow-sm border border-gray-200">
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="font-semibold text-gray-700">สินค้าขายดี</h2>
+                        <h2 className="font-semibold text-gray-700">สินค้าขายดี</h2>       
                         <button className="text-xs text-[#5c6b3a] hover:underline">ดูทั้งหมด →</button>
                     </div>
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="text-gray-400 text-xs uppercase border-b border-gray-100">
+                            <tr className="text-gray-600 text-xs uppercase border-b border-gray-100">
                                 <th className="text-left pb-2">ชื่อสินค้า</th>
                                 <th className="text-left pb-2">หมวดหมู่</th>
                                 <th className="text-right pb-2">ขายได้</th>
@@ -273,11 +273,11 @@ function ManagerDashboard() {
                                 const inv = inventory.find(i => i.productId === p.productId);
                                 return (
                                     <tr key={idx} className="border-b border-gray-50 last:border-0">
-                                        <td className="py-2 font-medium text-gray-700 truncate max-w-[140px]">
+                                        <td className="py-2 font-medium text-gray-700 truncate max-w-35">
                                             {p.name.split(':')[0]}
                                         </td>
                                         <td className="py-2">
-                                            <span className="px-2 py-0.5 rounded-full text-xs bg-[#f0f2ea] text-[#5c6b3a]">
+                                            <span className="px-2 py-0.5 rounded-full text-xs bg-[#f0f2ea] text-black/60">
                                                 {inv?.category || '-'}
                                             </span>
                                         </td>

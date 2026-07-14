@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 
 // Component สำหรับป้องกัน Route
@@ -35,6 +35,5 @@ export default function ProtectedRoute ({ children, allowedRoles }) {
             return <Navigate to="/login" replace />;
         }
     }
-
-    return children;
+    return children ? children : <Outlet />;
 };

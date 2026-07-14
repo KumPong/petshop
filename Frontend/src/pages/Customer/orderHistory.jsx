@@ -8,6 +8,8 @@ function OrderHistory() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const currentUser = JSON.parse(localStorage.getItem('user')) || {};
+
     useEffect(() => {
         const fetchOrders = async () => {
             try {
@@ -15,7 +17,9 @@ function OrderHistory() {
                 const response = await api.get('/orders');
 
                 // กรองเอาเฉพาะออเดอร์ที่มีสถานะ "Delivered" (จัดส่งสำเร็จ) เท่านั้น
-                const deliveredOrders = response.data.filter(order => order.status === 'Delivered');
+                const deliveredOrders = response.data.filter(order => 
+                    order.status === 'Delivered' && order.customerId === currentUser.id
+                );
                 setOrders(deliveredOrders);
             } catch (error) {
                 console.error("Error fetching orders", error);
@@ -23,14 +27,17 @@ function OrderHistory() {
                 setLoading(false);
             }
         };
+        
         fetchOrders();
-    }, []);
+    }, [currentUser.id]);
 
     // ฟังก์ชันสั่งซื้อซ้ำ
     const handleReorder = (orderItems) => {
         // ส่งข้อมูลสินค้าในออเดอร์เก่าแนบไปกับ state แล้วพุ่งไปหน้า payment
         navigate('/payment', { state: { reorderItems: orderItems } });
     };
+
+
 
     if (loading) {
         return(
