@@ -268,7 +268,7 @@ function Payment() {
 
       <div className="mx-auto grid max-w-5xl grid-cols-3 gap-6">
         <div className="col-span-2 space-y-6">
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
+          <div className="rounded-2xl bg-other p-6 shadow-sm">
             <div className='flex justify-between items-center mb-4'>
               <h2 className="flex items-center gap-2 text-lg font-bold text-gray-900">
                 <Truck size={18} />
@@ -292,7 +292,7 @@ function Payment() {
                   value={address.fullName}
                   onChange={(e) => setAddress({ ...address, fullName: e.target.value })}
                   placeholder="เช่น สมชาย ใจดี"
-                  className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </label>
               <label className="col-span-2 flex flex-col gap-1 text-sm font-medium text-gray-700">
@@ -301,7 +301,7 @@ function Payment() {
                   value={address.street}
                   onChange={(e) => setAddress({ ...address, street: e.target.value })}
                   placeholder="บ้านเลขที่ ถนน ตำบล/แขวง อำเภอ/เขต"
-                  className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </label>
               <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
@@ -310,7 +310,7 @@ function Payment() {
                   value={address.city}
                   onChange={(e) => setAddress({ ...address, city: e.target.value })}
                   placeholder="เช่น เชียงใหม่"
-                  className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </label>
               <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
@@ -320,7 +320,7 @@ function Payment() {
                   onChange={(e) => handlePostalCodeChange(e.target.value)}
                   inputMode="numeric"
                   placeholder="50200"
-                  className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </label>
               <label className="col-span-2 flex flex-col gap-1 text-sm font-medium text-gray-700">
@@ -330,13 +330,13 @@ function Payment() {
                   onChange={(e) => handlePhoneChange(e.target.value)}
                   inputMode="numeric"
                   placeholder="08X-XXX-XXXX"
-                  className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </label>
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
+          <div className="rounded-2xl bg-other p-6 shadow-sm">
             <h2 className="mb-4 text-lg font-bold text-gray-900">วิธีจัดส่ง</h2>
             <div className="grid grid-cols-2 gap-4">
               {SHIPPING_METHODS.map((m) => (
@@ -344,8 +344,8 @@ function Payment() {
                   key={m.value}
                   className={`flex cursor-pointer items-center justify-between rounded-xl border px-4 py-3 text-sm ${
                     shippingMethod === m.value
-                      ? 'border-primary bg-primary/20'
-                      : 'border-gray-200 text-gray-600'
+                      ? 'border-secondary bg-primary text-black'
+                      : 'border-gray-200 bg-background text-gray-600'
                   }`}
                 >
                   <span>
@@ -366,7 +366,7 @@ function Payment() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
+          <div className="rounded-2xl bg-other p-6 shadow-sm">
             <h2 className="mb-4 text-lg font-bold text-gray-900">วิธีชำระเงิน</h2>
             <div className="mb-4 flex gap-2">
               {PAYMENT_TABS.map(({ value, label, Icon }) => (
@@ -375,8 +375,8 @@ function Payment() {
                   onClick={() => setPaymentMethod(value)}
                   className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium ${
                     paymentMethod === value
-                      ? 'border-primary bg-primary/20 text-gray-900'
-                      : 'border-gray-200 text-gray-500'
+                      ? 'border-secondary bg-primary text-black'
+                      : 'border-gray-200 bg-background text-gray-500'
                   }`}
                 >
                   <Icon size={16} />
@@ -393,7 +393,7 @@ function Payment() {
                     value={card.name}
                     onChange={(e) => setCard({ ...card, name: e.target.value })}
                     placeholder="ชื่อบนบัตร"
-                    className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </label>
                 <label className="col-span-2 flex flex-col gap-1 text-sm font-medium text-gray-700">
@@ -403,7 +403,7 @@ function Payment() {
                     onChange={(e) => handleCardNumberChange(e.target.value)}
                     inputMode="numeric"
                     placeholder="0000 0000 0000 0000"
-                    className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </label>
                 <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
@@ -413,7 +413,7 @@ function Payment() {
                     onChange={(e) => handleExpiryChange(e.target.value)}
                     inputMode="numeric"
                     placeholder="MM/YY"
-                    className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </label>
                 <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
@@ -424,21 +424,21 @@ function Payment() {
                     onChange={(e) => handleCvvChange(e.target.value)}
                     inputMode="numeric"
                     placeholder="***"
-                    className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </label>
               </div>
             )}
 
             {paymentMethod === 'พร้อมเพย์' && (
-              <div className="flex flex-col items-center gap-2 rounded-xl bg-gray-50 py-8 text-sm text-gray-600">
+              <div className="flex flex-col items-center gap-2 rounded-xl bg-background py-8 text-sm text-gray-700">
                 <QrCode size={64} className="text-gray-400" />
                 สแกน QR พร้อมเพย์เพื่อชำระเงิน (จำลอง)
               </div>
             )}
 
             {paymentMethod === 'โอนเงินผ่านธนาคาร' && (
-              <div className="rounded-xl bg-gray-50 px-4 py-4 text-sm text-gray-600">
+              <div className="rounded-xl bg-background px-4 py-4 text-sm text-gray-700">
                 โอนเงินมาที่บัญชี PetStop Co., Ltd. — ธนาคารกสิกรไทย 123-4-56789-0 (จำลอง)
               </div>
             )}
