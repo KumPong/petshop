@@ -45,15 +45,19 @@ function App() {
         <Route path='/products/cats' element={<ProductListing selectedSegment="cats" />} />
         <Route path='/products/accessories' element={<ProductListing selectedSegment="accessories" />} />
         <Route path='/products/:id' element={<ProductDetail />} />
-        <Route path='/payment' element={<ProtectedRoute><Payment /></ProtectedRoute>} />
-        <Route path='/confirmation/:orderId' element={<ProtectedRoute><Confirmation /></ProtectedRoute>} />
+        {/* /tracking อยู่นอกกลุ่ม ProtectedRoute โดยตั้งใจ — guest ต้องดูสถานะพัสดุผ่านลิงก์ตรงได้โดยไม่ต้อง login
+            (ดู tracking.jsx: กรณีไม่ระบุ orderId ถึงจะบังคับ login เพื่อโชว์ "ออเดอร์ล่าสุดของฉัน") */}
         <Route path='/tracking' element={<Tracking />} />
         <Route path='/tracking/:orderId' element={<Tracking />} />
-        {/* หน้าอื่นๆ ของลูกค้าในอนาคต เช่น /shop, /cart ก็ใส่ในนี้ได้เลย */}
-        <Route path='/profile' element={<Profile />} />
-        <Route path='/address' element={<Address />} />
-        <Route path='/orders' element={<OrderHistory />} />
-        <Route path='/change-password' element={<ChangePassword />} />
+
+        <Route element={<ProtectedRoute allowedRoles={['Customer']}/>}>
+          <Route path='/payment' element={<Payment />} />
+          <Route path='/confirmation/:orderId' element={<Confirmation />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/address' element={<Address />} />
+          <Route path='/orders' element={<OrderHistory />} />
+          <Route path='/change-password' element={<ChangePassword />} />
+        </Route>
       </Route>
 
       {/* ของ Staff */}
@@ -75,10 +79,8 @@ function App() {
         </ProtectedRoute>
       }>
         <Route index element={<ManagerDashboard />} />
-        {/* path เป็น "suppliers" ให้ตรงกับลิงก์ "Suppliers" ใน managerSidebar.jsx (เดิมเป็น "inventory" ซึ่งไม่ตรงกับ label) */}
         <Route path='suppliers' element={<RestockOrder />} />
         <Route path='users' element={<ManageUsers />} />
-        {/* ตรงกับลิงก์ "Report" ที่มีอยู่แล้วใน managerSidebar.jsx (/manager/reports) แต่ไม่เคยมี route จริงมาก่อน */}
         <Route path='reports' element={<Report />} />
         <Route path='products' element={<ProductManagement />} />
       </Route>

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Pencil, Trash2, Plus, Upload, Link, X, ChevronDown, Download } from 'lucide-react';
+import { Pencil, Trash2, Plus, Upload, Link, X, ChevronDown } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { getProducts, createProduct, updateProduct, deleteProduct } from '../../services/product.service';
 
@@ -92,12 +92,12 @@ function ProductModal({ open, onClose, onSave, initial }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="bg-other rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <h2 className="font-semibold text-gray-800 text-base">{initial ? 'Edit Product' : 'Add New Product'}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X size={18} /></button>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4 max-h-[80vh] overflow-y-auto">
+        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4 max-h-[80vh] overflow-y-auto bg-background">
           {/* Image section */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">Product Image</label>
@@ -107,7 +107,7 @@ function ProductModal({ open, onClose, onSave, initial }) {
                   key={tab}
                   type="button"
                   onClick={() => setImgTab(tab)}
-                  className={`px-3 py-1 text-xs rounded-md border transition-colors ${imgTab === tab ? 'bg-[#5c6b3a] text-white border-[#5c6b3a]' : 'border-gray-200 text-gray-500 hover:bg-gray-50'}`}
+                  className={`px-3 py-1 text-xs rounded-md border transition-colors ${imgTab === tab ? 'bg-[#5c6b3a] text-white border-[#5c6b3a]' : 'border-gray-200 text-gray-500 hover:bg-secondary'}`}
                 >
                   {tab === 'upload' ? <><Upload size={12} className="inline mr-1" />Upload File</> : <><Link size={12} className="inline mr-1" />Image Link</>}
                 </button>
@@ -115,7 +115,7 @@ function ProductModal({ open, onClose, onSave, initial }) {
             </div>
             {imgTab === 'upload' ? (
               <div
-                className="border-2 border-dashed border-gray-200 rounded-xl h-36 flex flex-col items-center justify-center cursor-pointer hover:border-[#5c6b3a] transition-colors relative overflow-hidden"
+                className="border-2 border-dashed bg-other border-gray-200 rounded-xl h-36 flex flex-col items-center justify-center cursor-pointer hover:border-[#5c6b3a] transition-colors relative overflow-hidden"
                 onClick={() => fileRef.current?.click()}
                 onDrop={handleDrop}
                 onDragOver={(e) => e.preventDefault()}
@@ -154,7 +154,7 @@ function ProductModal({ open, onClose, onSave, initial }) {
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="ระบุชื่อสินค้า"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+              className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
             />
           </div>
 
@@ -166,7 +166,7 @@ function ProductModal({ open, onClose, onSave, initial }) {
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               placeholder="อธิบายคุณสมบัติและจุดเด่นของสินค้า"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30 resize-none"
+              className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30 resize-none"
             />
           </div>
 
@@ -182,7 +182,7 @@ function ProductModal({ open, onClose, onSave, initial }) {
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: e.target.value })}
                 placeholder="0.00"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
               />
             </div>
             <div>
@@ -190,7 +190,7 @@ function ProductModal({ open, onClose, onSave, initial }) {
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30 bg-white"
+                className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
               >
                 {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
               </select>
@@ -207,7 +207,7 @@ function ProductModal({ open, onClose, onSave, initial }) {
                 value={form.sku}
                 onChange={(e) => setForm({ ...form, sku: e.target.value })}
                 placeholder="เช่น NK-SL-12-001"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
               />
             </div>
           )}
@@ -222,7 +222,7 @@ function ProductModal({ open, onClose, onSave, initial }) {
                 value={form.stock}
                 onChange={(e) => setForm({ ...form, stock: e.target.value })}
                 placeholder="0"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
               />
             </div>
             <div>
@@ -235,7 +235,7 @@ function ProductModal({ open, onClose, onSave, initial }) {
                 value={form.threshold}
                 onChange={(e) => setForm({ ...form, threshold: e.target.value })}
                 placeholder="10"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
               />
             </div>
           </div>
@@ -331,19 +331,6 @@ export default function ProductManagement() {
     }
   }
 
-  function handleExportCSV() {
-    const headers = ['Product ID', 'Name', 'SKU', 'Category', 'Price', 'Stock', 'Status'];
-    const rows = products.map((p) => [p.productId, `"${p.name}"`, p.sku || '', p.category, p.price, p.stock ?? '', p.status]);
-    const csv = [headers, ...rows].map((r) => r.join(',')).join('\n');
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'products.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
   // ---- page numbers ----
   function pageNumbers() {
     if (totalPages <= 5) return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -361,7 +348,7 @@ export default function ProductManagement() {
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <span className="font-medium">View:</span>
-          <button className="flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-1.5 bg-other hover:bg-gray-50">
+          <button className="flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-1.5 bg-other hover:bg-background">
             Products <ChevronDown size={14} />
           </button>
         </div>
@@ -381,7 +368,7 @@ export default function ProductManagement() {
           <select
             value={filterCat}
             onChange={(e) => { setFilterCat(e.target.value); setPage(1); }}
-            className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm bg-other focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+            className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm bg-other hover:bg-background focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
           >
             {allCategories.map((c) => <option key={c}>{c}</option>)}
           </select>
@@ -389,7 +376,7 @@ export default function ProductManagement() {
           <select
             value={filterStock}
             onChange={(e) => { setFilterStock(e.target.value); setPage(1); }}
-            className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm bg-other focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+            className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm bg-other hover:bg-background focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
           >
             {['Stock Status', 'In Stock', 'Low Stock', 'Out of Stock'].map((s) => <option key={s}>{s}</option>)}
           </select>
@@ -403,10 +390,10 @@ export default function ProductManagement() {
       </div>
 
       {/* Table */}
-      <div className="bg-other rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-other rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100 text-xs text-gray-400 uppercase">
+            <tr className="border-b border-gray-200 text-xs text-gray-700 uppercase">
               <th className="text-left px-5 py-3 font-medium">Product</th>
               <th className="text-left px-4 py-3 font-medium">SKU</th>
               <th className="text-left px-4 py-3 font-medium">Category</th>
@@ -425,26 +412,26 @@ export default function ProductManagement() {
                 <td colSpan={6} className="text-center py-12 text-gray-400">ไม่พบสินค้า</td>
               </tr>
             ) : pageItems.map((p) => (
-              <tr key={p.productId} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/60 transition-colors">
+              <tr key={p.productId} className="border-b border-gray-50 last:border-0 hover:bg-background transition-colors">
                 {/* Product */}
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#f0f2ea] overflow-hidden shrink-0 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg bg-gray-200 overflow-hidden shrink-0 flex items-center justify-center">
                       {p.imageUrl
                         ? <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover" />
                         : <span className="text-lg">🐾</span>
                       }
                     </div>
                     <div>
-                      <p className="font-medium text-gray-800 leading-tight">{p.name}</p>
+                      <p className="font-medium text-black leading-tight">{p.name}</p>
                       {p.description && (
-                        <p className="text-xs text-gray-400 mt-0.5 truncate max-w-[220px]">{p.description}</p>
+                        <p className="text-xs text-gray-500 mt-0.5 truncate max-w-55">{p.description}</p>
                       )}
                     </div>
                   </div>
                 </td>
                 {/* SKU */}
-                <td className="px-4 py-3 text-gray-500 font-mono text-xs">{p.sku || '—'}</td>
+                <td className="px-4 py-3 text-gray-500 text-sm">{p.sku || '—'}</td>
                 {/* Category */}
                 <td className="px-4 py-3">
                   <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${categoryBadge(p.category)}`}>
@@ -490,7 +477,7 @@ export default function ProductManagement() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={safePage === 1}
-            className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50"
+            className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-secondary"
           >
             Previous
           </button>
@@ -501,7 +488,7 @@ export default function ProductManagement() {
               <button
                 key={n}
                 onClick={() => setPage(n)}
-                className={`w-8 h-8 text-sm rounded-lg border transition-colors ${safePage === n ? 'bg-[#5c6b3a] text-white border-[#5c6b3a]' : 'border-gray-200 hover:bg-gray-50'}`}
+                className={`w-8 h-8 text-sm rounded-lg border transition-colors ${safePage === n ? 'bg-[#5c6b3a] text-white border-[#5c6b3a]' : 'border-gray-200 hover:bg-secondary'}`}
               >
                 {n}
               </button>
@@ -510,7 +497,7 @@ export default function ProductManagement() {
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={safePage === totalPages}
-            className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50"
+            className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-secondary"
           >
             Next
           </button>

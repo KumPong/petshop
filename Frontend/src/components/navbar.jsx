@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import Logo from "../assets/Logo.png";
 import { getCart, saveCart } from "../services/cart.service.js";
+import { getAllProducts } from "../services/product.service";
 
 function Navbar() {
     const navigate = useNavigate();
@@ -89,13 +90,8 @@ function Navbar() {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                /*
-                const response = await fetch('http://localhost:XXXX/api/products');
-                if (response.ok) {
-                    const data = await response.json();
-                    setProducts(data);
-                }
-                */
+                const data = await getAllProducts();
+                setProducts(data);
             } catch (error) {
                 console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", error);
             }
@@ -136,20 +132,16 @@ function Navbar() {
         }
 
         setIsSeartchOpen(true);
+        const lowerQuery = query.toLowerCase();
 
-        const isDogFoodKeyword = ["อาหารหมา", "อาหารสุนัข", "หมา", "สุนัข"].some((kw) => 
-            query.toLowerCase().includes(kw)
-        );
-
-        const finalResults = isDogFoodKeyword 
-            ? products
-                .filter((p) => p.category === "อาหารหมา")
-                .sort((a, b) => b.sales - a.sales)
-                .slice(0, 5)
-            : products
-                .filter((p) => p.name.toLowerCase().includes(query.toLowerCase()))
-                .slice(0, 5);
-
+        const finalResults = products
+        .filter((p) => 
+            (p.name && p.name.toLowerCase().includes(lowerQuery)) ||
+            (p.category && p.category.toLowerCase().includes(lowerQuery)) ||
+            (p.description && p.description.toLowerCase().includes(lowerQuery))
+        )
+        .slice(0, 10); 
+    
         setSearchResults(finalResults);
     };
 
@@ -248,24 +240,29 @@ function Navbar() {
 
                     {/* Dropdown Result Search */}
                     {isSearchOpen && (
-                        <div className="absolute left-0 mt-2 w-64 bg-white border border-gray-100 rounded-md shadow-lg z-50 overflow-hidden">
+                        <div className="absolute left-0 mt-2 w-80 bg-white border border-gray-100 rounded-md shadow-lg z-50 overflow-hidden">
                             {searchResults.length > 0 ? (
-                                <ul>
+                                <ul className="max-h-80 overflow-y-auto">
                                     {searchResults.map((product) => (
-                                        <li key={product.id}>
+                                        <li key={product.productId || product.id}>
                                             <Link
-                                                to={`/product/${product.id}`}
-                                                className="flex justify-between items-center px-4 py-2 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0"
+                                                to={`/product/${product.productId || product.id}`}
+                                                className="flex justify-between items-center px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0"
                                                 onClick={() => setIsSeartchOpen(false)}
                                             >
-                                                <span className="text-sm text-gray-700 truncate w-3/4">{product.name}</span>
-                                                <span className="text-xs font-semibold text-green-700">฿{product.price}</span>
+                                                <div className="flex flex-col w-3/4">
+                                                    <span className="text-sm font-medium text-gray-800 truncate">{product.name}</span>
+                                                    <span className="text-xs text-gray-400 mt-0.5">
+                                                        หมวดหมู่: {product.category}
+                                                    </span>
+                                                </div>
+                                                <span className="text-sm font-bold text-green-700">฿{product.price}</span>
                                             </Link>
                                         </li>
                                     ))}
                                 </ul>
                             ) : (
-                                <div className="px-4 py-3 text-sm text-gray-500 text-center">
+                                <div className="px-4 py-4 text-sm text-gray-500 text-center">
                                     ไม่พบสินค้าที่คุณค้นหา
                                 </div>
                             )}
