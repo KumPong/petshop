@@ -161,13 +161,13 @@ function ProductDetail() {
           <div className="space-y-2 mb-4 pb-4 border-b border-gray-200">
             <div className="flex justify-between">
               <span className="text-gray-600">สต็อก:</span>
-              <span className={`font-semibold ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+              <span className={`font-semibold ฿{product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {product.stock > 0 ? `${product.stock} ชิ้น` : 'สินค้าหมด'}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">รวม:</span>
-              <span className="font-bold text-green-700 text-lg">${(product.price * quantity).toFixed(2)}</span>
+              <span className="font-bold text-green-700 text-lg">฿{(product.price * quantity).toFixed(2)}</span>
             </div>
           </div>
 

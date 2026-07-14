@@ -394,7 +394,7 @@ function Navbar() {
                                     <hr className="my-2"/>
                                     <div className="flex justify-between font-bold text-sm mb-4">
                                         <span>ยอดรวม:</span>
-                                        <span>${cartItems.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0).toFixed(2)}</span>
+                                        <span>฿{cartItems.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0).toFixed(2)}</span>
                                     </div>
                                     <button
                                         onClick={handleCheckout}
