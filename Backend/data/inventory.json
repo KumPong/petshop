@@ -8,10 +8,10 @@
     "unitLabel": "1 ถุง บรรจุ 2 กก.",
     "category": "อาหารแห้ง",
     "supplier": "Wholesome Pet Foods",
-    "stock": 65,
+    "stock": 59,
     "threshold": 20,
     "unitCost": 800,
-    "lastUpdated": "2026-07-06T16:28:47.368Z",
+    "lastUpdated": "2026-07-14T16:14:52.992Z",
     "bestSeller": true,
     "id-type": "dogs",
     "specifications": {
@@ -24,7 +24,12 @@
     "image": "https://www.feedmeplease.com/images/pdimg/24/1.webp",
     "careInstructions": [
       "เก็บในที่แห้ง"
-    ]
+    ],
+    "lastAdjustment": {
+      "type": "remove",
+      "amount": 5,
+      "reason": "สินค้าเสียหาย / สูญหาย"
+    }
   },
   {
     "id": "DG-DRY-002",

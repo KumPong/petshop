@@ -201,7 +201,7 @@ function Profile() {
                     <div className="bg-other p-6 rounded-2xl shadow-sm flex items-center gap-6 border border-gray-100">
                         <div className="relative">
                             <img 
-                                src={profile.profileImage || "https://via.placeholder.com/100"}
+                                src={profile.profileImage || "https://placehold.co/100"}
                                 alt="Profile" 
                                 className="w-24 h-24 rounded-full object-cover border-4 border-secondary" 
                             />

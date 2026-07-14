@@ -44,10 +44,17 @@ export async function getProducts(req, res) {
 export async function getProduct(req, res) {
   const { id } = req.params;
   const [products, inventory] = await Promise.all([readProducts(), readInventory()]);
-  const product = products.find((p) => p.productId === id);
+  // ค้นหาจาก productId ก่อน ถ้าไม่พบให้ลองค้นจาก inventory id/SKU
+  let product = products.find((p) => p.productId === id);
+  let inv = null;
+  if (!product) {
+    inv = inventory.find((i) => i.id === id || i.sku === id) || null;
+    if (inv) product = products.find((p) => p.productId === inv.productId) || null;
+  } else {
+    inv = inventory.find((i) => i.productId === product.productId) || null;
+  }
   if (!product) return res.status(404).json({ message: `ไม่พบสินค้า id "${id}"` });
-  const inv = inventory.find((i) => i.productId === id) || null;
-  res.json({ ...product, sku: inv?.sku || null, stock: inv?.stock ?? null, threshold: inv?.threshold ?? null });
+  res.json({ ...product, sku: inv?.sku || null, stock: inv?.stock ?? null, threshold: inv?.threshold ?? null, image: inv?.image || product.imageUrl || null });
 }
 
 // POST /api/products — สร้างสินค้าใหม่ พร้อมสร้าง inventory entry อัตโนมัติ

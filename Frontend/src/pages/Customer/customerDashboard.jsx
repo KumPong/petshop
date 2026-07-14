@@ -25,7 +25,7 @@ function CustomerDashboard() {
       <section className="container mx-auto py-12 px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Main Content Area - Temporarily using a placeholder for the large image */}
-          <div className="md:col-span-2 bg-gray-100 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-full" style={{ backgroundImage: "url('https://via.placeholder.com/900x400?text=Main+Content')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+          <div className="md:col-span-2 bg-gray-100 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-full" style={{ backgroundImage: "url('https://placehold.co/900x400?text=Main+Content')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
             {/* The main hero section already covers this, so this div can be simplified or removed based on final design */}
             <h2 className="text-3xl font-bold text-gray-800"></h2>
             <p className="text-gray-600"></p>

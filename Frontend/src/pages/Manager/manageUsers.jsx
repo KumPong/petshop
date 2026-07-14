@@ -235,7 +235,7 @@ function ManageUsers() {
                         .map(user => (
                             <div key={user.id} className="grid grid-cols-12 gap-4 items-center py-3 border-b border-gray-50 last:border-0 hover:bg-background transition-colors">
                                 <div className="col-span-4 flex items-center gap-3">
-                                    <img src={user.profileImage || "https://via.placeholder.com/40"} alt="profile" className="w-10 h-10 bg-gray-200 rounded-full object-cover shrink-0 border border-gray-200" />
+                                    <img src={user.profileImage || "https://placehold.co/40"} alt="profile" className="w-10 h-10 bg-gray-200 rounded-full object-cover shrink-0 border border-gray-200" />
                                     <div>
                                         <div className="font-medium text-gray-800">{user.firstName} {user.lastName}</div>
                                         <div className="text-sm text-gray-500">{user.email}</div>
@@ -308,7 +308,7 @@ function ManageUsers() {
                             <div className="flex gap-6 items-start">
                                 <div className="flex flex-col items-center gap-3 shrink-0">
                                     <div onClick={handleImageClick} className={`relative w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-md bg-gray-100 ${isEditMode ? 'cursor-pointer hover:opacity-80' : ''} transition-opacity flex items-center justify-center group`}>
-                                        <img src={imagePreview || selectedUser.profileImage || "https://via.placeholder.com/150"} alt="Profile" className="w-full h-full object-cover" />
+                                        <img src={imagePreview || selectedUser.profileImage || "https://placehold.co/150"} alt="Profile" className="w-full h-full object-cover" />
                                         {isEditMode && (
                                             <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <ImagePlus size={24} />

@@ -150,7 +150,7 @@ function InventoryGrid({ sort, selectedSegment, search }) {
       {pagedItems.map((p) => (
         <Link key={p.id} to={`/products/${p.id}`} className="flex flex-col bg-other rounded-lg shadow-md overflow-hidden">
           <div className="relative">
-            <img src={p.image || 'https://via.placeholder.com/400x300?text=Product+Image'} alt={p.name} className="w-full h-48 object-contain bg-white p-2" />
+            <img src={p.image || 'https://placehold.co/400x300?text=Product+Image'} alt={p.name} className="w-full h-48 object-contain bg-white p-2" />
             {p.bestSeller && (
               <span className="absolute top-2 right-2 bg-primary text-white text-xs font-semibold px-3 py-1 rounded-full">Best Seller</span>
             )}
