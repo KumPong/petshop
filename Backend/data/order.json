@@ -4,11 +4,27 @@
     "orderNo": "ORD-1001",
     "customerId": "CPS0002",
     "orderDate": "2026-07-14T14:59:23.705Z",
-    "status": "Confirmed",
+    "status": "Delivered",
     "statusHistory": [
       {
         "status": "Confirmed",
         "at": "2026-07-14T14:59:23.705Z"
+      },
+      {
+        "status": "Processing",
+        "at": "2026-07-15T02:52:15.281Z"
+      },
+      {
+        "status": "Packed",
+        "at": "2026-07-15T02:52:19.097Z"
+      },
+      {
+        "status": "Shipped",
+        "at": "2026-07-15T03:00:06.603Z"
+      },
+      {
+        "status": "Delivered",
+        "at": "2026-07-15T03:00:07.424Z"
       }
     ],
     "courierNotes": "",

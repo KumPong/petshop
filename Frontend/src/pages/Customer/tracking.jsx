@@ -113,7 +113,7 @@ function Tracking() {
         </div>
 
         <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-2 rounded-2xl bg-white p-6 shadow-sm">
+          <div className="col-span-2 rounded-2xl bg-other p-6 shadow-sm">
             <h2 className="mb-4 text-lg font-bold text-gray-900">ไทม์ไลน์การจัดส่ง</h2>
             <div className="space-y-0">
               {order.shipping.timeline.map((step, i) => {
@@ -174,7 +174,7 @@ function Tracking() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-white p-5 shadow-sm">
+            <div className="rounded-2xl bg-other p-5 shadow-sm">
               <h3 className="mb-3 flex items-center gap-2 font-bold text-gray-900">
                 <MapPin size={16} />
                 ที่อยู่จัดส่ง
@@ -186,7 +186,7 @@ function Tracking() {
               </p>
             </div>
 
-            <div className="rounded-2xl bg-white p-5 shadow-sm">
+            <div className="rounded-2xl bg-other p-5 shadow-sm">
               <h3 className="mb-3 flex items-center gap-2 font-bold text-gray-900">
                 <ListOrdered size={16} />
                 รายการสินค้า
