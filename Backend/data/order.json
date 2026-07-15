@@ -42,7 +42,8 @@
         "quantity": 1,
         "unitPrice": 500,
         "subTotal": 500,
-        "picked": false
+        "picked": false,
+        "imageUrl": "https://m.media-amazon.com/images/I/61eVAqrR7uL._AC_UF894,1000_QL80_.jpg"
       }
     ],
     "shippingAddress": {
@@ -113,7 +114,8 @@
         "quantity": 1,
         "unitPrice": 800,
         "subTotal": 800,
-        "picked": false
+        "picked": false,
+        "imageUrl": "https://www.feedmeplease.com/images/pdimg/24/1.webp"
       }
     ],
     "shippingAddress": {
@@ -139,6 +141,62 @@
       "status": "Paid",
       "paymentDate": "2026-07-14T16:11:51.633Z",
       "transactionId": "TXN-1784045511633-3427"
+    }
+  },
+  {
+    "orderId": "ORD-1003",
+    "orderNo": "ORD-1003",
+    "customerId": "CPS0002",
+    "orderDate": "2026-07-15T06:32:11.245Z",
+    "status": "Confirmed",
+    "statusHistory": [
+      {
+        "status": "Confirmed",
+        "at": "2026-07-15T06:32:11.245Z"
+      }
+    ],
+    "courierNotes": "",
+    "flagReason": "",
+    "statusBeforeFlag": null,
+    "subtotal": 2000,
+    "shippingAmount": 0,
+    "taxAmount": 140,
+    "totalAmount": 2140,
+    "items": [
+      {
+        "orderItemId": "OI-PD-015-1784097131244",
+        "productId": "PD-015",
+        "name": "Royal Canin Indoor",
+        "quantity": 2,
+        "unitPrice": 1000,
+        "subTotal": 2000,
+        "picked": false,
+        "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3nHujcKPeMCPcvaMMTkhTWFCMOIDD0kGGEYspObhB5oM4RnpxbauAGu4T&s=10"
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Dora",
+      "street": "1234",
+      "city": "Pluto",
+      "postalCode": "99999",
+      "phone": "1234567890"
+    },
+    "shipping": {
+      "method": "standard",
+      "methodLabel": "จัดส่งมาตรฐาน",
+      "cost": 0,
+      "carrier": "Kerry Express",
+      "trackingNumber": "KER-485840411",
+      "estimatedDeliveryStart": "2026-07-18T06:32:11.245Z",
+      "estimatedDeliveryEnd": "2026-07-20T06:32:11.245Z"
+    },
+    "payment": {
+      "paymentId": "PAY-ORD-1003",
+      "method": "พร้อมเพย์",
+      "amount": 2140,
+      "status": "Paid",
+      "paymentDate": "2026-07-15T06:32:11.245Z",
+      "transactionId": "TXN-1784097131245-7324"
     }
   }
 ]

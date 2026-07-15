@@ -194,9 +194,17 @@ function Tracking() {
               <div className="space-y-3">
                 {order.items.map((item) => (
                   <div key={item.orderItemId} className="flex items-center gap-3 text-sm">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-300">
-                      <ImageIcon size={16} />
-                    </span>
+                    {item.imageUrl ? (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        className="h-10 w-10 shrink-0 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-300">
+                        <ImageIcon size={16} />
+                      </span>
+                    )}
                     <div className="flex-1">
                       <p className="font-medium text-gray-900">{item.name}</p>
                       <p className="text-xs text-gray-500">จำนวน {item.quantity}</p>

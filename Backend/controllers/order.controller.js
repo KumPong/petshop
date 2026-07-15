@@ -203,6 +203,7 @@ export async function createOrder(req, res) {
       unitPrice: product.price,
       subTotal: product.price * qty,
       picked: false,
+      imageUrl: product.imageUrl || null,
     });
   }
 
@@ -218,6 +219,8 @@ export async function createOrder(req, res) {
         message: `สินค้า "${item.name}" เหลือไม่พอ (คงเหลือ ${invItem.stock} ต้องการ ${item.quantity})`,
       });
     }
+    // เก็บรูปไว้ใน order item เอง (ไม่ join สดจาก product/inventory ตอน query) กันรูปเปลี่ยนย้อนหลังถ้าสินค้าถูกแก้ไขทีหลัง
+    if (!item.imageUrl) item.imageUrl = invItem.image || null;
   }
 
   // calculateTotal() — รวมยอดจากทุกรายการสินค้า แล้วบวกค่าส่ง + ภาษี
