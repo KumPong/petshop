@@ -238,5 +238,14 @@
     "price": 1300,
     "category": "สายรัดอก",
     "status": "Active"
+  },
+  {
+    "productId": "PD-031",
+    "name": "ปืนหายาก",
+    "description": "ยิงตายเลย",
+    "price": 100,
+    "category": "อุปกรณ์",
+    "status": "Active",
+    "imageUrl": "http://localhost:4000/uploads/Products/Product-1784089595230-156913077.webp"
   }
 ]

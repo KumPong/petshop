@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Pencil, Trash2, Plus, Upload, Link, X, ChevronDown } from 'lucide-react';
 import Swal from 'sweetalert2';
-import { getProducts, createProduct, updateProduct, deleteProduct } from '../../services/product.service';
+import { getProducts, createProduct, updateProduct, deleteProduct, uploadProductImage } from '../../services/product.service';
 
 // ---- constants ----
 const PAGE_SIZE = 10;
@@ -60,21 +60,30 @@ function ProductModal({ open, onClose, onSave, initial }) {
     }
   }, [open, initial]);
 
+  // blob: URL จาก createObjectURL ใช้ preview ได้แค่ชั่วคราวในเบราว์เซอร์เดียวกัน ไม่ persist ข้าม reload
+  // ต้องอัปโหลดไฟล์ขึ้น backend จริงแล้วเก็บ URL ที่เซิร์ฟเวอร์คืนมาแทน
+  async function uploadFile(file) {
+    setPreviewUrl(URL.createObjectURL(file)); // preview ทันทีระหว่างรออัปโหลด
+    try {
+      const { imageUrl: uploadedUrl } = await uploadProductImage(file);
+      setImageUrl(uploadedUrl);
+      setPreviewUrl(uploadedUrl);
+    } catch {
+      Swal.fire({ icon: 'error', title: 'อัปโหลดรูปไม่สำเร็จ', text: 'กรุณาลองใหม่อีกครั้ง' });
+    }
+  }
+
   function handleFile(e) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
-    setImageUrl(url);
+    uploadFile(file);
   }
 
   function handleDrop(e) {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
-    setImageUrl(url);
+    uploadFile(file);
   }
 
   function handleLinkApply() {

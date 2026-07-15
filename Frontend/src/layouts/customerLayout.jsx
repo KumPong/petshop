@@ -9,11 +9,11 @@ export default function CustomerLayout() {
         const user = JSON.parse(userString);
 
         if (user.role === 'Manager') {
-            return <Navigate to='manger' replace />
+            return <Navigate to='/manager' replace />
         }
 
         if (user.role === 'Staff') {
-            return <Navigate to='staff' replace />
+            return <Navigate to='/staff' replace />
         }
     }
     

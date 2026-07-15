@@ -721,5 +721,18 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "image": "https://tailybuddy.com/products/8979/mesh-gotham.jpg"
+  },
+  {
+    "id": "PD-031",
+    "sku": "PD-031",
+    "productId": "PD-031",
+    "name": "ปืนหายาก",
+    "category": "อุปกรณ์",
+    "stock": 2,
+    "threshold": 10,
+    "lastUpdated": "2026-07-15T04:39:19.007Z",
+    "unitCost": 100,
+    "image": "http://localhost:4000/uploads/Products/Product-1784089595230-156913077.webp",
+    "id-type": "accessories"
   }
 ]

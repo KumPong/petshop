@@ -15,6 +15,16 @@ async function writeProducts(items) {
   await writeFile(PRODUCT_PATH, JSON.stringify(items, null, 2));
 }
 
+// เดา segment ลูกค้า (หมา/แมว/อุปกรณ์อื่นๆ) จากคำอธิบาย/หมวดหมู่ — หน้า productListing.jsx ฝั่งลูกค้ากรองด้วย
+// field นี้ (item['id-type']) ไม่มีช่องให้เลือกตรงๆ ในฟอร์ม Add Product เลยต้องเดาจากข้อความแทน
+function deriveIdType(category, text) {
+  const t = (text || '').toLowerCase();
+  if (t.includes('แมว')) return 'cats';
+  if (t.includes('สุนัข') || t.includes('หมา')) return 'dogs';
+  if (category === 'อาหารแห้ง' || category === 'อาหารเปียก') return 'dogs';
+  return 'accessories';
+}
+
 async function readInventory() {
   const raw = await readFile(INVENTORY_PATH, 'utf-8');
   return JSON.parse(raw);
@@ -31,6 +41,7 @@ export async function getProducts(req, res) {
     const inv = inventory.find((i) => i.productId === p.productId) || null;
     return {
       ...p,
+      imageUrl: p.imageUrl || inv?.image || null,
       sku: inv?.sku || null,
       stock: inv?.stock ?? null,
       threshold: inv?.threshold ?? null,
@@ -90,6 +101,9 @@ export async function createProduct(req, res) {
     stock: Math.max(0, Number(stock)),
     threshold: Math.max(0, Number(threshold)),
     lastUpdated: new Date().toISOString(),
+    image: imageUrl || null,
+    unitCost: Number(price), // ฟอร์ม Add Product ยังไม่มีช่องต้นทุนแยก ใช้ราคาขายแทนไปก่อน กัน money()/report พังเพราะ unitCost undefined
+    'id-type': deriveIdType(category, `${name} ${description || ''}`),
   };
   inventory.push(newInventoryEntry);
 
@@ -112,12 +126,19 @@ export async function updateProduct(req, res) {
   if (status !== undefined) products[idx].status = status;
   if (imageUrl !== undefined) products[idx].imageUrl = imageUrl;
 
-  // sync ชื่อและหมวดหมู่ไปยัง inventory entry ที่ผูกกับ productId นี้
+  // sync ชื่อ, หมวดหมู่ และรูปไปยัง inventory entry ที่ผูกกับ productId นี้
   const inventory = await readInventory();
   const invIdx = inventory.findIndex((i) => i.productId === id);
   if (invIdx !== -1) {
     if (name !== undefined) inventory[invIdx].name = name;
     if (category !== undefined) inventory[invIdx].category = category;
+    if (imageUrl !== undefined) inventory[invIdx].image = imageUrl;
+    if (name !== undefined || description !== undefined || category !== undefined) {
+      inventory[invIdx]['id-type'] = deriveIdType(
+        category ?? inventory[invIdx].category,
+        `${name ?? inventory[invIdx].name} ${description ?? ''}`
+      );
+    }
     inventory[invIdx].lastUpdated = new Date().toISOString();
     await Promise.all([writeProducts(products), writeInventory(inventory)]);
   } else {
