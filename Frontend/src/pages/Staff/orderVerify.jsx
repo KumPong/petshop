@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Flag, FileText, PackageCheck, Truck, CheckCircle2, Circle, XCircle, X } from 'lucide-react';
+import { ShieldCheck, Flag, FileText, PackageCheck, Truck, CheckCircle2, Circle, XCircle, X, Image as ImageIcon } from 'lucide-react';
 import { getOrder, updateOrderStatus } from '../../services/order.service.js';
 
 // ลำดับสถานะปกติของออเดอร์ (ไม่รวม Cancelled/Flagged ซึ่งเป็น exception แทรกได้ทุกจุด)
@@ -232,7 +232,16 @@ function OrderVerify() {
                 {order.items.map((item) => (
                   <tr key={item.orderItemId} className="border-t border-gray-100">
                     <td className="px-6 py-4">
-                      <p className="font-semibold text-gray-900">{item.name}</p>
+                      <div className="flex items-center gap-3">
+                        {item.imageUrl ? (
+                          <img src={item.imageUrl} alt={item.name} className="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                        ) : (
+                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-300">
+                            <ImageIcon size={16} />
+                          </span>
+                        )}
+                        <p className="font-semibold text-gray-900">{item.name}</p>
+                      </div>
                     </td>
                     <td className="px-6 py-4 text-gray-700">{item.quantity}</td>
                     <td className="px-6 py-4 text-gray-700">{money(item.unitPrice)}</td>

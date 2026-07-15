@@ -10,7 +10,7 @@
     "supplier": "Wholesome Pet Foods",
     "stock": 64,
     "threshold": 20,
-    "unitCost": 800,
+    "unitCost": 520,
     "lastUpdated": "2026-07-14T16:11:51.633Z",
     "bestSeller": true,
     "id-type": "dogs",
@@ -42,7 +42,7 @@
     "supplier": "Wholesome Pet Foods",
     "stock": 46,
     "threshold": 20,
-    "unitCost": 1000,
+    "unitCost": 650,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
@@ -68,7 +68,7 @@
     "supplier": "Pawsome Suppliers Co.",
     "stock": 80,
     "threshold": 25,
-    "unitCost": 50,
+    "unitCost": 33,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "bestSeller": true,
     "id-type": "dogs",
@@ -95,7 +95,7 @@
     "supplier": "Eco-Pet Exports",
     "stock": 55,
     "threshold": 20,
-    "unitCost": 35,
+    "unitCost": 23,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
@@ -121,7 +121,7 @@
     "supplier": "Eco-Pet Exports",
     "stock": 30,
     "threshold": 15,
-    "unitCost": 1700,
+    "unitCost": 1105,
     "lastUpdated": "2026-07-05T07:07:32.335Z",
     "id-type": "dogs",
     "specifications": {
@@ -147,7 +147,7 @@
     "supplier": "Eco-Pet Exports",
     "stock": 15,
     "threshold": 15,
-    "unitCost": 300,
+    "unitCost": 195,
     "lastUpdated": "2026-07-05T07:07:32.335Z",
     "bestSeller": true,
     "id-type": "dogs",
@@ -174,7 +174,7 @@
     "supplier": "Pawsome Suppliers Co.",
     "stock": 70,
     "threshold": 30,
-    "unitCost": 50,
+    "unitCost": 33,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
@@ -200,7 +200,7 @@
     "supplier": "Wholesome Pet Foods",
     "stock": 45,
     "threshold": 20,
-    "unitCost": 1200,
+    "unitCost": 780,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
@@ -226,7 +226,7 @@
     "supplier": "Wholesome Pet Foods",
     "stock": 25,
     "threshold": 10,
-    "unitCost": 1400,
+    "unitCost": 910,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
@@ -252,7 +252,7 @@
     "supplier": "Wholesome Pet Foods",
     "stock": 20,
     "threshold": 10,
-    "unitCost": 800,
+    "unitCost": 520,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
@@ -278,7 +278,7 @@
     "supplier": "Purrfect Suppliers",
     "stock": 46,
     "threshold": 15,
-    "unitCost": 1000,
+    "unitCost": 650,
     "lastUpdated": "2026-07-15T06:32:11.245Z",
     "bestSeller": true,
     "id-type": "cats",
@@ -306,7 +306,7 @@
     "supplier": "Royal Pet Foods",
     "stock": 35,
     "threshold": 15,
-    "unitCost": 900,
+    "unitCost": 585,
     "lastUpdated": "2026-07-06T09:05:00.000Z",
     "id-type": "cats",
     "specifications": {
@@ -332,7 +332,7 @@
     "supplier": "Pawsome Suppliers Co.",
     "stock": 71,
     "threshold": 20,
-    "unitCost": 45,
+    "unitCost": 29,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "bestSeller": true,
     "id-type": "cats",
@@ -359,7 +359,7 @@
     "supplier": "Purrfect Suppliers",
     "stock": 50,
     "threshold": 20,
-    "unitCost": 80,
+    "unitCost": 52,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
@@ -385,7 +385,7 @@
     "supplier": "Pawsome Suppliers Co.",
     "stock": 42,
     "threshold": 15,
-    "unitCost": 18,
+    "unitCost": 12,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
@@ -411,7 +411,7 @@
     "supplier": "Nature's Pet Co.",
     "stock": 28,
     "threshold": 10,
-    "unitCost": 1800,
+    "unitCost": 1170,
     "lastUpdated": "2026-07-06T09:10:00.000Z",
     "id-type": "cats",
     "specifications": {
@@ -437,7 +437,7 @@
     "supplier": "Nature's Pet Co.",
     "stock": 18,
     "threshold": 10,
-    "unitCost": 300,
+    "unitCost": 195,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
@@ -463,7 +463,7 @@
     "supplier": "Purrfect Suppliers",
     "stock": 55,
     "threshold": 20,
-    "unitCost": 500,
+    "unitCost": 325,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
@@ -489,7 +489,7 @@
     "supplier": "Royal Pet Foods",
     "stock": 22,
     "threshold": 10,
-    "unitCost": 40,
+    "unitCost": 26,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
@@ -515,7 +515,7 @@
     "supplier": "Nature's Pet Co.",
     "stock": 15,
     "threshold": 8,
-    "unitCost": 200,
+    "unitCost": 130,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
@@ -541,7 +541,7 @@
     "supplier": "Eco-Pet Exports",
     "stock": 24,
     "threshold": 10,
-    "unitCost": 500,
+    "unitCost": 325,
     "lastUpdated": "2026-07-14T14:59:23.705Z",
     "bestSeller": true,
     "id-type": "accessories",
@@ -569,7 +569,7 @@
     "supplier": "Pawsome Suppliers Co.",
     "stock": 20,
     "threshold": 8,
-    "unitCost": 400,
+    "unitCost": 260,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "specifications": {
@@ -595,7 +595,7 @@
     "supplier": "Pawsome Suppliers Co.",
     "stock": 60,
     "threshold": 20,
-    "unitCost": 350,
+    "unitCost": 228,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "specifications": {
@@ -621,7 +621,7 @@
     "supplier": "Eco-Pet Exports",
     "stock": 10,
     "threshold": 10,
-    "unitCost": 1200,
+    "unitCost": 780,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "image": "https://cdnpublic.budgetpetproducts.com.au/products_pictures/2023/08/24/96fc5a82-1236-46a8-a9d9-8b3c14f53811.jpg"
@@ -637,7 +637,7 @@
     "supplier": "Pawsome Suppliers Co.",
     "stock": 2,
     "threshold": 20,
-    "unitCost": 2400,
+    "unitCost": 1560,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdyWtU-KeunI6N8pEl7rm7woukzeA_9iZE0aBAo5WN9M0Mv4jbJC-g3yY&s=10"
@@ -653,7 +653,7 @@
     "supplier": "Pawsome Suppliers Co.",
     "stock": 34,
     "threshold": 10,
-    "unitCost": 1500,
+    "unitCost": 975,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDLCkMu0OE8aLC98eDJswu1n9z_WstwhMmPFWxFBVhSzmDKXamjxcvCMk&s=10"
@@ -669,7 +669,7 @@
     "supplier": "Eco-Pet Exports",
     "stock": 20,
     "threshold": 10,
-    "unitCost": 1000,
+    "unitCost": 650,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "image": "https://m.media-amazon.com/images/I/71hdG7p2IQL._AC_UF1000,1000_QL80_.jpg"
@@ -685,7 +685,7 @@
     "supplier": "Wholesome Pet Foods",
     "stock": 15,
     "threshold": 10,
-    "unitCost": 500,
+    "unitCost": 325,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "image": "https://www.jib.co.th/img_master/product/original/20220127090332_50946_24_1.jpg"
@@ -701,7 +701,7 @@
     "supplier": "Pawsome Suppliers Co.",
     "stock": 12,
     "threshold": 8,
-    "unitCost": 1800,
+    "unitCost": 1170,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr39XsN3o-sBmQtBcJGdcbtVbbNtxxGhhyqIz6VLX05-UQ4owGY6Vs0Ac&s=10"
@@ -717,7 +717,7 @@
     "supplier": "Eco-Pet Exports",
     "stock": 6,
     "threshold": 10,
-    "unitCost": 1300,
+    "unitCost": 845,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "image": "https://tailybuddy.com/products/8979/mesh-gotham.jpg"
@@ -731,7 +731,7 @@
     "stock": 2,
     "threshold": 10,
     "lastUpdated": "2026-07-15T04:39:19.007Z",
-    "unitCost": 100,
+    "unitCost": 65,
     "image": "http://localhost:4000/uploads/Products/Product-1784089595230-156913077.webp",
     "id-type": "accessories"
   }

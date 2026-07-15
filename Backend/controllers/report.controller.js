@@ -1,6 +1,33 @@
 import { readFile } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import jwt from 'jsonwebtoken';
+
+// แกะ user จาก Authorization header (secret key เดียวกับ order.controller.js/auth.controller.js) คืน null ถ้าไม่มี/ไม่ถูกต้อง
+function getAuthUser(req) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+  try {
+    return jwt.verify(authHeader.split(' ')[1], 'YOUR_SECRET_KEY_PETSTOP');
+  } catch {
+    return null;
+  }
+}
+
+// รายงานมีแต่ Manager เท่านั้นที่ควรเห็น (ยอดขาย/ต้นทุน/กำไร) — เดิมไม่มีการเช็คสิทธิ์เลย พึ่งพา
+// ProtectedRoute ฝั่ง frontend อย่างเดียว ซึ่งไม่ได้ป้องกันการยิง endpoint ตรงๆ เลย
+function requireManager(req, res) {
+  const authUser = getAuthUser(req);
+  if (!authUser) {
+    res.status(401).json({ message: 'กรุณาเข้าสู่ระบบ' });
+    return null;
+  }
+  if (authUser.role !== 'Manager') {
+    res.status(403).json({ message: 'ไม่มีสิทธิ์เข้าถึงรายงานนี้' });
+    return null;
+  }
+  return authUser;
+}
 
 // อ้าง Class Report/SalesReport/InventoryReport/ProfitReport ใน README — โปรเจกต์นี้ไม่มี Report entity
 // แยกต่างหากใน DB (ไม่มี reportId/generatedAt persist ไว้) เพราะ generate() คำนวณสดจาก order.json/inventory.json
@@ -74,12 +101,16 @@ function buildEmptyBuckets(periodType) {
 
 // GET /api/reports/sales?period=daily|monthly|quarterly — คลาส SalesReport.generate() ใน README
 export async function getSalesReport(req, res) {
+  if (!requireManager(req, res)) return;
   const periodType = normalizePeriod(req.query.period);
   const [orders, products] = await Promise.all([readJson(ORDERS_PATH), readJson(PRODUCT_PATH)]);
   const categoryByProductId = new Map(products.map((p) => [p.productId, p.category || 'อื่นๆ']));
 
   const buckets = buildEmptyBuckets(periodType);
   const bucketByKey = new Map(buckets.map((b) => [b.key, b]));
+  // bucket ปัจจุบัน (ช่วงเวลาล่าสุดที่เลือกไว้ เช่น "เดือนนี้" ตอนเลือกรายเดือน) — summary/สินค้าขายดี/หมวดหมู่
+  // ด้านล่างนับเฉพาะออเดอร์ใน bucket นี้ ให้ตรงกับแท่งกราฟล่าสุดที่ผู้ใช้เห็น ไม่ใช่ยอดสะสมทั้งหมดตั้งแต่เปิดร้าน
+  const currentBucketKey = buckets[buckets.length - 1].key;
   const productAgg = new Map(); // productId -> { productId, name, quantity, revenue } สำหรับสินค้าขายดี
   const categoryAgg = new Map(); // category -> { category, orderIds: Set, quantity, revenue } สำหรับผลงานแยกตามหมวดหมู่
 
@@ -87,13 +118,17 @@ export async function getSalesReport(req, res) {
   let totalSales = 0;
 
   for (const order of orders) {
-    const bucket = bucketByKey.get(bucketOf(order.orderDate, periodType).key);
-    totalOrders += 1;
-    totalSales += order.totalAmount;
+    const orderBucketKey = bucketOf(order.orderDate, periodType).key;
+    const bucket = bucketByKey.get(orderBucketKey);
     if (bucket) {
       bucket.totalSales += order.totalAmount;
       bucket.totalOrders += 1;
     }
+
+    if (orderBucketKey !== currentBucketKey) continue;
+
+    totalOrders += 1;
+    totalSales += order.totalAmount;
 
     for (const item of order.items) {
       const category = categoryByProductId.get(item.productId) || 'อื่นๆ';
@@ -157,10 +192,11 @@ export async function getSalesReport(req, res) {
 
 // GET /api/reports/inventory — คลาส InventoryReport.generate() ใน README
 export async function getInventoryReport(req, res) {
+  if (!requireManager(req, res)) return;
   const items = await readJson(INVENTORY_PATH);
 
   const totalItems = items.reduce((sum, i) => sum + i.stock, 0);
-  const totalValue = items.reduce((sum, i) => sum + i.stock * i.unitCost, 0);
+  const totalValue = items.reduce((sum, i) => sum + i.stock * (i.unitCost ?? 0), 0);
   const lowStockItems = items.filter((i) => i.stock > 0 && i.stock <= i.threshold);
   const outOfStockItems = items.filter((i) => i.stock === 0);
 
@@ -181,6 +217,7 @@ export async function getInventoryReport(req, res) {
 // คำนวณ COGS แทนต้นทุน ณ เวลาที่ขายจริง (ถ้าต้นทุนสินค้าเปลี่ยนไปหลังขาย ตัวเลขย้อนหลังจะไม่แม่นยำ 100%)
 // รายรับใช้ order.subtotal (ยอดขายสินค้าล้วนๆ) ไม่รวมค่าส่ง/ภาษี เพื่อให้เทียบกับ COGS ได้ตรงประเภทกัน
 export async function getProfitReport(req, res) {
+  if (!requireManager(req, res)) return;
   const periodType = normalizePeriod(req.query.period);
   const [orders, inventory] = await Promise.all([readJson(ORDERS_PATH), readJson(INVENTORY_PATH)]);
   const costByProductId = new Map(inventory.map((i) => [i.productId, i.unitCost]));
@@ -188,16 +225,11 @@ export async function getProfitReport(req, res) {
   const buckets = buildEmptyBuckets(periodType);
   const bucketByKey = new Map(buckets.map((b) => [b.key, b]));
 
-  let totalRevenue = 0;
-  let totalCost = 0;
-
   for (const order of orders) {
     const orderCost = order.items.reduce(
       (sum, item) => sum + item.quantity * (costByProductId.get(item.productId) ?? 0),
       0
     );
-    totalRevenue += order.subtotal;
-    totalCost += orderCost;
 
     const bucket = bucketByKey.get(bucketOf(order.orderDate, periodType).key);
     if (bucket) {
@@ -206,11 +238,16 @@ export async function getProfitReport(req, res) {
     }
   }
 
-  const grossProfit = totalRevenue - totalCost;
+  const bucketsWithProfit = buckets.map((b) => ({ ...b, profit: b.revenue - b.cost }));
+
+  // สรุป/donut ใช้แค่ bucket ปัจจุบัน (ช่วงเวลาล่าสุดที่เลือกไว้ เช่น "เดือนนี้" ตอนเลือกรายเดือน) ให้ตรงกับ
+  // แท่งกราฟล่าสุดที่ผู้ใช้เห็น ไม่ใช่ยอดสะสมทั้งหมดตั้งแต่เปิดร้าน (ไม่งั้นสลับ period แล้วตัวเลขไม่ขยับเลย)
+  const current = bucketsWithProfit[bucketsWithProfit.length - 1];
+  const totalRevenue = current.revenue;
+  const totalCost = current.cost;
+  const grossProfit = current.profit;
   // ยังไม่มีข้อมูลค่าใช้จ่ายดำเนินงาน (opex) อื่นในระบบ (ค่าเช่า/เงินเดือน ฯลฯ) เลยให้ netProfit = grossProfit ไปก่อน
   const netProfit = grossProfit;
-
-  const bucketsWithProfit = buckets.map((b) => ({ ...b, profit: b.revenue - b.cost }));
 
   res.json({
     period: periodType,

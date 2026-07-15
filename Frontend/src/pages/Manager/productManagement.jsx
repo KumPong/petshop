@@ -42,17 +42,17 @@ function ProductModal({ open, onClose, onSave, initial }) {
   const [imgTab, setImgTab] = useState('upload');
   const [imageUrl, setImageUrl] = useState('');
   const [previewUrl, setPreviewUrl] = useState('');
-  const [form, setForm] = useState({ name: '', description: '', price: '', category: CATEGORIES[0], sku: '', stock: '0', threshold: '10' });
+  const [form, setForm] = useState({ name: '', description: '', price: '', cost: '', category: CATEGORIES[0], sku: '', stock: '0', threshold: '10' });
   const fileRef = useRef();
 
   useEffect(() => {
     if (open) {
       if (initial) {
-        setForm({ name: initial.name, description: initial.description || '', price: initial.price, category: initial.category, sku: initial.sku || '', stock: initial.stock ?? '0', threshold: initial.threshold ?? '10' });
+        setForm({ name: initial.name, description: initial.description || '', price: initial.price, cost: initial.cost ?? '', category: initial.category, sku: initial.sku || '', stock: initial.stock ?? '0', threshold: initial.threshold ?? '10' });
         setImageUrl(initial.imageUrl || '');
         setPreviewUrl(initial.imageUrl || '');
       } else {
-        setForm({ name: '', description: '', price: '', category: CATEGORIES[0], sku: '', stock: '0', threshold: '10' });
+        setForm({ name: '', description: '', price: '', cost: '', category: CATEGORIES[0], sku: '', stock: '0', threshold: '10' });
         setImageUrl('');
         setPreviewUrl('');
       }
@@ -93,7 +93,14 @@ function ProductModal({ open, onClose, onSave, initial }) {
   function handleSubmit(e) {
     e.preventDefault();
     if (!form.name.trim() || !form.price || !form.category) return;
-    onSave({ ...form, price: Number(form.price), stock: Number(form.stock), threshold: Number(form.threshold), imageUrl: previewUrl || null });
+    onSave({
+      ...form,
+      price: Number(form.price),
+      cost: form.cost === '' ? undefined : Number(form.cost),
+      stock: Number(form.stock),
+      threshold: Number(form.threshold),
+      imageUrl: previewUrl || null,
+    });
   }
 
   if (!open) return null;
@@ -190,6 +197,20 @@ function ProductModal({ open, onClose, onSave, initial }) {
                 step="0.01"
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: e.target.value })}
+                placeholder="0.00"
+                className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                ต้นทุน (฿) <span className="text-gray-400 font-normal text-xs">(ไม่ระบุ = ใช้ราคาขาย)</span>
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={form.cost}
+                onChange={(e) => setForm({ ...form, cost: e.target.value })}
                 placeholder="0.00"
                 className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
               />

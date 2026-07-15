@@ -1,5 +1,5 @@
 // Frontend/src/pages/Manager/report.jsx
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   DollarSign,
   ShoppingCart,
@@ -10,7 +10,6 @@ import {
   PackageX,
   Wallet,
   Coins,
-  Tag,
 } from 'lucide-react';
 import {
   AreaChart,
@@ -114,7 +113,6 @@ function SalesTab({ period, onPeriodChange }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('ทั้งหมด');
 
   useEffect(() => {
     let cancelled = false;
@@ -128,17 +126,6 @@ function SalesTab({ period, onPeriodChange }) {
       cancelled = true;
     };
   }, [period]);
-
-  const categories = useMemo(
-    () => ['ทั้งหมด', ...(data?.categoryBreakdown.map((c) => c.category) ?? [])],
-    [data]
-  );
-
-  const filteredTopProducts = useMemo(() => {
-    if (!data) return [];
-    if (categoryFilter === 'ทั้งหมด') return data.topProducts;
-    return data.topProducts.filter((p) => p.category === categoryFilter);
-  }, [data, categoryFilter]);
 
   if (error) return <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>;
   if (loading || !data) return <EmptyState text="กำลังโหลดข้อมูล..." />;
@@ -180,65 +167,41 @@ function SalesTab({ period, onPeriodChange }) {
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 rounded-2xl bg-other p-6 shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-bold text-gray-900">แนวโน้มยอดขาย</h2>
-              <p className="text-xs text-gray-500">เปรียบเทียบยอดขายตามช่วงเวลา</p>
-            </div>
-            <PeriodToggle period={period} onChange={onPeriodChange} />
+      <div className="rounded-2xl bg-other p-6 shadow-sm">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">แนวโน้มยอดขาย</h2>
+            <p className="text-xs text-gray-500">เปรียบเทียบยอดขายตามช่วงเวลา</p>
           </div>
-          {hasSales ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={data.chart}>
-                <defs>
-                  <linearGradient id="salesFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={CHART_COLORS.sales} stopOpacity={0.35} />
-                    <stop offset="95%" stopColor={CHART_COLORS.sales} stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip formatter={(v) => money(v)} />
-                <Area
-                  type="monotone"
-                  dataKey="totalSales"
-                  name="ยอดขาย"
-                  stroke={CHART_COLORS.sales}
-                  fill="url(#salesFill)"
-                  strokeWidth={2}
-                  isAnimationActive={false}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          ) : (
-            <EmptyState text="ยังไม่มีข้อมูลยอดขายในช่วงเวลานี้" />
-          )}
+          <PeriodToggle period={period} onChange={onPeriodChange} />
         </div>
-
-        <div className="rounded-2xl bg-other p-6 shadow-sm">
-          <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-gray-900">
-            <Tag size={18} className="text-gray-500" />
-            หมวดหมู่สินค้า
-          </h2>
-          {/* ไม่มีข้อมูล "ภูมิภาค/สาขา" ในระบบ (ไม่มี entity สาขา) และ "ช่วงวันที่" ก็ซ้ำกับตัวเลือกช่วงเวลาด้านบนอยู่แล้ว
-              เลยตัดสองอย่างนั้นออก เหลือแค่ตัวกรองหมวดหมู่ที่มีข้อมูลจริงรองรับ ใช้กรองตาราง "สินค้าขายดี" ด้านล่าง */}
-          <div className="flex flex-wrap gap-2">
-            {categories.map((c) => (
-              <button
-                key={c}
-                onClick={() => setCategoryFilter(c)}
-                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                  categoryFilter === c ? 'bg-primary text-gray-900' : 'bg-background text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
-        </div>
+        {hasSales ? (
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart data={data.chart}>
+              <defs>
+                <linearGradient id="salesFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={CHART_COLORS.sales} stopOpacity={0.35} />
+                  <stop offset="95%" stopColor={CHART_COLORS.sales} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 12 }} />
+              <Tooltip formatter={(v) => money(v)} />
+              <Area
+                type="monotone"
+                dataKey="totalSales"
+                name="ยอดขาย"
+                stroke={CHART_COLORS.sales}
+                fill="url(#salesFill)"
+                strokeWidth={2}
+                isAnimationActive={false}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        ) : (
+          <EmptyState text="ยังไม่มีข้อมูลยอดขายในช่วงเวลานี้" />
+        )}
       </div>
 
       <div className="rounded-2xl bg-other p-6 shadow-sm">
@@ -280,9 +243,9 @@ function SalesTab({ period, onPeriodChange }) {
       </div>
 
       <div className="rounded-2xl bg-other p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-bold text-gray-900">สินค้าขายดี{categoryFilter !== 'ทั้งหมด' && ` — ${categoryFilter}`}</h2>
-        {filteredTopProducts.length === 0 ? (
-          <EmptyState text="ไม่มีข้อมูลสินค้าในหมวดหมู่นี้" />
+        <h2 className="mb-4 text-lg font-bold text-gray-900">สินค้าขายดี</h2>
+        {data.topProducts.length === 0 ? (
+          <EmptyState text="ยังไม่มีข้อมูลการขาย" />
         ) : (
           <table className="w-full text-sm">
             <thead>
@@ -293,7 +256,7 @@ function SalesTab({ period, onPeriodChange }) {
               </tr>
             </thead>
             <tbody>
-              {filteredTopProducts.map((p) => (
+              {data.topProducts.map((p) => (
                 <tr key={p.productId} className="border-b border-gray-50">
                   <td className="py-3 font-medium text-gray-900">{p.name}</td>
                   <td className="py-3 text-gray-600">{p.quantity.toLocaleString('th-TH')}</td>

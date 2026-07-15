@@ -194,9 +194,13 @@ export default function StaffDashboard() {
                             const status = getStockStatus(item);
                             return (
                                 <div key={item.id} className="flex items-center gap-3 px-5 py-3">
-                                    <div className="w-10 h-10 rounded-lg bg-[#f0f2ea] shrink-0 flex items-center justify-center text-lg">
-                                        🐾
-                                    </div>
+                                    {item.image ? (
+                                        <img src={item.image} alt={item.name} className="w-10 h-10 rounded-lg shrink-0 object-cover" />
+                                    ) : (
+                                        <div className="w-10 h-10 rounded-lg bg-[#f0f2ea] shrink-0 flex items-center justify-center text-lg">
+                                            🐾
+                                        </div>
+                                    )}
                                     <div className="flex-1 min-w-0">
                                         <p className="text-sm font-medium text-gray-700 truncate">
                                             {item.name.split(':')[0]}

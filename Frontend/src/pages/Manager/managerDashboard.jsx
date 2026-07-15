@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
     PieChart, Pie, Cell
@@ -55,6 +56,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 // ---- main component ----
 function ManagerDashboard() {
+    const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
     const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -306,9 +308,13 @@ function ManagerDashboard() {
                             return (
                                 <div key={idx} className="flex items-center justify-between gap-3">
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <div className="w-9 h-9 rounded-lg bg-[#f0f2ea] flex items-center justify-center shrink-0">
-                                            <ShoppingCart size={16} className="text-[#5c6b3a]" />
-                                        </div>
+                                        {item.image ? (
+                                            <img src={item.image} alt={item.name} className="w-9 h-9 rounded-lg shrink-0 object-cover" />
+                                        ) : (
+                                            <div className="w-9 h-9 rounded-lg bg-[#f0f2ea] flex items-center justify-center shrink-0">
+                                                <ShoppingCart size={16} className="text-[#5c6b3a]" />
+                                            </div>
+                                        )}
                                         <div className="min-w-0">
                                             <p className="text-sm font-medium text-gray-700 truncate">
                                                 {item.name.split(':')[0]}
@@ -320,7 +326,10 @@ function ManagerDashboard() {
                                             )}
                                         </div>
                                     </div>
-                                    <button className="shrink-0 px-3 py-1.5 text-xs font-semibold bg-[#5c6b3a] text-white rounded-lg hover:bg-[#4a5630] transition-colors whitespace-nowrap">
+                                    <button
+                                        onClick={() => navigate('/manager/suppliers')}
+                                        className="shrink-0 px-3 py-1.5 text-xs font-semibold bg-[#5c6b3a] text-white rounded-lg hover:bg-[#4a5630] transition-colors whitespace-nowrap"
+                                    >
                                         สั่งซื้อเพิ่ม
                                     </button>
                                 </div>
