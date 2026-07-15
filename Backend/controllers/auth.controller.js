@@ -41,6 +41,7 @@ export const register = (req, res) => {
         newUser.id = newId;
         newUser.role = 'Customer';
         newUser.status = 'ACTIVE';
+        newUser.profileImage = null;
 
         users.push(newUser);
         writeUsers(users);
@@ -162,7 +163,10 @@ export const updateProfile = (req, res) => {
         if (lastName) users[userIndex].lastName = lastName;
         if (phone !== undefined) users[userIndex].phone = phone;
         if (email) users[userIndex].email = email;
-        if (profileImage) users[userIndex].profileImage = profileImage;
+
+        if (profileImage !== undefined) {
+            users[userIndex].profileImage = profileImage;
+        }
 
         // บันทึกกลับลงไฟล์ user.json
         writeUsers(users);

@@ -173,7 +173,7 @@ function Payment() {
     setSubmitting(true);
 
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       if (token) {
         const exists = savedAddresses.find(a => a.street === address.street && a.postalCode === address.postalCode);
         if (!exists) {
@@ -197,7 +197,7 @@ function Payment() {
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         if (!token) return;
         const data = await getUserAddresses(token);
         setSavedAddresses(data);

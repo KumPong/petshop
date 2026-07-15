@@ -34,7 +34,7 @@ function ChangePassword() {
         setIsLoading(true);
 
         try {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             if (!token) throw new Error("ไม่พบข้อมูลยืนยันตัวตน");
 
             // API อัปเดตรหัสผ่านใหม่

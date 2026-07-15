@@ -16,7 +16,7 @@ function Address() {
     useEffect(() => {
         const fetchAddresses = async () => {
             try {
-                const token = localStorage.getItem('token');
+                const token = sessionStorage.getItem('token');
                 if (!token) {
                     setLoading(false);
                     return;
@@ -36,7 +36,7 @@ function Address() {
     // ฟังก์ชันซิงค์ข้อมูลกับ Backend
     const syncAddressesToBackend = async (updatedAddresses) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             await updateUserAddresses(token, updatedAddresses)
             setAddresses(updatedAddresses);
         } catch (error) {

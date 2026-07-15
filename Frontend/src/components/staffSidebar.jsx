@@ -12,9 +12,8 @@ function StaffSidebar() {
 
     const handleLogout = async () => {
         try {
-            // ใส่โค้ดเคลียร์ Token/Session ของ Node.js ตรงนี้
-            // เช่น localStorage.removeItem('token');
-            // await axios.post('/api/auth/logout');
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('user');
             
             console.log('Manager logged out successfully');
             navigate('/login'); // เปลี่ยนเส้นทางไปหน้า Login

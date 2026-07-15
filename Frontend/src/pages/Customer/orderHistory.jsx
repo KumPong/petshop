@@ -8,12 +8,12 @@ function OrderHistory() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const currentUser = JSON.parse(localStorage.getItem('user')) || {};
+    const currentUser = JSON.parse(sessionStorage.getItem('user')) || {};
 
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const token = localStorage.getItem('token');
+                const token = sessionStorage.getItem('token');
 
                 // เรียกข้อมูลออเดอร์ทั้งหมดจาก Backend
                 const response = await api.get('/orders', {

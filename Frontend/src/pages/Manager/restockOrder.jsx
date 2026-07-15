@@ -419,7 +419,7 @@ function RestockOrder() {
           </tbody>
         </table>
 
-        <div className="mt-4 flex items-center justify-end gap-4 rounded-lg bg-gray-50 px-6 py-4">
+        <div className="mt-4 flex items-center justify-end gap-4 rounded-lg bg-background px-6 py-4">
           <span className="font-semibold text-gray-700">ยอดรวมคำสั่งซื้อ:</span>
           <span className="text-2xl font-bold text-gray-900">
             {money(subtotal)}
@@ -446,7 +446,7 @@ function RestockOrder() {
             {recentOrders.map((po) => {
               const pill = STATUS_PILL[po.status];
               return (
-                <tr key={po.id} className="border-b border-gray-50">
+                <tr key={po.id} className="border-b bg-background border-gray-50">
                   <td className="py-4 font-semibold text-gray-900">{po.id}</td>
                   <td className="py-4 text-gray-600">
                     {formatDateTH(po.createdAt)}
@@ -621,7 +621,7 @@ function RestockOrder() {
 
       {showConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-          <div className="flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
+          <div className="flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-other shadow-xl">
             <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
               <h3 className="text-2xl font-semibold text-gray-900">
                 ยืนยันการสั่งซื้อ
@@ -639,7 +639,7 @@ function RestockOrder() {
                 กรุณาตรวจสอบรายการสั่งซื้อก่อนยืนยัน —
                 เมื่อยืนยันแล้วจะสร้างใบสั่งซื้อใหม่ทันที
               </p>
-              <div className="divide-y divide-gray-100 rounded-xl border border-gray-100">
+              <div className="divide-y bg-background rounded-xl border border-gray-100">
                 {orderItems.map((item) => (
                   <div
                     key={item.id}
@@ -657,7 +657,7 @@ function RestockOrder() {
                   </div>
                 ))}
               </div>
-              <div className="mt-4 flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3">
+              <div className="mt-4 flex items-center justify-between rounded-lg bg-background px-4 py-3">
                 <span className="font-semibold text-gray-700">
                   ยอดรวมคำสั่งซื้อ:
                 </span>

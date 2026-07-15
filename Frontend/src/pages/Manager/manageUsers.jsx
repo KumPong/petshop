@@ -14,7 +14,7 @@ function ManageUsers() {
     const [showAddPassword, setShowAddPassword] = useState(false);
 
     // ดึงข้อมูลคนที่กำลังล็อกอินอยู่จาก LocalStorage
-    const currentUser = JSON.parse(localStorage.getItem('user')) || {};
+    const currentUser = JSON.parse(sessionStorage.getItem('user')) || {};
 
     // State about Pop-up
     const [isAddModalOpen, setIsAddModelOpen] = useState(false);
@@ -397,7 +397,7 @@ function ManageUsers() {
                                             <input type="text" disabled={!isEditMode} value={selectedUser.emergencyContact?.phone || ''} onChange={(e) => setSelectedUser({...selectedUser, emergencyContact: {...selectedUser.emergencyContact, phone: e.target.value}})} className={`w-full p-2.5 text-sm border rounded-lg outline-none ${isEditMode ? 'bg-white border-gray-300 focus:border-primary' : 'bg-transparent border-gray-200 text-gray-500 cursor-not-allowed'}`} />
                                         </div>
                                         <div>
-                                            <label className="block text-sm text-gray-600 mb-1">เบอร์โทรศัพท์</label>
+                                            <label className="block text-sm text-gray-600 mb-1">ความสัมพันธ์</label>
                                             <input type="text" disabled={!isEditMode} value={selectedUser.emergencyContact?.relationship || ''} onChange={(e) => setSelectedUser({...selectedUser, emergencyContact: {...selectedUser.emergencyContact, relationship: e.target.value}})} className={`w-full p-2.5 text-sm border rounded-lg outline-none ${isEditMode ? 'bg-white border-gray-300 focus:border-primary' : 'bg-transparent border-gray-200 text-gray-500 cursor-not-allowed'}`} />
                                         </div>
                                     </div>

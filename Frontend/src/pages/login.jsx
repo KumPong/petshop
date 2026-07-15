@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
 import Logo from '../assets/Logo.png';
 import { loginUser } from '../services/auth.service';
+import { mergeCartAfterLogin } from "../services/cart.service";
 
 function Login() {
     const navigate = useNavigate();
@@ -39,8 +40,10 @@ function Login() {
             });
 
             // เก็บข้อมูลลงเครื่อง
-            localStorage.setItem('user', JSON.stringify(data.user));
-            localStorage.setItem('token', data.token);
+            sessionStorage.setItem('user', JSON.stringify(data.user));
+            sessionStorage.setItem('token', data.token);
+
+            mergeCartAfterLogin(data.user.id)
 
             // รอให้ Pop-up โชว์ก่อนแล้วค่อยเปลี่ยนหน้า
             setTimeout(() => {

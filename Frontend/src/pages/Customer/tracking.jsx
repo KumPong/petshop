@@ -35,7 +35,7 @@ function Tracking() {
   useEffect(() => {
     let cancelled = false;
 
-    if (!orderId && !localStorage.getItem('token')) {
+    if (!orderId && !sessionStorage.getItem('token')) {
       setError('กรุณาเข้าสู่ระบบเพื่อดูคำสั่งซื้อล่าสุดของคุณ');
       setLoading(false);
       return;
@@ -78,7 +78,7 @@ function Tracking() {
   }
 
   if (error || !order) {
-    const needsLogin = !orderId && !localStorage.getItem('token');
+    const needsLogin = !orderId && !sessionStorage.getItem('token');
     return (
       <div className="-m-6 flex min-h-screen flex-col items-center justify-center gap-4 bg-background p-10">
         <p className="text-gray-500">{error || 'ไม่พบคำสั่งซื้อที่จะติดตาม'}</p>

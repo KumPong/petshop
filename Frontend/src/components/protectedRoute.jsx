@@ -4,8 +4,8 @@ import Swal from "sweetalert2";
 // Component สำหรับป้องกัน Route
 export default function ProtectedRoute ({ children, allowedRoles }) {
     // ฟังก์ชันการเช็ก Login 
-    const token = localStorage.getItem('token');
-    const userString = localStorage.getItem('user');
+    const token = sessionStorage.getItem('token');
+    const userString = sessionStorage.getItem('user');
     const isAuthenticated = !!token;
     const location = useLocation();
 
@@ -21,8 +21,8 @@ export default function ProtectedRoute ({ children, allowedRoles }) {
         // ถ้า Role ของคนที่ล็อกอิน ไม่ตรงกับ Role ที่อนุญาตให้เข้าหน้านี้
         if (!allowedRoles.includes(user.role)) {
             // เตะออก ลบข้อมูลทิ้ง
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('user');
             
             Swal.fire({
                 icon: 'error',

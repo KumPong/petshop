@@ -4,7 +4,7 @@ import api from './api.js';
 
 // backend บังคับ Manager เท่านั้นถึงจะดูรายงานได้ (401/403 ถ้าไม่มี token/ไม่ใช่ Manager) ต้องแนบ token เสมอ
 function authHeaders() {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
   return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 }
 

@@ -3,7 +3,7 @@ import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 
 export default function CustomerLayout() {
-    const userString = localStorage.getItem('user');
+    const userString = sessionStorage.getItem('user');
 
     if (userString) {
         const user = JSON.parse(userString);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import api from '../../services/api.js'
 import { getInventory } from '../../services/inventory.service.js'
@@ -87,9 +87,9 @@ function ProductDetail() {
   if (!product) return <div className="p-6">ไม่พบบันทึกรายการสินค้า</div>
 
   return (
-    <div className="min-h-screen bg-background text-gray-800 p-6">
+    <div className="min-h-screen text-gray-800 p-6">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 bg-white rounded-lg shadow-md p-6">
+        <div className="md:col-span-2 bg-other rounded-lg shadow-md p-6">
           <img src={product.image || 'https://placehold.co/800x600?text=Product'} alt={product.name} className="w-full h-96 object-contain bg-white p-4 rounded-md mb-4" />
           <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
           <p className="text-gray-700 mb-4">{product.description || 'ไม่มีคำอธิบายสำหรับสินค้านี้'}</p>
@@ -121,13 +121,13 @@ function ProductDetail() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 {product.specifications && Object.entries(product.specifications).map(([key, value]) => (
-                  <div key={key} className="bg-gray-50 p-4 rounded-md">
-                    <p className="text-sm text-gray-600 capitalize">{key}</p>
+                  <div key={key} className="bg-background p-4 rounded-md">
+                    <p className="text-sm text-gray-700 capitalize">{key}</p>
                     <p className="font-semibold text-gray-900">{value}</p>
                   </div>
                 ))}
                 {(!product.specifications || Object.keys(product.specifications).length === 0) && (
-                  <div className="col-span-2 text-center text-gray-500 py-8">
+                  <div className="col-span-2 text-center bg-background text-gray-600 py-8">
                     ไม่มีข้อมูลจำเพาะสำหรับสินค้านี้
                   </div>
                 )}
@@ -138,7 +138,7 @@ function ProductDetail() {
           {/* Care Instructions Tab */}
           {activeTab === 'care' && (
             <div className="space-y-4">
-              <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+              <div className="bg-background border border-gray-200 rounded-md p-4">
                 <h3 className="font-semibold text-gray-900 mb-3">วิธีดูแลรักษา</h3>
                 {product.careInstructions && product.careInstructions.length > 0 ? (
                   <ul className="space-y-2 text-sm text-gray-700">
@@ -147,26 +147,26 @@ function ProductDetail() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-gray-500">ไม่มีข้อมูลวิธีดูแลสำหรับสินค้านี้</p>
+                  <p className="text-sm text-gray-700">ไม่มีข้อมูลวิธีดูแลสำหรับสินค้านี้</p>
                 )}
               </div>
             </div>
           )}
         </div>
 
-        <aside className="bg-white rounded-lg shadow-md p-6 h-fit sticky top-6">
+        <aside className="bg-other rounded-lg shadow-md p-6 h-fit sticky top-6">
           <h3 className="text-lg font-semibold mb-3">รายละเอียดการสั่งซื้อ</h3>
           
           {/* Product Details */}
           <div className="space-y-2 mb-4 pb-4 border-b border-gray-200">
             <div className="flex justify-between">
-              <span className="text-gray-600">สต็อก:</span>
+              <span className="text-gray-700">สต็อก:</span>
               <span className={`font-semibold ฿{product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {product.stock > 0 ? `${product.stock} ชิ้น` : 'สินค้าหมด'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">รวม:</span>
+              <span className="text-gray-700">รวม:</span>
               <span className="font-bold text-green-700 text-lg">฿{(product.price * quantity).toFixed(2)}</span>
             </div>
           </div>
@@ -178,7 +178,7 @@ function ProductDetail() {
               <button 
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 disabled={product.stock === 0}
-                className="bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-700 font-bold py-2 px-4 rounded-md w-12 h-12 flex items-center justify-center"
+                className="bg-secondary hover:bg-primary disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-700 font-bold py-2 px-4 rounded-md w-12 h-12 flex items-center justify-center"
               >
                 −
               </button>
@@ -190,13 +190,13 @@ function ProductDetail() {
                   setQuantity(Math.max(1, Math.min(val, product.stock)))
                 }}
                 disabled={product.stock === 0}
-                className="w-16 border border-gray-300 rounded-md py-2 px-3 text-center font-semibold disabled:bg-gray-100 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="w-16 h-12 border border-gray-200 bg-background  rounded-md py-2 px-3 text-center font-semibold disabled:bg-gray-100 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 style={{ MozAppearance: 'textfield' }}
               />
               <button 
                 onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
                 disabled={product.stock === 0 || quantity >= product.stock}
-                className="bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-700 font-bold py-2 px-4 rounded-md w-12 h-12 flex items-center justify-center"
+                className="bg-secondary hover:bg-primary disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-700 font-bold py-2 px-4 rounded-md w-12 h-12 flex items-center justify-center"
               >
                 +
               </button>
@@ -211,8 +211,8 @@ function ProductDetail() {
               addedToCart 
                 ? 'bg-green-500 text-white' 
                 : product.stock === 0
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-primary text-white hover:bg-primary/90'
+                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                : 'bg-primary text-black hover:bg-primary/90'
             }`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -223,7 +223,7 @@ function ProductDetail() {
             {addedToCart ? 'เพิ่มลงตะกร้าแล้ว ✓' : 'เพิ่มลงตะกร้า'}
           </button>
           
-          <Link to="/products" className="block text-center text-sm text-gray-600 hover:text-gray-800 transition">กลับไปยังรายการสินค้า</Link>
+          <Link to="/products" className="block text-center text-sm text-gray-600 hover:text-gray-800 transition hover:underline">กลับไปยังรายการสินค้า</Link>
         </aside>
       </div>
     </div>

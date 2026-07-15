@@ -6,7 +6,7 @@ import api from './api.js';
 // แนบ token ถ้ามี (login แล้ว) ให้ backend เอาไปผูก customerId ตอนสร้างออเดอร์ และเช็คสิทธิ์เจ้าของออเดอร์ตอนดึงข้อมูล
 // ไม่มี token (guest) ก็ยังเรียกได้ปกติ — backend จะ fallback เป็นพฤติกรรมเดิม (ไม่เช็คสิทธิ์)
 function authHeaders() {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
   return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 }
 
