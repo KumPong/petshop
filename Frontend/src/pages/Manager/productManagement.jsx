@@ -42,17 +42,30 @@ function ProductModal({ open, onClose, onSave, initial }) {
   const [imgTab, setImgTab] = useState('upload');
   const [imageUrl, setImageUrl] = useState('');
   const [previewUrl, setPreviewUrl] = useState('');
+<<<<<<< Updated upstream
   const [form, setForm] = useState({ name: '', description: '', price: '', category: CATEGORIES[0], sku: '', stock: '0', threshold: '10' });
+=======
+  const [form, setForm] = useState({ name: '', description: '', price: '', cost: '', category: CATEGORIES[0], sku: '', stock: '0', threshold: '10', specs: [], careInstructions: '' });
+>>>>>>> Stashed changes
   const fileRef = useRef();
 
   useEffect(() => {
     if (open) {
       if (initial) {
+<<<<<<< Updated upstream
         setForm({ name: initial.name, description: initial.description || '', price: initial.price, category: initial.category, sku: initial.sku || '', stock: initial.stock ?? '0', threshold: initial.threshold ?? '10' });
         setImageUrl(initial.imageUrl || '');
         setPreviewUrl(initial.imageUrl || '');
       } else {
         setForm({ name: '', description: '', price: '', category: CATEGORIES[0], sku: '', stock: '0', threshold: '10' });
+=======
+        const specsArr = initial.specifications ? Object.entries(initial.specifications).map(([key, value]) => ({ key, value })) : [];
+        setForm({ name: initial.name, description: initial.description || '', price: initial.price, cost: initial.cost ?? '', category: initial.category, sku: initial.sku || '', stock: initial.stock ?? '0', threshold: initial.threshold ?? '10', specs: specsArr, careInstructions: (initial.careInstructions || []).join('\n') });
+        setImageUrl(initial.imageUrl || '');
+        setPreviewUrl(initial.imageUrl || '');
+      } else {
+        setForm({ name: '', description: '', price: '', cost: '', category: CATEGORIES[0], sku: '', stock: '0', threshold: '10', specs: [], careInstructions: '' });
+>>>>>>> Stashed changes
         setImageUrl('');
         setPreviewUrl('');
       }
@@ -84,7 +97,25 @@ function ProductModal({ open, onClose, onSave, initial }) {
   function handleSubmit(e) {
     e.preventDefault();
     if (!form.name.trim() || !form.price || !form.category) return;
+<<<<<<< Updated upstream
     onSave({ ...form, price: Number(form.price), stock: Number(form.stock), threshold: Number(form.threshold), imageUrl: previewUrl || null });
+=======
+    const specifications = form.specs.reduce((acc, { key, value }) => {
+      if (key.trim()) acc[key.trim()] = value;
+      return acc;
+    }, {});
+    const careInstructions = form.careInstructions.split('\n').map((s) => s.trim()).filter(Boolean);
+    onSave({
+      ...form,
+      price: Number(form.price),
+      cost: form.cost === '' ? undefined : Number(form.cost),
+      stock: Number(form.stock),
+      threshold: Number(form.threshold),
+      imageUrl: previewUrl || null,
+      specifications,
+      careInstructions,
+    });
+>>>>>>> Stashed changes
   }
 
   if (!open) return null;
@@ -241,6 +272,46 @@ function ProductModal({ open, onClose, onSave, initial }) {
               </div>
             </div>
           )}
+
+          {/* Specifications */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-sm font-medium text-gray-700">ข้อมูลจำเพาะ</label>
+              <button type="button" onClick={() => setForm({ ...form, specs: [...form.specs, { key: '', value: '' }] })} className="text-xs text-[#5c6b3a] hover:underline">+ เพิ่มรายการ</button>
+            </div>
+            {form.specs.length === 0 && <p className="text-xs text-gray-400">ยังไม่มีข้อมูลจำเพาะ</p>}
+            <div className="space-y-2">
+              {form.specs.map((spec, i) => (
+                <div key={i} className="flex gap-2 items-center">
+                  <input
+                    value={spec.key}
+                    onChange={(e) => { const s = [...form.specs]; s[i] = { ...s[i], key: e.target.value }; setForm({ ...form, specs: s }); }}
+                    placeholder="หัวข้อ เช่น น้ำหนัก"
+                    className="flex-1 border bg-other border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                  />
+                  <input
+                    value={spec.value}
+                    onChange={(e) => { const s = [...form.specs]; s[i] = { ...s[i], value: e.target.value }; setForm({ ...form, specs: s }); }}
+                    placeholder="ค่า เช่น 2 กก."
+                    className="flex-1 border bg-other border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                  />
+                  <button type="button" onClick={() => setForm({ ...form, specs: form.specs.filter((_, idx) => idx !== i) })} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Care Instructions */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">วิธีดูแล <span className="text-gray-400 font-normal text-xs">(แต่ละบรรทัด = 1 รายการ)</span></label>
+            <textarea
+              rows={3}
+              value={form.careInstructions}
+              onChange={(e) => setForm({ ...form, careInstructions: e.target.value })}
+              placeholder="เช่น เก็บในที่แห้งและเย็น&#10;ห่างจากแสงแดดโดยตรง"
+              className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30 resize-none"
+            />
+          </div>
 
           {/* Actions */}
           <div className="flex justify-end gap-2 pt-1">

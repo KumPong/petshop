@@ -53,7 +53,11 @@ export async function getProduct(req, res) {
 // POST /api/products — สร้างสินค้าใหม่ พร้อมสร้าง inventory entry อัตโนมัติ
 // body: { name, description, price, category, status?, imageUrl?, sku?, stock?, threshold? }
 export async function createProduct(req, res) {
+<<<<<<< Updated upstream
   const { name, description, price, category, status = 'Active', imageUrl, sku, stock = 0, threshold = 10 } = req.body;
+=======
+  const { name, description, price, category, status = 'Active', imageUrl, sku, stock = 0, threshold = 10, cost, specifications, careInstructions } = req.body;
+>>>>>>> Stashed changes
   if (!name || !price || !category) {
     return res.status(400).json({ message: 'name, price และ category จำเป็นต้องมี' });
   }
@@ -70,7 +74,7 @@ export async function createProduct(req, res) {
   // ใช้ SKU ที่ส่งมา ถ้าไม่มีให้ใช้ productId แทน
   const resolvedSku = (sku && sku.trim()) ? sku.trim().toUpperCase() : productId;
 
-  const newProduct = { productId, name, description: description || '', price: Number(price), category, status, imageUrl: imageUrl || null };
+  const newProduct = { productId, name, description: description || '', price: Number(price), category, status, imageUrl: imageUrl || null, specifications: specifications || {}, careInstructions: careInstructions || [] };
   products.push(newProduct);
 
   // สร้าง inventory entry ใหม่พร้อมกัน
@@ -97,13 +101,19 @@ export async function updateProduct(req, res) {
   const idx = products.findIndex((p) => p.productId === id);
   if (idx === -1) return res.status(404).json({ message: `ไม่พบสินค้า id "${id}"` });
 
+<<<<<<< Updated upstream
   const { name, description, price, category, status, imageUrl } = req.body;
+=======
+  const { name, description, price, category, status, imageUrl, cost, specifications, careInstructions } = req.body;
+>>>>>>> Stashed changes
   if (name !== undefined) products[idx].name = name;
   if (description !== undefined) products[idx].description = description;
   if (price !== undefined) products[idx].price = Number(price);
   if (category !== undefined) products[idx].category = category;
   if (status !== undefined) products[idx].status = status;
   if (imageUrl !== undefined) products[idx].imageUrl = imageUrl;
+  if (specifications !== undefined) products[idx].specifications = specifications;
+  if (careInstructions !== undefined) products[idx].careInstructions = careInstructions;
 
   // sync ชื่อและหมวดหมู่ไปยัง inventory entry ที่ผูกกับ productId นี้
   const inventory = await readInventory();
