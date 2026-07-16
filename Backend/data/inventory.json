@@ -728,11 +728,13 @@
     "productId": "PD-031",
     "name": "ปืนหายาก",
     "category": "อุปกรณ์",
-    "stock": 2,
+    "stock": 3,
     "threshold": 10,
-    "lastUpdated": "2026-07-15T04:39:19.007Z",
+    "lastUpdated": "2026-07-16T15:43:43.248Z",
     "unitCost": 65,
     "image": "http://localhost:4000/uploads/Products/Product-1784089595230-156913077.webp",
-    "id-type": "accessories"
+    "id-type": "accessories",
+    "specifications": {},
+    "careInstructions": []
   }
 ]

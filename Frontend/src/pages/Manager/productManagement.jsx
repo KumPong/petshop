@@ -7,12 +7,12 @@ import { getProducts, createProduct, updateProduct, deleteProduct, uploadProduct
 const PAGE_SIZE = 10;
 
 const CATEGORY_COLORS = {
-  'อาหารแห้ง':    'bg-amber-100 text-amber-700',
-  'อาหารเปียก':   'bg-blue-100 text-blue-700',
-  'ออร์แกนิก':    'bg-green-100 text-green-700',
-  'ขนม':          'bg-pink-100 text-pink-700',
-  'อุปกรณ์':      'bg-purple-100 text-purple-700',
-  'ของเล่น':      'bg-yellow-100 text-yellow-700',
+  'อาหารแห้ง': 'bg-amber-100 text-amber-700',
+  'อาหารเปียก': 'bg-blue-100 text-blue-700',
+  'ออร์แกนิก': 'bg-green-100 text-green-700',
+  'ขนม': 'bg-pink-100 text-pink-700',
+  'อุปกรณ์': 'bg-purple-100 text-purple-700',
+  'ของเล่น': 'bg-yellow-100 text-yellow-700',
 };
 function categoryBadge(cat) {
   return CATEGORY_COLORS[cat] || 'bg-gray-100 text-gray-600';
@@ -43,6 +43,10 @@ function ProductModal({ open, onClose, onSave, initial }) {
   const [imageUrl, setImageUrl] = useState('');
   const [previewUrl, setPreviewUrl] = useState('');
   const [form, setForm] = useState({ name: '', description: '', price: '', cost: '', category: CATEGORIES[0], sku: '', stock: '0', threshold: '10' });
+  // specifications: array of {key, value} pairs for the UI
+  const [specs, setSpecs] = useState([{ key: '', value: '' }]);
+  // careInstructions: array of strings
+  const [careList, setCareList] = useState(['']);
   const fileRef = useRef();
 
   useEffect(() => {
@@ -51,10 +55,17 @@ function ProductModal({ open, onClose, onSave, initial }) {
         setForm({ name: initial.name, description: initial.description || '', price: initial.price, cost: initial.cost ?? '', category: initial.category, sku: initial.sku || '', stock: initial.stock ?? '0', threshold: initial.threshold ?? '10' });
         setImageUrl(initial.imageUrl || '');
         setPreviewUrl(initial.imageUrl || '');
+        // Convert specifications object to array of {key,value}
+        const specEntries = Object.entries(initial.specifications || {});
+        setSpecs(specEntries.length > 0 ? specEntries.map(([k, v]) => ({ key: k, value: String(v) })) : [{ key: '', value: '' }]);
+        const care = initial.careInstructions || [];
+        setCareList(care.length > 0 ? care : ['']);
       } else {
         setForm({ name: '', description: '', price: '', cost: '', category: CATEGORIES[0], sku: '', stock: '0', threshold: '10' });
         setImageUrl('');
         setPreviewUrl('');
+        setSpecs([{ key: '', value: '' }]);
+        setCareList(['']);
       }
       setImgTab('upload');
     }
@@ -93,6 +104,11 @@ function ProductModal({ open, onClose, onSave, initial }) {
   function handleSubmit(e) {
     e.preventDefault();
     if (!form.name.trim() || !form.price || !form.category) return;
+    // Convert specs array back to object, skip empty keys
+    const specsObj = {};
+    specs.forEach(({ key, value }) => { if (key.trim()) specsObj[key.trim()] = value; });
+    // Filter out empty care instructions
+    const careArr = careList.filter((s) => s.trim() !== '');
     onSave({
       ...form,
       price: Number(form.price),
@@ -100,178 +116,261 @@ function ProductModal({ open, onClose, onSave, initial }) {
       stock: Number(form.stock),
       threshold: Number(form.threshold),
       imageUrl: previewUrl || null,
+      specifications: specsObj,
+      careInstructions: careArr,
     });
   }
 
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-other rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+      <div className="bg-other rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <h2 className="font-semibold text-gray-800 text-base">{initial ? 'Edit Product' : 'Add New Product'}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X size={18} /></button>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4 max-h-[80vh] overflow-y-auto bg-background">
-          {/* Image section */}
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">Product Image</label>
-            <div className="flex gap-1 mb-3">
-              {['upload', 'link'].map((tab) => (
-                <button
-                  key={tab}
-                  type="button"
-                  onClick={() => setImgTab(tab)}
-                  className={`px-3 py-1 text-xs rounded-md border transition-colors ${imgTab === tab ? 'bg-[#5c6b3a] text-white border-[#5c6b3a]' : 'border-gray-200 text-gray-500 hover:bg-secondary'}`}
-                >
-                  {tab === 'upload' ? <><Upload size={12} className="inline mr-1" />Upload File</> : <><Link size={12} className="inline mr-1" />Image Link</>}
-                </button>
-              ))}
-            </div>
-            {imgTab === 'upload' ? (
-              <div
-                className="border-2 border-dashed bg-other border-gray-200 rounded-xl h-36 flex flex-col items-center justify-center cursor-pointer hover:border-[#5c6b3a] transition-colors relative overflow-hidden"
-                onClick={() => fileRef.current?.click()}
-                onDrop={handleDrop}
-                onDragOver={(e) => e.preventDefault()}
-              >
-                {previewUrl ? (
-                  <img src={previewUrl} alt="preview" className="absolute inset-0 w-full h-full object-cover rounded-xl" />
+        <form onSubmit={handleSubmit} className="px-6 py-5 bg-background overflow-y-auto max-h-[calc(100vh-10rem)]">
+          <div className="space-y-4">
+
+            {/* Row 1: Image + Name/Description side by side */}
+            <div className="flex gap-4">
+              {/* Image (compact) */}
+              <div className="shrink-0 w-36">
+                <label className="text-sm font-medium text-gray-700 mb-1.5 block">Product Image</label>
+                <div className="flex gap-1 mb-2">
+                  {['upload', 'link'].map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => setImgTab(tab)}
+                      className={`px-2 py-0.5 text-[10px] rounded-md border transition-colors ${imgTab === tab ? 'bg-[#5c6b3a] text-white border-[#5c6b3a]' : 'border-gray-200 text-gray-500 hover:bg-secondary'}`}
+                    >
+                      {tab === 'upload' ? <><Upload size={10} className="inline mr-0.5" />Upload</> : <><Link size={10} className="inline mr-0.5" />Link</>}
+                    </button>
+                  ))}
+                </div>
+                {imgTab === 'upload' ? (
+                  <div
+                    className="border-2 border-dashed bg-other border-gray-200 rounded-xl h-28 flex flex-col items-center justify-center cursor-pointer hover:border-[#5c6b3a] transition-colors relative overflow-hidden"
+                    onClick={() => fileRef.current?.click()}
+                    onDrop={handleDrop}
+                    onDragOver={(e) => e.preventDefault()}
+                  >
+                    {previewUrl ? (
+                      <img src={previewUrl} alt="preview" className="absolute inset-0 w-full h-full object-cover rounded-xl" />
+                    ) : (
+                      <>
+                        <Upload size={20} className="text-gray-300 mb-1" />
+                        <span className="text-[10px] text-gray-400 text-center px-1">Click or drag</span>
+                      </>
+                    )}
+                    <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+                  </div>
                 ) : (
-                  <>
-                    <Upload size={24} className="text-gray-300 mb-1" />
-                    <span className="text-xs text-gray-400">Click to upload or drag and drop</span>
-                  </>
+                  <div className="space-y-1.5">
+                    <input
+                      type="url"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      placeholder="https://..."
+                      className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                    />
+                    <button type="button" onClick={handleLinkApply} className="w-full px-2 py-1 bg-[#5c6b3a] text-white text-xs rounded-lg hover:bg-[#4a5630]">
+                      Apply
+                    </button>
+                  </div>
                 )}
-                <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
               </div>
-            ) : (
-              <div className="flex gap-2">
+
+              {/* Name + Description (fills remaining space) */}
+              <div className="flex-1 space-y-3">
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">ชื่อสินค้า</label>
+                  <input
+                    required
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    placeholder="ระบุชื่อสินค้า"
+                    className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">คำอธิบาย</label>
+                  <textarea
+                    rows={2}
+                    value={form.description}
+                    onChange={(e) => setForm({ ...form, description: e.target.value })}
+                    placeholder="อธิบายคุณสมบัติและจุดเด่นของสินค้า"
+                    className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30 resize-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Row 2: Price + Cost */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">ราคา (฿)</label>
                 <input
-                  type="url"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="https://example.com/image.jpg"
-                  className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                  required
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.price}
+                  onChange={(e) => setForm({ ...form, price: e.target.value })}
+                  placeholder="0.00"
+                  className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
                 />
-                <button type="button" onClick={handleLinkApply} className="px-3 py-2 bg-[#5c6b3a] text-white text-xs rounded-lg hover:bg-[#4a5630]">
-                  Apply
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                  ต้นทุน (฿) <span className="text-gray-400 font-normal text-xs">(ถ้าไม่ระบุ=ราคาขาย)</span>
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.cost}
+                  onChange={(e) => setForm({ ...form, cost: e.target.value })}
+                  placeholder="0.00"
+                  className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                />
+              </div>
+            </div>
+
+            {/* Row 3: Stock + Threshold */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">สต็อก</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={form.stock}
+                  onChange={(e) => setForm({ ...form, stock: e.target.value })}
+                  placeholder="0"
+                  className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                  Threshold <span className="text-gray-400 font-normal text-xs">(แจ้งเตือน)</span>
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={form.threshold}
+                  onChange={(e) => setForm({ ...form, threshold: e.target.value })}
+                  placeholder="10"
+                  className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                />
+              </div>
+            </div>
+
+            {/* Row 3: Category + SKU (SKU only on create) */}
+            <div className={`grid gap-3 ${!initial ? 'grid-cols-2' : 'grid-cols-1'}`}>
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">หมวดหมู่</label>
+                <select
+                  value={form.category}
+                  onChange={(e) => setForm({ ...form, category: e.target.value })}
+                  className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                >
+                  {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+                </select>
+              </div>
+              {!initial && (
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">
+                    SKU <span className="text-gray-400 font-normal text-xs">(ไม่ระบุ = ใช้ Product ID อัตโนมัติ)</span>
+                  </label>
+                  <input
+                    value={form.sku}
+                    onChange={(e) => setForm({ ...form, sku: e.target.value })}
+                    placeholder="เช่น NK-SL-12-001"
+                    className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Specifications */}
+            <div className="border-t border-gray-100 pt-4">
+              <label className="text-sm font-medium text-gray-700 mb-2 block">
+                ข้อมูลจำเพาะ <span className="text-gray-400 font-normal text-xs">(เช่น brand, size)</span>
+              </label>
+              <div className="space-y-2">
+                {specs.map((spec, i) => (
+                  <div key={i} className="flex gap-2 items-center">
+                    <input
+                      value={spec.key}
+                      onChange={(e) => { const s = [...specs]; s[i] = { ...s[i], key: e.target.value }; setSpecs(s); }}
+                      placeholder="หัวข้อ (เช่น brand)"
+                      className="flex-1 border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                    />
+                    <input
+                      value={spec.value}
+                      onChange={(e) => { const s = [...specs]; s[i] = { ...s[i], value: e.target.value }; setSpecs(s); }}
+                      placeholder="ค่า (เช่น Royal Canin)"
+                      className="flex-1 border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setSpecs(specs.filter((_, j) => j !== i))}
+                      className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-red-500 transition-colors shrink-0"
+                      title="ลบแถวนี้"
+                    >
+                      <X size={15} />
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setSpecs([...specs, { key: '', value: '' }])}
+                  className="text-xs text-[#5c6b3a] hover:underline mt-1"
+                >
+                  + เพิ่มข้อมูลจำเพาะ
                 </button>
               </div>
-            )}
-          </div>
+            </div>
 
-          {/* Name */}
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-1 block">ชื่อสินค้า</label>
-            <input
-              required
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="ระบุชื่อสินค้า"
-              className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
-            />
-          </div>
+            {/* Care Instructions */}
+            <div className="border-t border-gray-100 pt-4">
+              <label className="text-sm font-medium text-gray-700 mb-2 block">วิธีดูแล</label>
+              <div className="space-y-2">
+                {careList.map((item, i) => (
+                  <div key={i} className="flex gap-2 items-center">
+                    <input
+                      value={item}
+                      onChange={(e) => { const c = [...careList]; c[i] = e.target.value; setCareList(c); }}
+                      placeholder={`คำแนะนำที่ ${i + 1}`}
+                      className="flex-1 border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setCareList(careList.filter((_, j) => j !== i))}
+                      className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-red-500 transition-colors shrink-0"
+                      title="ลบแถวนี้"
+                    >
+                      <X size={15} />
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setCareList([...careList, ''])}
+                  className="text-xs text-[#5c6b3a] hover:underline mt-1"
+                >
+                  + เพิ่มคำแนะนำ
+                </button>
+              </div>
+            </div>
 
-          {/* Description */}
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-1 block">คำอธิบาย</label>
-            <textarea
-              rows={3}
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-              placeholder="อธิบายคุณสมบัติและจุดเด่นของสินค้า"
-              className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30 resize-none"
-            />
-          </div>
-
-          {/* Price + Category */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">ราคา (฿)</label>
-              <input
-                required
-                type="number"
-                min="0"
-                step="0.01"
-                value={form.price}
-                onChange={(e) => setForm({ ...form, price: e.target.value })}
-                placeholder="0.00"
-                className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">
-                ต้นทุน (฿) <span className="text-gray-400 font-normal text-xs">(ไม่ระบุ = ใช้ราคาขาย)</span>
-              </label>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={form.cost}
-                onChange={(e) => setForm({ ...form, cost: e.target.value })}
-                placeholder="0.00"
-                className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">หมวดหมู่</label>
-              <select
-                value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
-              >
-                {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-              </select>
-            </div>
-          </div>
-
-          {/* SKU — แสดงเฉพาะตอนสร้างใหม่ */}
-          {!initial && (
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">
-                SKU <span className="text-gray-400 font-normal text-xs">(ไม่ระบุ = ใช้ Product ID อัตโนมัติ)</span>
-              </label>
-              <input
-                value={form.sku}
-                onChange={(e) => setForm({ ...form, sku: e.target.value })}
-                placeholder="เช่น NK-SL-12-001"
-                className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
-              />
-            </div>
-          )}
-
-          {/* Stock + Threshold */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">สต็อก</label>
-              <input
-                type="number"
-                min="0"
-                value={form.stock}
-                onChange={(e) => setForm({ ...form, stock: e.target.value })}
-                placeholder="0"
-                className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">
-                Threshold <span className="text-gray-400 font-normal text-xs">(แจ้งเตือนเมื่อต่ำกว่า)</span>
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={form.threshold}
-                onChange={(e) => setForm({ ...form, threshold: e.target.value })}
-                placeholder="10"
-                className="w-full border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
-              />
-            </div>
-          </div>
+          </div>{/* end space-y-4 */}
 
           {/* Actions */}
-          <div className="flex justify-end gap-2 pt-1">
+          <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 mt-4">
             <button type="button" onClick={onClose} className="px-4 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">
               ยกเลิก
             </button>

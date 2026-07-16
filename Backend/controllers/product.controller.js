@@ -52,7 +52,7 @@ export async function getProducts(req, res) {
   res.json(result);
 }
 
-// GET /api/products/:id — ดึงสินค้าชิ้นเดียวพร้อมข้อมูล inventory
+// GET /api/products/:id — ดึงสินค้าชิ้นเดียวพร้อมข้อมูล inventory (รวม specifications และ careInstructions)
 export async function getProduct(req, res) {
   const { id } = req.params;
   const [products, inventory] = await Promise.all([readProducts(), readInventory()]);
@@ -66,13 +66,22 @@ export async function getProduct(req, res) {
     inv = inventory.find((i) => i.productId === product.productId) || null;
   }
   if (!product) return res.status(404).json({ message: `ไม่พบสินค้า id "${id}"` });
-  res.json({ ...product, sku: inv?.sku || null, stock: inv?.stock ?? null, threshold: inv?.threshold ?? null, cost: inv?.unitCost ?? null, image: inv?.image || product.imageUrl || null });
+  res.json({
+    ...product,
+    sku: inv?.sku || null,
+    stock: inv?.stock ?? null,
+    threshold: inv?.threshold ?? null,
+    cost: inv?.unitCost ?? null,
+    image: inv?.image || product.imageUrl || null,
+    specifications: inv?.specifications || {},
+    careInstructions: inv?.careInstructions || [],
+  });
 }
 
 // POST /api/products — สร้างสินค้าใหม่ พร้อมสร้าง inventory entry อัตโนมัติ
-// body: { name, description, price, category, status?, imageUrl?, sku?, stock?, threshold?, cost? }
+// body: { name, description, price, category, status?, imageUrl?, sku?, stock?, threshold?, cost?, specifications?, careInstructions? }
 export async function createProduct(req, res) {
-  const { name, description, price, category, status = 'Active', imageUrl, sku, stock = 0, threshold = 10, cost } = req.body;
+  const { name, description, price, category, status = 'Active', imageUrl, sku, stock = 0, threshold = 10, cost, specifications, careInstructions } = req.body;
   if (!name || !price || !category) {
     return res.status(400).json({ message: 'name, price และ category จำเป็นต้องมี' });
   }
@@ -103,9 +112,11 @@ export async function createProduct(req, res) {
     threshold: Math.max(0, Number(threshold)),
     lastUpdated: new Date().toISOString(),
     image: imageUrl || null,
-    // ถ้าไม่ส่ง cost มา fallback เป็นราคาขาย กัน money()/report พังเพราะ unitCost undefined (แต่จะได้กำไรขั้นต้น 0 ถ้าใช้ fallback นี้)
+    // ถ้าไม่ส่ง cost มา fallback เป็นราคาขาย กัน money()/report พังเพราะ unitCost undefined
     unitCost: cost !== undefined && cost !== '' ? Number(cost) : Number(price),
     'id-type': deriveIdType(category, `${name} ${description || ''}`),
+    specifications: specifications || {},
+    careInstructions: Array.isArray(careInstructions) ? careInstructions : [],
   };
   inventory.push(newInventoryEntry);
 
@@ -120,7 +131,7 @@ export async function updateProduct(req, res) {
   const idx = products.findIndex((p) => p.productId === id);
   if (idx === -1) return res.status(404).json({ message: `ไม่พบสินค้า id "${id}"` });
 
-  const { name, description, price, category, status, imageUrl, cost } = req.body;
+  const { name, description, price, category, status, imageUrl, cost, stock, threshold, specifications, careInstructions } = req.body;
   if (name !== undefined) products[idx].name = name;
   if (description !== undefined) products[idx].description = description;
   if (price !== undefined) products[idx].price = Number(price);
@@ -128,7 +139,7 @@ export async function updateProduct(req, res) {
   if (status !== undefined) products[idx].status = status;
   if (imageUrl !== undefined) products[idx].imageUrl = imageUrl;
 
-  // sync ชื่อ, หมวดหมู่, รูป และต้นทุนไปยัง inventory entry ที่ผูกกับ productId นี้
+  // sync ชื่อ, หมวดหมู่, รูป, ต้นทุน, สต็อก, threshold, specifications และ careInstructions ไปยัง inventory
   const inventory = await readInventory();
   const invIdx = inventory.findIndex((i) => i.productId === id);
   if (invIdx !== -1) {
@@ -136,6 +147,10 @@ export async function updateProduct(req, res) {
     if (category !== undefined) inventory[invIdx].category = category;
     if (imageUrl !== undefined) inventory[invIdx].image = imageUrl;
     if (cost !== undefined && cost !== '') inventory[invIdx].unitCost = Number(cost);
+    if (stock !== undefined && stock !== '') inventory[invIdx].stock = Math.max(0, Number(stock));
+    if (threshold !== undefined && threshold !== '') inventory[invIdx].threshold = Math.max(0, Number(threshold));
+    if (specifications !== undefined) inventory[invIdx].specifications = specifications;
+    if (careInstructions !== undefined) inventory[invIdx].careInstructions = Array.isArray(careInstructions) ? careInstructions : [];
     if (name !== undefined || description !== undefined || category !== undefined) {
       inventory[invIdx]['id-type'] = deriveIdType(
         category ?? inventory[invIdx].category,
