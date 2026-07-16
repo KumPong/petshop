@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Pencil, Trash2, Plus, Upload, Link, X, ChevronDown } from 'lucide-react';
+import { Pencil, Trash2, Plus, Upload, Link, X, ChevronDown, Search } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { getProducts, createProduct, updateProduct, deleteProduct, uploadProductImage } from '../../services/product.service';
 
@@ -381,11 +381,12 @@ function ProductModal({ open, onClose, onSave, initial }) {
 export default function ProductManagement() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filterCat, setFilterCat] = useState('All Categories');
-  const [filterStock, setFilterStock] = useState('Stock Status');
+  const [filterCat, setFilterCat] = useState('ทั้งหมด');
+  const [filterStock, setFilterStock] = useState('สถานะสินค้า');
   const [page, setPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   function load() {
     setLoading(true);
@@ -398,16 +399,18 @@ export default function ProductManagement() {
   useEffect(() => { load(); }, []);
 
   // ---- categories list ----
-  const allCategories = ['All Categories', ...Array.from(new Set(products.map((p) => p.category)))];
+  const allCategories = ['ทั้งหมด', ...Array.from(new Set(products.map((p) => p.category)))];
 
   // ---- filtered ----
   const filtered = products.filter((p) => {
-    const catOk = filterCat === 'All Categories' || p.category === filterCat;
+    const catOk = filterCat === 'ทั้งหมด' || p.category === filterCat;
     let stockOk = true;
-    if (filterStock === 'In Stock') stockOk = p.stock > (p.threshold ?? 0);
-    else if (filterStock === 'Low Stock') stockOk = p.stock !== null && p.stock > 0 && p.stock <= (p.threshold ?? 0);
-    else if (filterStock === 'Out of Stock') stockOk = p.stock === 0;
-    return catOk && stockOk;
+    if (filterStock === 'มีสินค้า') stockOk = p.stock > (p.threshold ?? 0);
+    else if (filterStock === 'สินค้าใกล้หมด') stockOk = p.stock !== null && p.stock > 0 && p.stock <= (p.threshold ?? 0);
+    else if (filterStock === 'สินค้าหมด') stockOk = p.stock === 0;
+    const q = searchQuery.trim().toLowerCase();
+    const searchOk = !q || (p.name || '').toLowerCase().includes(q) || (p.sku || '').toLowerCase().includes(q);
+    return catOk && stockOk && searchOk;
   });
 
   // ---- pagination ----
@@ -468,11 +471,17 @@ export default function ProductManagement() {
 
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-          <span className="font-medium">View:</span>
-          <button className="flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-1.5 bg-other hover:bg-background">
-            Products <ChevronDown size={14} />
-          </button>
+        <div className="flex items-center gap-2 text-sm">
+          <div className="relative">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+              placeholder="ค้นหาชื่อสินค้า หรือ SKU..."
+              className="pl-9 pr-3 py-1.5 border border-gray-200 rounded-lg bg-other hover:bg-background focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30 text-sm w-64"
+            />
+          </div>
         </div>
         <button
           onClick={() => { setEditTarget(null); setModalOpen(true); }}
@@ -500,7 +509,7 @@ export default function ProductManagement() {
             onChange={(e) => { setFilterStock(e.target.value); setPage(1); }}
             className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm bg-other hover:bg-background focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
           >
-            {['Stock Status', 'In Stock', 'Low Stock', 'Out of Stock'].map((s) => <option key={s}>{s}</option>)}
+            {['สถานะสินค้า', 'มีสินค้า', 'สินค้าใกล้หมด', 'สินค้าหมด'].map((s) => <option key={s}>{s}</option>)}
           </select>
         </div>
 

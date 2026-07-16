@@ -11,7 +11,7 @@ function CustomerDashboard() {
     Promise.all([getInventory(), getBestSellers()])
       .then(([inventory, topSellers]) => {
         const topItems = topSellers
-          .slice(0, 6)
+          .slice(0, 5)
           .map(({ productId }) => inventory.find(i => i.productId === productId))
           .filter(Boolean);
         setBestSellers(topItems);
