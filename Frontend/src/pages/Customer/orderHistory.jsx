@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomerSidebar from "../../components/customerSidebar";
 import api from "../../services/api";
-import { addToCart, getCart } from "../../services/cart.service.js";
+import { addToCart, clearCart } from "../../services/cart.service.js";
 import { getProducts } from "../../services/product.service.js";
 import Swal from 'sweetalert2';
 
@@ -48,45 +48,62 @@ function OrderHistory() {
         fetchOrders();
     }, [currentUser.id]);
 
-    // ฟังก์ชันสั่งซื้อซ้ำ — เพิ่มสินค้าจากออเดอร์เก่าเข้าตะกร้าจริงผ่าน cart.service.js (เดิม navigate ไปหน้า
-    // payment เฉยๆ แต่ payment.jsx ไม่เคยอ่าน state ที่ส่งไปเลย เลยไม่มีอะไรเกิดขึ้น) แล้วค่อยพาไปหน้าชำระเงิน
-    // ดึงสต็อกจริงมาก่อนเพื่อส่งให้ addToCart คลัมป์จำนวนไม่ให้เกินของจริง (เมื่อก่อนสั่งซ้ำได้เกินสต็อกเพราะ
-    // ไม่เคยส่ง stock ไปเลย ต้องรอ backend เช็คตอนกดสั่งซื้อสุดท้ายเท่านั้น)
+    // ฟังก์ชันสั่งซื้อซ้ำ — ล้างตะกร้าเดิมทิ้งก่อนเสมอ (กันสินค้าจากตะกร้าที่ค้างอยู่ปนกับออเดอร์ที่สั่งซ้ำ)
+    // แล้วค่อยเพิ่มสินค้าจากออเดอร์เก่าเข้าไปทีละชิ้นผ่าน cart.service.js ก่อนพาไปหน้าชำระเงิน
+    // ดึงสต็อกจริงมาก่อนเพื่อส่งให้ addToCart คลัมป์จำนวนไม่ให้เกินของจริง — สินค้าที่หมดสต็อกไปแล้ว (0 ชิ้น)
+    // ข้ามไปเลย ไม่เพิ่มเข้าตะกร้า และถ้าไม่มีสินค้าไหนถูกเพิ่มเข้าตะกร้าได้เลยสักชิ้น ก็ไม่พาไปหน้า payment
     const handleReorder = async (orderItems) => {
         try {
+            clearCart();
+
             const products = await getProducts();
             const stockByProductId = {};
             products.forEach((p) => { stockByProductId[p.productId] = p.stock; });
 
-            // เก็บรายการที่โดนคลัมป์ไว้แจ้งเตือน (เทียบจำนวนที่ต้องการเพิ่มจริงกับสต็อกที่มี ก่อนเรียก addToCart)
             const clampedItems = [];
+            const outOfStockItems = [];
+            let addedAny = false;
+
             orderItems.forEach((item) => {
                 const stock = stockByProductId[item.productId];
-                if (typeof stock === 'number') {
-                    const existingQty = getCart().find((c) => c.productId === item.productId)?.quantity || 0;
-                    if (existingQty + item.quantity > stock) {
-                        clampedItems.push({ name: item.name, stock });
-                    }
+
+                // สินค้าหมดสต็อกแล้ว ไม่เพิ่มเข้าตะกร้าเลย
+                if (stock === 0) {
+                    outOfStockItems.push(item.name);
+                    return;
                 }
+
+                if (typeof stock === 'number' && item.quantity > stock) {
+                    clampedItems.push({ name: item.name, stock });
+                }
+
                 addToCart(
                     { productId: item.productId, name: item.name, price: item.unitPrice, image: item.imageUrl, stock },
                     item.quantity
                 );
+                addedAny = true;
             });
 
-            if (clampedItems.length > 0) {
+            if (outOfStockItems.length > 0 || clampedItems.length > 0) {
+                const lines = [
+                    ...outOfStockItems.map((name) => `${name} — สินค้าหมดแล้ว ไม่ได้เพิ่มลงตะกร้า`),
+                    ...clampedItems.map((i) => `${i.name} — เพิ่มให้สูงสุดเท่าที่มีสต็อก (${i.stock} ชิ้น)`),
+                ];
                 // รอให้ผู้ใช้กดปิด alert ก่อน ค่อย navigate ไม่งั้นหน้าจะเปลี่ยนทับ alert ทันที
                 await Swal.fire({
                     icon: 'warning',
-                    title: 'สินค้าบางรายการเหลือไม่พอ',
-                    html: clampedItems.map((i) => `${i.name} — เพิ่มให้สูงสุดเท่าที่มีสต็อก (${i.stock} ชิ้น)`).join('<br/>'),
+                    title: addedAny ? 'สินค้าบางรายการเหลือไม่พอ' : 'สินค้าหมดสต็อก',
+                    html: lines.join('<br/>'),
                     confirmButtonText: 'ตกลง',
                 });
+            }
+
+            if (addedAny) {
+                navigate('/payment');
             }
         } catch (error) {
             console.error(error);
         }
-        navigate('/payment');
     };
 
 
