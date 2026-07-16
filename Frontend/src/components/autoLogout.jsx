@@ -10,9 +10,9 @@ export default function AutoLogout() {
         const INACTIVITY_TIME = 30 * 60 * 1000; // 15 นาที
 
         const logoutUser = () => {
-            if (localStorage.getItem('token')) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
+            if (sessionStorage.getItem('token')) {
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('user');
 
                 Swal.fire({
                     icon: 'warning',
@@ -30,7 +30,7 @@ export default function AutoLogout() {
         };
 
         const resetTimer = () => {
-            if (localStorage.getItem('token')) {
+            if (sessionStorage.getItem('token')) {
                 timeoutId = setTimeout(logoutUser, INACTIVITY_TIME);
             }
         };

@@ -15,6 +15,16 @@ async function writeProducts(items) {
   await writeFile(PRODUCT_PATH, JSON.stringify(items, null, 2));
 }
 
+// เดา segment ลูกค้า (หมา/แมว/อุปกรณ์อื่นๆ) จากคำอธิบาย/หมวดหมู่ — หน้า productListing.jsx ฝั่งลูกค้ากรองด้วย
+// field นี้ (item['id-type']) ไม่มีช่องให้เลือกตรงๆ ในฟอร์ม Add Product เลยต้องเดาจากข้อความแทน
+function deriveIdType(category, text) {
+  const t = (text || '').toLowerCase();
+  if (t.includes('แมว')) return 'cats';
+  if (t.includes('สุนัข') || t.includes('หมา')) return 'dogs';
+  if (category === 'อาหารแห้ง' || category === 'อาหารเปียก') return 'dogs';
+  return 'accessories';
+}
+
 async function readInventory() {
   const raw = await readFile(INVENTORY_PATH, 'utf-8');
   return JSON.parse(raw);
@@ -31,9 +41,11 @@ export async function getProducts(req, res) {
     const inv = inventory.find((i) => i.productId === p.productId) || null;
     return {
       ...p,
+      imageUrl: p.imageUrl || inv?.image || null,
       sku: inv?.sku || null,
       stock: inv?.stock ?? null,
       threshold: inv?.threshold ?? null,
+      cost: inv?.unitCost ?? null,
       inventoryId: inv?.id || null,
     };
   });
@@ -44,20 +56,23 @@ export async function getProducts(req, res) {
 export async function getProduct(req, res) {
   const { id } = req.params;
   const [products, inventory] = await Promise.all([readProducts(), readInventory()]);
-  const product = products.find((p) => p.productId === id);
+  // ค้นหาจาก productId ก่อน ถ้าไม่พบให้ลองค้นจาก inventory id/SKU
+  let product = products.find((p) => p.productId === id);
+  let inv = null;
+  if (!product) {
+    inv = inventory.find((i) => i.id === id || i.sku === id) || null;
+    if (inv) product = products.find((p) => p.productId === inv.productId) || null;
+  } else {
+    inv = inventory.find((i) => i.productId === product.productId) || null;
+  }
   if (!product) return res.status(404).json({ message: `ไม่พบสินค้า id "${id}"` });
-  const inv = inventory.find((i) => i.productId === id) || null;
-  res.json({ ...product, sku: inv?.sku || null, stock: inv?.stock ?? null, threshold: inv?.threshold ?? null });
+  res.json({ ...product, sku: inv?.sku || null, stock: inv?.stock ?? null, threshold: inv?.threshold ?? null, cost: inv?.unitCost ?? null, image: inv?.image || product.imageUrl || null });
 }
 
 // POST /api/products — สร้างสินค้าใหม่ พร้อมสร้าง inventory entry อัตโนมัติ
-// body: { name, description, price, category, status?, imageUrl?, sku?, stock?, threshold? }
+// body: { name, description, price, category, status?, imageUrl?, sku?, stock?, threshold?, cost? }
 export async function createProduct(req, res) {
-<<<<<<< Updated upstream
-  const { name, description, price, category, status = 'Active', imageUrl, sku, stock = 0, threshold = 10 } = req.body;
-=======
   const { name, description, price, category, status = 'Active', imageUrl, sku, stock = 0, threshold = 10, cost, specifications, careInstructions } = req.body;
->>>>>>> Stashed changes
   if (!name || !price || !category) {
     return res.status(400).json({ message: 'name, price และ category จำเป็นต้องมี' });
   }
@@ -87,6 +102,10 @@ export async function createProduct(req, res) {
     stock: Math.max(0, Number(stock)),
     threshold: Math.max(0, Number(threshold)),
     lastUpdated: new Date().toISOString(),
+    image: imageUrl || null,
+    // ถ้าไม่ส่ง cost มา fallback เป็นราคาขาย กัน money()/report พังเพราะ unitCost undefined (แต่จะได้กำไรขั้นต้น 0 ถ้าใช้ fallback นี้)
+    unitCost: cost !== undefined && cost !== '' ? Number(cost) : Number(price),
+    'id-type': deriveIdType(category, `${name} ${description || ''}`),
   };
   inventory.push(newInventoryEntry);
 
@@ -101,11 +120,8 @@ export async function updateProduct(req, res) {
   const idx = products.findIndex((p) => p.productId === id);
   if (idx === -1) return res.status(404).json({ message: `ไม่พบสินค้า id "${id}"` });
 
-<<<<<<< Updated upstream
-  const { name, description, price, category, status, imageUrl } = req.body;
-=======
   const { name, description, price, category, status, imageUrl, cost, specifications, careInstructions } = req.body;
->>>>>>> Stashed changes
+
   if (name !== undefined) products[idx].name = name;
   if (description !== undefined) products[idx].description = description;
   if (price !== undefined) products[idx].price = Number(price);
@@ -115,12 +131,20 @@ export async function updateProduct(req, res) {
   if (specifications !== undefined) products[idx].specifications = specifications;
   if (careInstructions !== undefined) products[idx].careInstructions = careInstructions;
 
-  // sync ชื่อและหมวดหมู่ไปยัง inventory entry ที่ผูกกับ productId นี้
+  // sync ชื่อ, หมวดหมู่, รูป และต้นทุนไปยัง inventory entry ที่ผูกกับ productId นี้
   const inventory = await readInventory();
   const invIdx = inventory.findIndex((i) => i.productId === id);
   if (invIdx !== -1) {
     if (name !== undefined) inventory[invIdx].name = name;
     if (category !== undefined) inventory[invIdx].category = category;
+    if (imageUrl !== undefined) inventory[invIdx].image = imageUrl;
+    if (cost !== undefined && cost !== '') inventory[invIdx].unitCost = Number(cost);
+    if (name !== undefined || description !== undefined || category !== undefined) {
+      inventory[invIdx]['id-type'] = deriveIdType(
+        category ?? inventory[invIdx].category,
+        `${name ?? inventory[invIdx].name} ${description ?? ''}`
+      );
+    }
     inventory[invIdx].lastUpdated = new Date().toISOString();
     await Promise.all([writeProducts(products), writeInventory(inventory)]);
   } else {

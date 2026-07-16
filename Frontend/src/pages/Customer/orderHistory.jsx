@@ -8,14 +8,24 @@ function OrderHistory() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const currentUser = JSON.parse(sessionStorage.getItem('user')) || {};
+
     useEffect(() => {
         const fetchOrders = async () => {
             try {
+                const token = sessionStorage.getItem('token');
+
                 // เรียกข้อมูลออเดอร์ทั้งหมดจาก Backend
-                const response = await api.get('/orders');
+                const response = await api.get('/orders', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
                 // กรองเอาเฉพาะออเดอร์ที่มีสถานะ "Delivered" (จัดส่งสำเร็จ) เท่านั้น
-                const deliveredOrders = response.data.filter(order => order.status === 'Delivered');
+                const deliveredOrders = response.data.filter(order => 
+                    order.status === 'Delivered' && order.customerId === currentUser.id
+                );
                 setOrders(deliveredOrders);
             } catch (error) {
                 console.error("Error fetching orders", error);
@@ -23,8 +33,9 @@ function OrderHistory() {
                 setLoading(false);
             }
         };
+        
         fetchOrders();
-    }, []);
+    }, [currentUser.id]);
 
     // ฟังก์ชันสั่งซื้อซ้ำ
     const handleReorder = (orderItems) => {
@@ -32,10 +43,18 @@ function OrderHistory() {
         navigate('/payment', { state: { reorderItems: orderItems } });
     };
 
-    if (loading) return <div className="min-h-screen flex justify-center items-center">กำลังโหลดประวัติการสั่งซื้อ...</div>;
+
+
+    if (loading) {
+        return(
+            <div className="min-h-[70vh] flex justify-center items-center text-gray-500">
+                กำลังโหลดประวัติการสั่งซื้อ...
+            </div>
+        );
+    } 
     
     return(
-        <div className="max-w-7xl mx-auto px-4 py-4 w-full flex gap-8">
+        <div className="max-w-7xl mx-auto px-4 py-4 w-full flex gap-8 min-h-[70vh]">
             <div className="w-1/4">
                 <CustomerSidebar />
             </div>

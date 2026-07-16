@@ -1,16 +1,10 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { Truck, CreditCard, QrCode, Landmark, ShieldCheck, BadgeCheck, MessageCircle, Plus, Minus, Trash2, Image as ImageIcon } from 'lucide-react';
 import { createOrder } from '../../services/order.service.js';
+import { getUserAddresses, updateUserAddresses } from "../../services/auth.service.js";
+import { getCart, saveCart, clearCart } from '../../services/cart.service.js';
 import Swal from 'sweetalert2'
-
-// ตะกร้าจำลอง — ยังไม่มี Cart/Context กลางใช้ร่วมกับ navbar.jsx เลยแยกทำงานเดี่ยวๆ ไปก่อน
-// (productId อ้างอิงของจริงจาก Backend/data/product.json)
-const INITIAL_CART = [
-  { productId: 'PD-002', name: 'Oak & Harvest: เนื้อวัวออร์แกนิกและข้าว', price: 950, quantity: 1 },
-  { productId: 'PD-005', name: 'Cozy Nap: เบาะนอนสัตว์เลี้ยงไซส์กลาง', price: 750, quantity: 1 },
-  { productId: 'PD-003', name: 'Whisker Delight: ทูน่าเนื้อแน่นในเยลลี่', price: 45, quantity: 2 },
-];
 
 const SHIPPING_METHODS = [
   { value: 'standard', label: 'จัดส่งมาตรฐาน', detail: '3-5 วันทำการ', cost: 0 },
@@ -23,8 +17,6 @@ const PAYMENT_TABS = [
   { value: 'โอนเงินผ่านธนาคาร', label: 'โอนเงินผ่านธนาคาร', Icon: Landmark },
 ];
 
-const STEPS = ['ตะกร้า', 'จัดส่ง', 'ชำระเงิน', 'ยืนยัน'];
-
 const TAX_RATE = 0.07;
 
 // แปลงตัวเลขเป็นข้อความราคาแบบไทย เช่น 1234.5 -> "฿1,234.50"
@@ -35,33 +27,21 @@ function money(n) {
 function Payment() {
   const navigate = useNavigate();
 
-  const [cart, setCart] = useState(INITIAL_CART);
-  const [address, setAddress] = useState(() => {
-    const stored = JSON.parse(localStorage.getItem('userAddresses')) || [];
-    if (stored.length === 1) {
-      return{
-        fullName: stored[0].fullName,
-        street: stored[0].street,
-        city: stored[0].city,
-        postalCode: stored[0].postalCode,
-        phone: stored[0].phone
-      };
-    }
-    return { fullName: '', street: '', city: '', postalCode: '', phone: ''};
-  });
+  const [cart, setCart] = useState(() => getCart());
+  const [address, setAddress] = useState({ fullName: '', street: '', city: '', postalCode: '', phone: '' });
   const [shippingMethod, setShippingMethod] = useState('standard');
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_TABS[0].value);
   const [card, setCard] = useState({ name: '', number: '', expiry: '', cvv: '' });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [savedAddresses, setSavedAddresses] = useState(() => {
-    return JSON.parse(localStorage.getItem('userAddresses')) || [];
-  });
+  const [savedAddresses, setSavedAddresses] = useState([]);
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shippingCost = SHIPPING_METHODS.find((m) => m.value === shippingMethod).cost;
   const tax = Math.round(subtotal * TAX_RATE * 100) / 100;
   const total = subtotal + shippingCost + tax;
+
+  
 
   // เอาไว้กรองให้เหลือแต่ตัวเลข ใช้กับช่องหมายเลขบัตร/วันหมดอายุ/CVV ที่ห้ามพิมพ์ตัวอักษรปน
   const onlyDigits = (value) => value.replace(/\D/g, '');
@@ -96,7 +76,7 @@ function Payment() {
   };
 
   const removeItem = (productId) => {
-    setCart((prev) => prev.filter((item) => item.productId !== productId));
+    setCart((prev) => saveCart(prev.filter((item) => item.productId !== productId)));
   };
 
   // ใช้ทั้งตอนพิมพ์เลขเองและกด +/- — ตั้งเป็น 0 หรือต่ำกว่า = ลบออกจากตะกร้าเลย (ไม่ clamp ไว้ที่ 1)
@@ -106,7 +86,7 @@ function Payment() {
       removeItem(productId);
       return;
     }
-    setCart((prev) => prev.map((item) => (item.productId === productId ? { ...item, quantity: qty } : item)));
+    setCart((prev) => saveCart(prev.map((item) => (item.productId === productId ? { ...item, quantity: qty } : item))));
   };
 
   const changeQty = (productId, delta) => {
@@ -133,24 +113,58 @@ function Payment() {
   }
 
   const openAddressSelector = async () => {
-    // ดึงที่อยู่มาทำเป็นตัวเลือกใน SweetAlert2
-    const inputOptions = {};
-    savedAddresses.forEach(addr => {
-      inputOptions[addr.id] = `${addr.fullName} - ${addr.street} ${addr.city}`;
-    });
+    // สร้าง Html โครงสร้างกล่องที่อยู่
+    const addressCardsHTML = savedAddresses.map (addr => `
+        <label class="block cursor-pointer mb-3 relative">
+        <div class="bg-other p-4 rounded-xl border border-gray-200 hover:border-gray-300 transition-all text-left flex gap-4">
+          
+          <div class="mt-1 shrink-0">
+            <input type="radio" name="addressSelect" value="${addr.id}" class="w-5 h-5 accent-blue-600 cursor-pointer">
+          </div>
+          
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+                <h3 class="font-bold text-gray-900">${addr.fullName}</h3>
+                <span class="text-gray-600 text-sm">${addr.phone}</span>
+                ${addr.isDefault ? '<span class="px-2 py-0.5 bg-secondary text-gray-700 text-xs rounded-full font-medium">ค่าเริ่มต้น</span>' : ''}
+            </div>
+            <p class="text-gray-600 text-sm leading-relaxed">${addr.street} ${addr.city} ${addr.postalCode}</p>
+          </div>
+          
+        </div>
+      </label>
+      `).join('');
 
-    const { value: selectedId } = await Swal.fire({
-      title: 'เลือกที่อยู่จัดส่ง',
-      input: 'radio',
-      inputOptions,
-      showCancelButton: true,
-      confirmButtonText: 'เลือก'
-    });
+      const { value: selectedId } = await Swal.fire({
+        title: 'เลือกที่อยู่จัดส่ง',
+        html: `
+          <div class="max-h-96 overflow-y-auto pr-2 mt-4 custom-scrollbar">
+            ${addressCardsHTML}
+          </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#4A5D23',
+        width: '600px',
+        customClass: {
+        popup: '!bg-background rounded-3xl' 
+        },
+        preConfirm: () => {
+          // ดึงค่า value จาก input radio ที่ถูกเลือก
+          const selectRadio = Swal.getPopup().querySelector(`input[name="addressSelect"]:checked`);
+          if (!selectRadio) {
+            Swal.showValidationMessage('กรุณาเลือกที่อยู่ 1 รายการ');
+            return false;
+          }
+          return selectRadio.value;
+        }
+      });
 
-    if (selectedId) {
-      const selected = savedAddresses.find(a => a.id.toString() === selectedId);
-      if (selected) handleSelectAddress(selected);
-    }
+      if (selectedId) {
+        const selected = savedAddresses.find(a => a.id.toString() === selectedId);
+        if (selected) handleSelectAddress(selected);
+      }
   };
 
   const handlePlaceOrder = async () => {
@@ -158,65 +172,77 @@ function Payment() {
     setError(null);
     setSubmitting(true);
 
-    // บันทึกที่อยู่ใหม่ลง localStorage (เช็กก่อนว่าซ้ำไหม)
-    const stored = JSON.parse(localStorage.getItem('userAddresses')) || [];
-    const exists = stored.find(a => a.street === address.street && a.postalCode === address.postalCode);
-    if (!exists) {
-      stored.push({ ...address, id: Date.now(), isDefault: stored.length === 0});
-      localStorage.setItem('userAddresses', JSON.stringify(stored));
-    }
-
     try {
+      const token = sessionStorage.getItem('token');
+      if (token) {
+        const exists = savedAddresses.find(a => a.street === address.street && a.postalCode === address.postalCode);
+        if (!exists) {
+          const newSavedAddresses = [...savedAddresses, { ...address, id: Date.now(), isDefault: savedAddresses.length === 0}];
+          await updateUserAddresses(token, newSavedAddresses);
+        }
+      }
+
       const items = cart.map(({ productId, quantity }) => ({ productId, quantity }));
       const order = await createOrder(items, paymentMethod, address, shippingMethod);
+      clearCart();
       navigate(`/confirmation/${order.orderId}`);
-    } catch {
-      setError('ชำระเงินไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+    } catch (err) {
+      // โชว์เหตุผลจริงจาก backend ถ้ามี (เช่น สต็อกไม่พอ/สินค้าไม่มี) แทนข้อความทั่วไปที่กลืนสาเหตุจริงไปหมด
+      setError(err.response?.data?.message || 'ชำระเงินไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
       setSubmitting(false);
     }
   };
 
+  // ดึงที่อยู่จาก Backend ตอนเปิดหน้า Payment
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      try {
+        const token = sessionStorage.getItem('token');
+        if (!token) return;
+        const data = await getUserAddresses(token);
+        setSavedAddresses(data);
+    
+        if (data.length > 0) {
+          // ค้นหาที่อยู่ที่ถูกตั้งเป็น isDefault = true
+          const defaultAddress = data.find(addr => addr.isDefault === true);
+
+          if (defaultAddress) {
+            // ถ้าเจอที่อยู่เริ่มต้น ให้ดึงมาใส่ฟอร์ม
+            handleSelectAddress(defaultAddress);
+          } else if (data.length === 1) {
+            // ถ้าไม่มีที่อยู่เริ่มต้น แต่มีแค่ 1 ที่อยู่ ก็ดึงอันนั้นมาเลย
+            handleSelectAddress(data[0]);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchAddresses();
+  }, []);
+
   return (
     <div className="-m-6 min-h-screen bg-background p-10">
-      {/* Stepper — Cart ถือว่าผ่านมาแล้ว (ไม่มีหน้า Cart จริงในสโคปนี้), หน้านี้คือขั้น Shipping/Payment รวมกัน */}
-      <div className="mx-auto mb-10 flex max-w-3xl items-center justify-between">
-        {STEPS.map((label, i) => {
-          const stepIndex = i + 1;
-          const isDone = stepIndex === 1;
-          const isCurrent = stepIndex === 2;
-          return (
-            <div key={label} className="flex flex-1 flex-col items-center">
-              <div className="flex w-full items-center">
-                <div
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
-                    isDone
-                      ? 'bg-primary text-gray-900'
-                      : isCurrent
-                      ? 'border-2 border-primary bg-white text-gray-900'
-                      : 'bg-gray-100 text-gray-400'
-                  }`}
-                >
-                  {isDone ? '✓' : stepIndex}
-                </div>
-                {i < STEPS.length - 1 && <div className="mx-2 h-px flex-1 bg-gray-200" />}
-              </div>
-              <span className={`mt-2 text-xs ${isCurrent ? 'font-semibold text-gray-900' : 'text-gray-500'}`}>
-                {label}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-
       {error && (
         <div className="mx-auto mb-6 max-w-5xl rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
           {error}
         </div>
       )}
 
+      {cart.length === 0 ? (
+        <div className="mx-auto max-w-5xl rounded-2xl bg-white p-12 text-center shadow-sm">
+          <p className="mb-4 text-gray-600">ตะกร้าสินค้าของคุณว่างเปล่า</p>
+          <Link
+            to="/products"
+            className="inline-block rounded-full bg-primary px-5 py-3 text-sm font-medium text-gray-900 shadow-sm hover:brightness-95"
+          >
+            เลือกซื้อสินค้า
+          </Link>
+        </div>
+      ) : (
       <div className="mx-auto grid max-w-5xl grid-cols-3 gap-6">
         <div className="col-span-2 space-y-6">
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
+          <div className="rounded-2xl bg-other p-6 shadow-sm">
             <div className='flex justify-between items-center mb-4'>
               <h2 className="flex items-center gap-2 text-lg font-bold text-gray-900">
                 <Truck size={18} />
@@ -240,7 +266,7 @@ function Payment() {
                   value={address.fullName}
                   onChange={(e) => setAddress({ ...address, fullName: e.target.value })}
                   placeholder="เช่น สมชาย ใจดี"
-                  className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </label>
               <label className="col-span-2 flex flex-col gap-1 text-sm font-medium text-gray-700">
@@ -249,7 +275,7 @@ function Payment() {
                   value={address.street}
                   onChange={(e) => setAddress({ ...address, street: e.target.value })}
                   placeholder="บ้านเลขที่ ถนน ตำบล/แขวง อำเภอ/เขต"
-                  className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </label>
               <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
@@ -258,7 +284,7 @@ function Payment() {
                   value={address.city}
                   onChange={(e) => setAddress({ ...address, city: e.target.value })}
                   placeholder="เช่น เชียงใหม่"
-                  className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </label>
               <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
@@ -268,7 +294,7 @@ function Payment() {
                   onChange={(e) => handlePostalCodeChange(e.target.value)}
                   inputMode="numeric"
                   placeholder="50200"
-                  className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </label>
               <label className="col-span-2 flex flex-col gap-1 text-sm font-medium text-gray-700">
@@ -278,13 +304,13 @@ function Payment() {
                   onChange={(e) => handlePhoneChange(e.target.value)}
                   inputMode="numeric"
                   placeholder="08X-XXX-XXXX"
-                  className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </label>
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
+          <div className="rounded-2xl bg-other p-6 shadow-sm">
             <h2 className="mb-4 text-lg font-bold text-gray-900">วิธีจัดส่ง</h2>
             <div className="grid grid-cols-2 gap-4">
               {SHIPPING_METHODS.map((m) => (
@@ -292,8 +318,8 @@ function Payment() {
                   key={m.value}
                   className={`flex cursor-pointer items-center justify-between rounded-xl border px-4 py-3 text-sm ${
                     shippingMethod === m.value
-                      ? 'border-primary bg-primary/20'
-                      : 'border-gray-200 text-gray-600'
+                      ? 'border-secondary bg-primary text-black'
+                      : 'border-gray-200 bg-background text-gray-600'
                   }`}
                 >
                   <span>
@@ -314,7 +340,7 @@ function Payment() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
+          <div className="rounded-2xl bg-other p-6 shadow-sm">
             <h2 className="mb-4 text-lg font-bold text-gray-900">วิธีชำระเงิน</h2>
             <div className="mb-4 flex gap-2">
               {PAYMENT_TABS.map(({ value, label, Icon }) => (
@@ -323,8 +349,8 @@ function Payment() {
                   onClick={() => setPaymentMethod(value)}
                   className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium ${
                     paymentMethod === value
-                      ? 'border-primary bg-primary/20 text-gray-900'
-                      : 'border-gray-200 text-gray-500'
+                      ? 'border-secondary bg-primary text-black'
+                      : 'border-gray-200 bg-background text-gray-500'
                   }`}
                 >
                   <Icon size={16} />
@@ -341,7 +367,7 @@ function Payment() {
                     value={card.name}
                     onChange={(e) => setCard({ ...card, name: e.target.value })}
                     placeholder="ชื่อบนบัตร"
-                    className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </label>
                 <label className="col-span-2 flex flex-col gap-1 text-sm font-medium text-gray-700">
@@ -351,7 +377,7 @@ function Payment() {
                     onChange={(e) => handleCardNumberChange(e.target.value)}
                     inputMode="numeric"
                     placeholder="0000 0000 0000 0000"
-                    className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </label>
                 <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
@@ -361,7 +387,7 @@ function Payment() {
                     onChange={(e) => handleExpiryChange(e.target.value)}
                     inputMode="numeric"
                     placeholder="MM/YY"
-                    className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </label>
                 <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
@@ -372,21 +398,21 @@ function Payment() {
                     onChange={(e) => handleCvvChange(e.target.value)}
                     inputMode="numeric"
                     placeholder="***"
-                    className="rounded-xl border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="rounded-xl border bg-background border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </label>
               </div>
             )}
 
             {paymentMethod === 'พร้อมเพย์' && (
-              <div className="flex flex-col items-center gap-2 rounded-xl bg-gray-50 py-8 text-sm text-gray-600">
+              <div className="flex flex-col items-center gap-2 rounded-xl bg-background py-8 text-sm text-gray-700">
                 <QrCode size={64} className="text-gray-400" />
                 สแกน QR พร้อมเพย์เพื่อชำระเงิน (จำลอง)
               </div>
             )}
 
             {paymentMethod === 'โอนเงินผ่านธนาคาร' && (
-              <div className="rounded-xl bg-gray-50 px-4 py-4 text-sm text-gray-600">
+              <div className="rounded-xl bg-background px-4 py-4 text-sm text-gray-700">
                 โอนเงินมาที่บัญชี PetStop Co., Ltd. — ธนาคารกสิกรไทย 123-4-56789-0 (จำลอง)
               </div>
             )}
@@ -399,9 +425,13 @@ function Payment() {
             <div className="space-y-3">
               {cart.map((item) => (
                 <div key={item.productId} className="flex items-center gap-3 text-sm">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-gray-300">
-                    <ImageIcon size={18} />
-                  </span>
+                  {item.image ? (
+                    <img src={item.image} alt={item.name} className="h-12 w-12 shrink-0 rounded-lg object-cover" />
+                  ) : (
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-gray-300">
+                      <ImageIcon size={18} />
+                    </span>
+                  )}
                   <div className="flex-1">
                     <p className="font-medium text-gray-900">{item.name}</p>
                     <div className="mt-1 flex items-center gap-2">
@@ -491,6 +521,7 @@ function Payment() {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }

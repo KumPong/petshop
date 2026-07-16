@@ -1,18 +1,40 @@
 [
   {
     "id": "PS0001",
+    "prefix": "นางสาว",
+    "firstName": "โฮชิมิ",
+    "lastName": "มิยาบิ",
     "email": "manager@petstop.com",
     "password": "Stop0012",
-    "role": "Manager"
+    "role": "Manager",
+    "status": "ACTIVE",
+    "bloodGroup": "O",
+    "emergencyContact": {
+      "name": "ซึกิชิโระ ยานากิ",
+      "phone": "0811234567",
+      "relationship": "ญาติ"
+    },
+    "profileImage": "http://localhost:4000/uploads/Profile/User-1783948388997-880377135.png"
   },
   {
     "id": "PS0002",
+    "prefix": "นาย",
+    "firstName": "เซธ",
+    "lastName": "โลเวลล์",
     "email": "staff@petstop.com",
     "password": "Pet0012",
-    "role": "Staff"
+    "role": "Staff",
+    "status": "ACTIVE",
+    "bloodGroup": "B",
+    "emergencyContact": {
+      "name": "ซิง อี้",
+      "phone": "0898765432",
+      "relationship": "พี่สาว"
+    },
+    "profileImage": "http://localhost:4000/uploads/Profile/User-1783948396559-697129077.webp"
   },
   {
-    "id": "PS0003",
+    "id": "CPS0001",
     "firstName": "เจน",
     "lastName": "โด",
     "email": "jane.doe@example.com",
@@ -20,16 +42,84 @@
     "password": "jane1122",
     "role": "Customer",
     "status": "ACTIVE",
-    "profileImage": "http://localhost:4000/uploads/Profile/Profile-1783679764006-25130873.jpg"
+    "profileImage": "http://localhost:4000/uploads/Profile/Profile-1783848529667-816646763.jpg",
+    "addresses": [
+      {
+        "fullName": "เจน โด",
+        "street": "67 Goon Mar Solar system",
+        "city": "Galaxy",
+        "postalCode": "10101",
+        "phone": "0981234569",
+        "id": 1783846422411,
+        "isDefault": false
+      },
+      {
+        "fullName": "Abud Ta Cum",
+        "street": "69 Goon.St NewYork ",
+        "city": "Ohio",
+        "postalCode": "69069",
+        "phone": "0966956547",
+        "id": 1783846750946,
+        "isDefault": true
+      }
+    ]
+  },
+  {
+    "id": "PS0003",
+    "prefix": "นางสาว",
+    "firstName": "เบอร์นิส",
+    "lastName": "ไวท์",
+    "email": "staff2@petstop.com",
+    "phone": "0879551123",
+    "idCard": "1234567890234",
+    "role": "Staff",
+    "status": "ACTIVE",
+    "bloodGroup": "A",
+    "password": "Pet0034",
+    "profileImage": "http://localhost:4000/uploads/Profile/User-1783952929600-705079480.jpg",
+    "emergencyContact": {
+      "name": "ซีซาร์ คิง",
+      "phone": "0869511112",
+      "relationship": "พี่สาว"
+    }
   },
   {
     "id": "PS0004",
-    "firstName": "test123",
+    "prefix": "นาย",
+    "firstName": "Test",
+    "lastName": "Test",
+    "email": "Test@Test.com",
+    "phone": "0987654321",
+    "idCard": "1234567890123",
+    "role": "Staff",
+    "status": "LEAVE",
+    "bloodGroup": "AB",
+    "password": "Test1234",
+    "profileImage": "http://localhost:4000/uploads/Profile/User-1783953783513-477842475.jpg",
+    "emergencyContact": {
+      "name": "Test",
+      "phone": "0123456789",
+      "relationship": "Test"
+    }
+  },
+  {
+    "firstName": "Dora",
     "lastName": "",
-    "email": "test123@gmail.com",
-    "phone": "",
-    "password": "test123",
+    "email": "Dora@backpack.com",
+    "password": "123456",
+    "id": "CPS0002",
     "role": "Customer",
-    "status": "ACTIVE"
+    "status": "ACTIVE",
+    "addresses": [
+      {
+        "fullName": "Dora",
+        "street": "1234",
+        "city": "Pluto",
+        "postalCode": "99999",
+        "phone": "1234567890",
+        "id": 1784041053444,
+        "isDefault": true
+      }
+    ]
   }
 ]

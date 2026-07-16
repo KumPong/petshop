@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getInventory } from "../../services/inventory.service.js";
+import PromoBanner from "../../assets/promo-banner.png"
 
 function CustomerDashboard() {
   const [bestSellers, setBestSellers] = useState([]);
@@ -13,7 +14,7 @@ function CustomerDashboard() {
   return (
     <div className="min-h-screen bg-background text-gray-800">
       {/* Hero Section */}
-      <section className="relative h-125 bg-cover bg-center flex items-center justify-center text-white" style={{ backgroundImage: "url('https://via.placeholder.com/1500x500?text=Hero+Image')" }}>
+      <section className="relative h-125 bg-cover bg-center flex items-center justify-center text-white" style={{ backgroundImage: "url('/hero-pets.jpg')" }}>
         <div className="absolute inset-0 bg-black opacity-40"></div>
         <div className="relative z-10 text-center">
           <h1 className="text-5xl font-bold mb-4">Quality Time for Your Best Friend</h1>
@@ -24,18 +25,33 @@ function CustomerDashboard() {
       {/* Categories and Promos */}
       <section className="container mx-auto py-12 px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Main Content Area - Temporarily using a placeholder for the large image */}
-          <div className="md:col-span-2 bg-gray-100 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-full" style={{ backgroundImage: "url('https://via.placeholder.com/900x400?text=Main+Content')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
-            {/* The main hero section already covers this, so this div can be simplified or removed based on final design */}
-            <h2 className="text-3xl font-bold text-gray-800"></h2>
-            <p className="text-gray-600"></p>
+          <div 
+            className="md:col-span-2 rounded-lg shadow-md p-8 flex flex-col justify-center h-full relative overflow-hidden group min-h-75" 
+            style={{ backgroundImage: `url(${PromoBanner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          >
+            {/* แผ่นฟิล์มสีดำจางๆ ช่วยให้ตัวหนังสือสีขาวอ่านง่ายขึ้น ไม่กลืนไปกับรูป */}
+            <div className="absolute inset-0 bg-black opacity-30 group-hover:opacity-40 transition-opacity"></div>
+            
+            {/* ข้อความบนรูป */}
+            <div className="relative z-10 text-white max-w-md ml-4">
+              <h2 className="text-4xl font-bold mb-3 drop-shadow-md">Playtime Essentials</h2>
+              <p className="text-lg mb-6 drop-shadow-md">
+                เติมเต็มทุกช่วงเวลาสนุกด้วยของเล่นเสริมทักษะ คอลเลกชันใหม่ล่าสุดสำหรับเพื่อนซี้สี่ขาของคุณ
+              </p>
+              <Link 
+                to="/products/accessories" 
+                className="inline-block bg-primary text-black font-semibold px-6 py-2.5 rounded-full hover:bg-secondary transition shadow-sm"
+              >
+                ช้อปคอลเลกชันของเล่น
+              </Link>
+            </div>
           </div>
 
           {/* Side Promos */}
           <div className="md:col-span-1 space-y-8">
             <div className="bg-secondary rounded-lg shadow-md p-6">
               <h3 className="text-xl font-semibold mb-2">Nutritious Bites</h3>
-              <p className="text-gray-700">Premium food up to 20% off</p>
+              <p className="text-gray-700">Premium food</p>
             </div>
             <div className="bg-other rounded-lg shadow-md p-6">
               <h3 className="text-xl font-semibold mb-2">Cozy Corners</h3>

@@ -30,10 +30,17 @@ function Tracking() {
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  // มี orderId ใน URL -> ดึงออเดอร์นั้นตรงๆ, ไม่มี (เช่นจากลิงก์ "ติดตามสินค้า" ใน navbar) -> ยังไม่มี login
-  // จริง เลยโชว์ออเดอร์ล่าสุดในระบบแทนเป็นค่า default
+  // มี orderId ใน URL -> ดึงออเดอร์นั้นตรงๆ, ไม่มี (เช่นจากลิงก์ "ติดตามสินค้า" ใน navbar) -> โชว์ออเดอร์ล่าสุดของตัวเอง
+  // (ต้อง login เพราะ backend เช็ค customerId จาก token — ไม่มี token เรียก getOrders() ไม่ได้เลย เช็คตัดไว้ก่อนกันขึ้น error ทั่วไป)
   useEffect(() => {
     let cancelled = false;
+
+    if (!orderId && !sessionStorage.getItem('token')) {
+      setError('กรุณาเข้าสู่ระบบเพื่อดูคำสั่งซื้อล่าสุดของคุณ');
+      setLoading(false);
+      return;
+    }
+
     const load = orderId
       ? getOrder(orderId)
       : getOrders().then((orders) => {
@@ -71,12 +78,19 @@ function Tracking() {
   }
 
   if (error || !order) {
+    const needsLogin = !orderId && !sessionStorage.getItem('token');
     return (
       <div className="-m-6 flex min-h-screen flex-col items-center justify-center gap-4 bg-background p-10">
         <p className="text-gray-500">{error || 'ไม่พบคำสั่งซื้อที่จะติดตาม'}</p>
-        <Link to="/" className="text-sm font-medium text-green-700 hover:underline">
-          กลับสู่หน้าหลัก
-        </Link>
+        {needsLogin ? (
+          <Link to="/login" className="text-sm font-medium text-green-700 hover:underline">
+            เข้าสู่ระบบ
+          </Link>
+        ) : (
+          <Link to="/" className="text-sm font-medium text-green-700 hover:underline">
+            กลับสู่หน้าหลัก
+          </Link>
+        )}
       </div>
     );
   }
@@ -99,7 +113,7 @@ function Tracking() {
         </div>
 
         <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-2 rounded-2xl bg-white p-6 shadow-sm">
+          <div className="col-span-2 rounded-2xl bg-other p-6 shadow-sm">
             <h2 className="mb-4 text-lg font-bold text-gray-900">ไทม์ไลน์การจัดส่ง</h2>
             <div className="space-y-0">
               {order.shipping.timeline.map((step, i) => {
@@ -160,7 +174,7 @@ function Tracking() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-white p-5 shadow-sm">
+            <div className="rounded-2xl bg-other p-5 shadow-sm">
               <h3 className="mb-3 flex items-center gap-2 font-bold text-gray-900">
                 <MapPin size={16} />
                 ที่อยู่จัดส่ง
@@ -172,7 +186,7 @@ function Tracking() {
               </p>
             </div>
 
-            <div className="rounded-2xl bg-white p-5 shadow-sm">
+            <div className="rounded-2xl bg-other p-5 shadow-sm">
               <h3 className="mb-3 flex items-center gap-2 font-bold text-gray-900">
                 <ListOrdered size={16} />
                 รายการสินค้า
@@ -180,9 +194,17 @@ function Tracking() {
               <div className="space-y-3">
                 {order.items.map((item) => (
                   <div key={item.orderItemId} className="flex items-center gap-3 text-sm">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-300">
-                      <ImageIcon size={16} />
-                    </span>
+                    {item.imageUrl ? (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        className="h-10 w-10 shrink-0 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-300">
+                        <ImageIcon size={16} />
+                      </span>
+                    )}
                     <div className="flex-1">
                       <p className="font-medium text-gray-900">{item.name}</p>
                       <p className="text-xs text-gray-500">จำนวน {item.quantity}</p>

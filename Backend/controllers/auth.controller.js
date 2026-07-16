@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
+import { profile } from 'console';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,43 +20,33 @@ const writeUsers = (users) => {
 // API Register only Customer
 export const register = (req, res) => {
     try {
-        // รับข้อมูลจากหน้าเว็บ
-        const { firstName, lastName, email, phone, password } = req.body;
+        const users = readUsers();
+        const newUser = req.body;
 
-        if (!email || !password) {
-            return res.status(400).json({ message: "กรุณากรอกอีเมลและรหัสผ่านให้ครบถ้วน "});
+        // เช็กอีเมลซ้ำ
+        const existingUser = users.find(u => u.email === newUser.email);
+        if (existingUser) {
+            return res.status(400).json({ message: "อีเมลนี้ถูกใช้งานแล้ว" });
         }
 
-        const users = readUsers();
+        // แยกรันรหัส CPS สำหรับ Customer
+        let newId = "CPS0001";
+        const customerUsers = users.filter(u => u.id.startsWith('CPS'));
+        if (customerUsers.length > 0) {
+            const lastUser = customerUsers[customerUsers.length - 1];
+            const lastIdNum = parseInt(lastUser.id.replace('CPS', ''));
+            newId = `CPS${String(lastIdNum + 1).padStart(4, '0')}`;
+        }
 
-        // Run Id
-        const newId = `PS${String(users.length + 1).padStart(4, '0')}`;
-
-        // Create Customer
-        const newUser = {
-            id: newId,
-            firstName: firstName || "",
-            lastName: lastName || "",
-            email,
-            phone: phone || "",
-            password,
-            role: "Customer", // บังคับให้เป็น Customer เสมอ
-            status: "ACTIVE"
-        };
+        newUser.id = newId;
+        newUser.role = 'Customer';
+        newUser.status = 'ACTIVE';
+        newUser.profileImage = null;
 
         users.push(newUser);
         writeUsers(users);
 
-        // ส่งข้อมูลกลับไปแบบไม่รวมรหัสผ่าน
-        res.status(201).json({
-            message: "สมัครสมาชิกสำเร็จ",
-            user: {
-                id: newUser.id,
-                email: newUser.email,
-                role: newUser.role
-            }
-        });
-
+        res.status(201).json({ message: "สมัครสมาชิกสำเร็จ", user: newUser })
     } catch (error) {
         res.status(500).json({ message: "Server Error", error: error.message });
     }
@@ -93,7 +84,10 @@ export const login = (req, res) => {
             user: {
                 id: user.id,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                profileImage: user.profileImage
             },
             token: token
         });
@@ -169,7 +163,10 @@ export const updateProfile = (req, res) => {
         if (lastName) users[userIndex].lastName = lastName;
         if (phone !== undefined) users[userIndex].phone = phone;
         if (email) users[userIndex].email = email;
-        if (profileImage) users[userIndex].profileImage = profileImage;
+
+        if (profileImage !== undefined) {
+            users[userIndex].profileImage = profileImage;
+        }
 
         // บันทึกกลับลงไฟล์ user.json
         writeUsers(users);
@@ -222,6 +219,52 @@ export const changePassword = (req, res) => {
 
         res.status(200).json({ message: "เปลี่ยนรหัสผ่านสำเร็จ" });
 
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+export const getAddresses = (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: "ไม่พบ Token ยืนยันตัวตน" });
+        }
+
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, 'YOUR_SECRET_KEY_PETSTOP');
+
+        const users = readUsers();
+        const user = users.find(u => u.id === decoded.id);
+
+        if (!user) return res.status(404).json({ message: "ไม่พบข้อมูลผู้ใช้งาน" });
+
+        res.status(200).json(user.addresses || []);
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+export const updateAddresses = (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: "ไม่พบ Token ยืนยันตัวตน" });
+        }
+
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, 'YOUR_SECRET_KEY_PETSTOP');
+
+        const users = readUsers();
+        const userIndex = users.findIndex(u => u.id === decoded.id);
+
+        if (userIndex === -1) return res.status(404).json({ message: "ไม่พบข้อมูลผู้ใช้งาน" });
+
+        const { addresses } = req.body;
+        users[userIndex].addresses = addresses;
+
+        writeUsers(users);
+        res.status(200).json({ message: "อัปเดตที่อยู่สำเร็จ", addresses: users[userIndex].addresses });
     } catch (error) {
         res.status(500).json({ message: "Server Error", error: error.message });
     }

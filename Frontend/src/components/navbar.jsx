@@ -1,12 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import Logo from "../assets/Logo.png";
+import { getCart, saveCart } from "../services/cart.service.js";
+import { getAllProducts } from "../services/product.service";
+import Swal from "sweetalert2";
 
 function Navbar() {
     const navigate = useNavigate();
 
     // State สำหรับการ Login 
-    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+    const [isLoggedIn, setIsLoggedIn] = useState(!!sessionStorage.getItem('token'));
 
     // State สำหรับจัดการ Dropdown แบบกดคลิก
     const [isCartOpen, setIsCartOpen] = useState(false);
@@ -18,18 +21,7 @@ function Navbar() {
     // โหลดตะกร้าจาก localStorage เมื่อ component mount
     useEffect(() => {
         const loadCart = () => {
-            try {
-                const savedCart = localStorage.getItem('cart');
-                if (savedCart) {
-                    const parsed = JSON.parse(savedCart);
-                    setCartItems(parsed);
-                } else {
-                    setCartItems([]);
-                }
-            } catch (error) {
-                console.error('Error loading cart:', error);
-                setCartItems([]);
-            }
+            setCartItems(getCart());
         };
 
         loadCart();
@@ -68,8 +60,7 @@ function Navbar() {
             return item;
         });
         setCartItems(updatedCart);
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
-        window.dispatchEvent(new Event('cartUpdated')); 
+        saveCart(updatedCart);
     };
 
     // ฟังก์ชันลบสินค้าออกจากตะกร้า
@@ -78,8 +69,7 @@ function Navbar() {
         e.stopPropagation(); // ป้องกันการคลิกแล้วไปปิด Dropdown
         const updatedCart = cartItems.filter(item => (item.productId || item.id) !== targetId);
         setCartItems(updatedCart);
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
-        window.dispatchEvent(new Event('cartUpdated'));
+        saveCart(updatedCart);
     };
 
     // ระบบค้นหา
@@ -87,13 +77,15 @@ function Navbar() {
     const [searchResults, setSearchResults] = useState([]);
     const [isSearchOpen, setIsSeartchOpen] = useState(false);
     const searchRef = useRef(null);
+    const profileRef = useRef(null);
+    const cartRef = useRef(null);
 
     // สร้าง State สำหรับเก็บข้อมูลสินค้าที่จะดึงจาก Backend
     const [products, setProducts] = useState([]);
 
     // State สำหรับเก็บรูปโปรไฟล์
     const [profileImage, setProfileImage] = useState(() => {
-        const user = JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(sessionStorage.getItem('user'));
         return user?.profileImage || null;
     });
 
@@ -101,13 +93,8 @@ function Navbar() {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                /*
-                const response = await fetch('http://localhost:XXXX/api/products');
-                if (response.ok) {
-                    const data = await response.json();
-                    setProducts(data);
-                }
-                */
+                const data = await getAllProducts();
+                setProducts(data);
             } catch (error) {
                 console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", error);
             }
@@ -119,7 +106,7 @@ function Navbar() {
     // เช็กและอัปเดตรูปโปรไฟล์
     useEffect(() => {
         const updateImage = () => {
-            const user = JSON.parse(localStorage.getItem('user'));
+            const user = JSON.parse(sessionStorage.getItem('user'));
             if (user) setProfileImage(user.profileImage);
         };
 
@@ -148,20 +135,16 @@ function Navbar() {
         }
 
         setIsSeartchOpen(true);
+        const lowerQuery = query.toLowerCase();
 
-        const isDogFoodKeyword = ["อาหารหมา", "อาหารสุนัข", "หมา", "สุนัข"].some((kw) => 
-            query.toLowerCase().includes(kw)
-        );
-
-        const finalResults = isDogFoodKeyword 
-            ? products
-                .filter((p) => p.category === "อาหารหมา")
-                .sort((a, b) => b.sales - a.sales)
-                .slice(0, 5)
-            : products
-                .filter((p) => p.name.toLowerCase().includes(query.toLowerCase()))
-                .slice(0, 5);
-
+        const finalResults = products
+        .filter((p) => 
+            (p.name && p.name.toLowerCase().includes(lowerQuery)) ||
+            (p.category && p.category.toLowerCase().includes(lowerQuery)) ||
+            (p.description && p.description.toLowerCase().includes(lowerQuery))
+        )
+        .slice(0, 10); 
+    
         setSearchResults(finalResults);
     };
 
@@ -175,8 +158,19 @@ function Navbar() {
     // ปิดกล่องค้นหาเมื่อคลิกจุดอื่น
     useEffect(() => {
         const handleClickOutside = (event) => {
+            // เช็กกล่องค้นหา
             if (searchRef.current && !searchRef.current.contains(event.target)) {
                 setIsSeartchOpen(false);
+            }
+
+            // เช็กกล่อง Profile
+            if (profileRef.current && !profileRef.current.contains(event.target)) {
+                setIsProfileOpen(false);
+            }
+
+            // เช็กกล่อง Cart
+            if (cartRef.current && !cartRef.current.contains(event.target)) {
+                setIsCartOpen(false);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
@@ -185,8 +179,12 @@ function Navbar() {
 
     // ฟังก์ชันจำลองการ Logout
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
+        
+        // ล้างตะกร้า Guest ทิ้ง (เพื่อให้จอว่างเปล่า) 
+        // แต่ตะกร้าของคนนี้ (cart_CPS0001) จะไม่ถูกลบ มันจะจำไว้ในเครื่องเงียบๆ
+        localStorage.removeItem('cart_guest');
         setIsLoggedIn(false);
         setIsProfileOpen(false);
         setIsCartOpen(false);
@@ -196,9 +194,14 @@ function Navbar() {
 
     // ฟังก์ชันจำลองการชำระเงิน (ไปหน้า Payment)
     const handleCheckout = () => {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         if (!token) {
-            alert("กรุณาเข้าสู่ระบบก่อนชำระเงิน");
+            Swal.fire({
+                icon: 'warning',
+                title: 'กรุณาเข้าสู่ระบบก่อนชำระเงิน',
+                showConfirmButton: true,
+                confirmButtonText: 'ตกลง',
+            });
             navigate('/login');
             return;
         }
@@ -260,24 +263,29 @@ function Navbar() {
 
                     {/* Dropdown Result Search */}
                     {isSearchOpen && (
-                        <div className="absolute left-0 mt-2 w-64 bg-white border border-gray-100 rounded-md shadow-lg z-50 overflow-hidden">
+                        <div className="absolute left-0 mt-2 w-80 bg-other border border-gray-100 rounded-md shadow-lg z-50 overflow-hidden">
                             {searchResults.length > 0 ? (
-                                <ul>
+                                <ul className="max-h-80 overflow-y-auto">
                                     {searchResults.map((product) => (
-                                        <li key={product.id}>
+                                        <li key={product.productId || product.id}>
                                             <Link
-                                                to={`/product/${product.id}`}
-                                                className="flex justify-between items-center px-4 py-2 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0"
+                                                to={`/product/${product.productId || product.id}`}
+                                                className="flex justify-between items-center px-4 py-3 hover:bg-background transition-colors border-b border-gray-200 last:border-0"
                                                 onClick={() => setIsSeartchOpen(false)}
                                             >
-                                                <span className="text-sm text-gray-700 truncate w-3/4">{product.name}</span>
-                                                <span className="text-xs font-semibold text-green-700">฿{product.price}</span>
+                                                <div className="flex flex-col w-3/4">
+                                                    <span className="text-sm font-medium text-gray-800 truncate">{product.name}</span>
+                                                    <span className="text-xs text-gray-400 mt-0.5">
+                                                        หมวดหมู่: {product.category}
+                                                    </span>
+                                                </div>
+                                                <span className="text-sm font-bold text-green-700">฿{product.price}</span>
                                             </Link>
                                         </li>
                                     ))}
                                 </ul>
                             ) : (
-                                <div className="px-4 py-3 text-sm text-gray-500 text-center">
+                                <div className="px-4 py-4 text-sm text-gray-500 text-center">
                                     ไม่พบสินค้าที่คุณค้นหา
                                 </div>
                             )}
@@ -287,7 +295,7 @@ function Navbar() {
 
                 {/* Profile or Login/Register */}
                 {isLoggedIn ? (
-                    <div className="relative">
+                    <div className="relative" ref={profileRef}>
                         <button 
                             onClick={() => setIsProfileOpen(!IsProfileOpen)}
                             className="rounded-full hover:bg-primary transition flex items-center justify-center overflow-hidden"
@@ -334,7 +342,7 @@ function Navbar() {
                 )}
 
                 {/* Cart Button & Dropdown */}
-                <div className="relative">
+                <div className="relative" ref={cartRef}>
                     <button
                         onClick={() => setIsCartOpen(!isCartOpen)}
                         className="flex items-center gap-2 hover:bg-primary text-black px-4 py-2 rounded-md transition"
@@ -344,7 +352,7 @@ function Navbar() {
                         </svg>
                         <span className="font-medium">Cart</span>
                         {/* Show Count in Cart */}
-                        {isLoggedIn && cartItems.length > 0 && (
+                        {cartItems.length > 0 && (
                             <span className="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center absolute -top-2 -right-2">
                                 {cartItems.length}
                             </span>
@@ -353,34 +361,34 @@ function Navbar() {
 
                     {/* Cart DropDown */}
                     {isCartOpen && (
-                        <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-100 rounded-md shadow-lg z-50 p-4">
+                        <div className="absolute right-0 mt-2 w-96 bg-other border border-gray-200 rounded-md shadow-lg z-50 p-4">
                             <h3 className="font-semibold text-gray-700 mb-3 border-b pb-2">ตะกร้าสินค้าของคุณ</h3>
 
-                            {!isLoggedIn || cartItems.length === 0 ? (
+                            {cartItems.length === 0 ? (
                                 <p className="text-sm text-gray-600 text-center py-4">ตะกร้าสินค้าว่างเปล่า</p>
                             ) : (
                                 <div className="space-y-3">
                                     {cartItems.map((item) => {
                                         const itemId = item.productId || item.id; 
                                         return (
-                                            <div key={itemId} className="flex justify-between items-center text-sm border-b border-gray-100 py-3 first:pt-0">
+                                            <div key={itemId} className="flex justify-between items-center text-sm border-b border-gray-200 py-3 first:pt-0">
                                                 
                                                 {/* ชื่อสินค้า และ ปุ่ม + - */}
                                                 <div className="flex-1 pr-4">
                                                     <p className="truncate font-medium text-gray-800">{item.name}</p>
                                                     <div className="flex items-center gap-3 mt-2">
-                                                        <div className="flex items-center border border-gray-200 rounded-md">
+                                                        <div className="flex items-center">
                                                             <button 
                                                                 onClick={(e) => handleUpdateQuantity(e, itemId, -1)}
-                                                                className="w-6 h-6 flex items-center justify-center text-gray-500 hover:bg-gray-100 disabled:opacity-50"
+                                                                className="w-6 h-6 flex items-center justify-center bg-background border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
                                                                 disabled={item.quantity <= 1}
                                                             >
                                                                 -
                                                             </button>
-                                                            <span className="w-8 text-center text-xs font-medium text-gray-700">{item.quantity}</span>
+                                                            <span className="w-10 h-6 border border-gray-200 bg-background rounded-md py-0.5 px-3 text-center font-semibold disabled:bg-gray-100 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">{item.quantity}</span>
                                                             <button 
                                                                 onClick={(e) => handleUpdateQuantity(e, itemId, 1)}
-                                                                className="w-6 h-6 flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                                                                className="w-6 h-6 flex items-center justify-center bg-background border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
                                                             >
                                                                 +
                                                             </button>
@@ -391,7 +399,7 @@ function Navbar() {
                                                 {/* ราคา และ ปุ่มลบ (ถังขยะ) */}
                                                 <div className="flex flex-col items-end justify-between h-full gap-2">
                                                     <span className="font-semibold text-green-700">
-                                                        ${(item.price * item.quantity).toFixed(2)}
+                                                        ฿{(item.price * item.quantity).toFixed(2)}
                                                     </span>
                                                     <button 
                                                         onClick={(e) => handleRemoveItem(e, itemId)}
@@ -409,21 +417,21 @@ function Navbar() {
                                     <hr className="my-2"/>
                                     <div className="flex justify-between font-bold text-sm mb-4">
                                         <span>ยอดรวม:</span>
-                                        <span>${cartItems.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0).toFixed(2)}</span>
+                                        <span>฿{cartItems.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0).toFixed(2)}</span>
                                     </div>
                                     <button
                                         onClick={handleCheckout}
-                                        className="w-full bg-secondary hover:bg-other text-black py-2 rounded-md transition text-sm font-medium"
+                                        className="w-full bg-secondary hover:bg-primary text-black py-2 rounded-md transition text-sm font-medium"
                                     >
                                         ไปหน้าชำระเงิน
                                     </button>
                                 </div>
                             )}
                         </div>
-            )}
-       </div>
-     </div>
-  </nav>
+                    )}
+                </div>
+            </div>
+        </nav>
     );
 }
 

@@ -33,9 +33,9 @@ function getStockStatus(item) {
 // ---- stat card ----
 function StatCard({ icon, label, value, sub, subColor, accent }) {
     return (
-        <div className="bg-[#f5f0e8] rounded-2xl p-5 flex flex-col gap-3 relative overflow-hidden">
+        <div className="bg-other rounded-2xl p-5 flex flex-col gap-3 relative overflow-hidden">
             <div className="flex items-start justify-between">
-                <p className="text-sm text-gray-600 font-medium leading-tight max-w-[120px]">{label}</p>
+                <p className="text-sm text-gray-600 font-medium leading-tight max-w-30">{label}</p>
                 <div className="p-2 rounded-xl bg-white/60">{icon}</div>
             </div>
             <div>
@@ -131,7 +131,7 @@ export default function StaffDashboard() {
             {/* Orders + Stock Alerts */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {/* Recent Orders */}
-                <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="lg:col-span-2 bg-other rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
                         <h2 className="font-semibold text-gray-700">ออเดอร์ล่าสุด</h2>
                         <button
@@ -141,9 +141,9 @@ export default function StaffDashboard() {
                             ดูทั้งหมด <ChevronRight size={14} />
                         </button>
                     </div>
-                    <table className="w-full text-sm">
+                    <table className="w-full text-sm bg-background">
                         <thead>
-                            <tr className="text-xs text-gray-400 uppercase border-b border-gray-50">
+                            <tr className="text-xs text-gray-700 uppercase border-b border-gray-200">
                                 <th className="text-left px-5 py-3 font-medium">เลขออเดอร์</th>
                                 <th className="text-left px-4 py-3 font-medium">ชื่อลูกค้า</th>
                                 <th className="text-left px-4 py-3 font-medium">สถานะ</th>
@@ -157,7 +157,7 @@ export default function StaffDashboard() {
                                     <td colSpan={5} className="text-center py-8 text-gray-400 text-xs">ยังไม่มีออเดอร์</td>
                                 </tr>
                             ) : recentOrders.map(order => (
-                                <tr key={order.orderId} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/60 transition-colors">
+                                <tr key={order.orderId} className="border-b border-gray-200 last:border-0 hover:bg-other transition-colors">
                                     <td className="px-5 py-3 font-mono text-xs text-gray-600">#{order.orderId}</td>
                                     <td className="px-4 py-3 text-gray-700">
                                         {order.shippingAddress?.fullName || 'ลูกค้าทั่วไป'}
@@ -183,20 +183,24 @@ export default function StaffDashboard() {
                 </div>
 
                 {/* Stock Alerts */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="px-5 py-4 border-b border-gray-50">
+                <div className="bg-other rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="px-5 py-4 border-b border-gray-200">
                         <h2 className="font-semibold text-gray-700">แจ้งเตือนสต็อก</h2>
                     </div>
-                    <div className="divide-y divide-gray-50">
+                    <div className="divide-y divide-gray-200">
                         {criticalStock.length === 0 ? (
                             <p className="text-xs text-gray-400 text-center py-8">สต็อกทุกรายการปกติ</p>
                         ) : criticalStock.map(item => {
                             const status = getStockStatus(item);
                             return (
                                 <div key={item.id} className="flex items-center gap-3 px-5 py-3">
-                                    <div className="w-10 h-10 rounded-lg bg-[#f0f2ea] shrink-0 flex items-center justify-center text-lg">
-                                        🐾
-                                    </div>
+                                    {item.image ? (
+                                        <img src={item.image} alt={item.name} className="w-10 h-10 rounded-lg shrink-0 object-cover" />
+                                    ) : (
+                                        <div className="w-10 h-10 rounded-lg bg-[#f0f2ea] shrink-0 flex items-center justify-center text-lg">
+                                            🐾
+                                        </div>
+                                    )}
                                     <div className="flex-1 min-w-0">
                                         <p className="text-sm font-medium text-gray-700 truncate">
                                             {item.name.split(':')[0]}

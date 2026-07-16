@@ -14,7 +14,7 @@ function Profile() {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const token = localStorage.getItem('token')
+                const token = sessionStorage.getItem('token')
                 if (!token) {
                     setLoading(false);
                     return;
@@ -36,7 +36,7 @@ function Profile() {
 
             } catch (error) {
                 console.error("Error fetching profile", error);
-                const localUser = JSON.parse(localStorage.getItem('user')) || {};
+                const localUser = JSON.parse(sessionStorage.getItem('user')) || {};
                 const fallbackData = {
                     firstName: localUser.firstName || 'ผู้ใช้งาน',
                     lastName: localUser.lastName || 'ทั่วไป',
@@ -73,7 +73,7 @@ function Profile() {
         }
 
         try {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             if (!token) return;
 
             await updateUserProfile(token, {
@@ -87,8 +87,8 @@ function Profile() {
             setIsEditing(false);
 
             // อัปเดตข้อมูลลง LocalStorage เผื่อหน้าอื่นดึงไปใช้
-            const localUser = JSON.parse(localStorage.getItem('user')) || {};
-            localStorage.setItem('user', JSON.stringify({ ...localUser, ...formData }));
+            const localUser = JSON.parse(sessionStorage.getItem('user')) || {};
+            sessionStorage.setItem('user', JSON.stringify({ ...localUser, ...formData }));
 
             Swal.fire({
                 icon: 'success',
@@ -123,7 +123,7 @@ function Profile() {
             cancelButtonText: 'ยกเลิก'
         }).then(async (result) => {
             try {
-                const token = localStorage.getItem('token');
+                const token = sessionStorage.getItem('token');
                 if (result.isConfirmed) {
                     // เลือกไฟล์จากเครื่อง
                     const { value: file } = await Swal.fire({
@@ -139,9 +139,9 @@ function Profile() {
                         setProfile(prev => ({...prev, profileImage: data.imageUrl}));
                         
                         // เซฟลง LocalStorage และตะโกนบอก Navbar ให้เปลี่ยนรูป!
-                        const localUser = JSON.parse(localStorage.getItem('user')) || {};
+                        const localUser = JSON.parse(sessionStorage.getItem('user')) || {};
                         localUser.profileImage = data.imageUrl;
-                        localStorage.setItem('user', JSON.stringify(localUser));
+                        sessionStorage.setItem('user', JSON.stringify(localUser));
                         window.dispatchEvent(new Event('profileUpdated'));
 
                         Swal.fire('สำเร็จ', 'อัปเดตอัปโหลดรูปภาพแล้ว', 'success');
@@ -159,9 +159,9 @@ function Profile() {
                         await updateUserProfile(token, { profileImage: url });
                         setProfile(prev => ({...prev, profileImage: url}));
                         
-                        const localUser = JSON.parse(localStorage.getItem('user')) || {};
+                        const localUser = JSON.parse(sessionStorage.getItem('user')) || {};
                         localUser.profileImage = url;
-                        localStorage.setItem('user', JSON.stringify(localUser));
+                        sessionStorage.setItem('user', JSON.stringify(localUser));
                         window.dispatchEvent(new Event('profileUpdated'));
 
                         Swal.fire('สำเร็จ', 'อัปเดตรูปภาพจากลิงก์แล้ว', 'success');
@@ -174,11 +174,23 @@ function Profile() {
         });
     };
 
-    if (loading) return <div className="min-h-screen flex justify-center items-center">กำลังโหลดข้อมูล...</div>
-    if (!profile) return <div className="min-h-screen flex justify-center items-center">ไม่พบข้อมูลผู้ใช้</div>
+    if (loading) {
+        return (
+            <div className="min-h-[70vh] flex justify-center items-center text-gray-500">
+                กำลังโหลดข้อมูล...
+            </div>
+        );
+    }
+    if (!profile) {
+        return (
+            <div className="min-h-screen flex justify-center items-center">
+                ไม่พบข้อมูลผู้ใช้
+            </div>
+        ) 
+    } 
 
     return(
-        <div className="max-w-7xl mx-auto px-4 py-4 w-full flex gap-8">
+        <div className="max-w-7xl mx-auto px-4 py-4 w-full flex gap-8 min-h-[70vh]">
             <div className="w-1/4">
                 <CustomerSidebar />
             </div>
@@ -189,7 +201,7 @@ function Profile() {
                     <div className="bg-other p-6 rounded-2xl shadow-sm flex items-center gap-6 border border-gray-100">
                         <div className="relative">
                             <img 
-                                src={profile.profileImage || "https://via.placeholder.com/100"}
+                                src={profile.profileImage || "https://placehold.co/100"}
                                 alt="Profile" 
                                 className="w-24 h-24 rounded-full object-cover border-4 border-secondary" 
                             />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Flag, FileText, PackageCheck, Truck, CheckCircle2, Circle, XCircle, X } from 'lucide-react';
+import { ShieldCheck, Flag, FileText, PackageCheck, Truck, CheckCircle2, Circle, XCircle, X, Image as ImageIcon } from 'lucide-react';
 import { getOrder, updateOrderStatus } from '../../services/order.service.js';
 
 // ลำดับสถานะปกติของออเดอร์ (ไม่รวม Cancelled/Flagged ซึ่งเป็น exception แทรกได้ทุกจุด)
@@ -139,7 +139,7 @@ function OrderVerify() {
   return (
     <div>
       <div className="mb-6 flex items-center gap-3">
-        <button onClick={() => navigate('/staff/orders')} className="text-sm text-gray-500 hover:text-gray-700">
+        <button onClick={() => navigate('/staff/orders')} className="text-sm text-gray-700 hover:text-gray-700">
           คำสั่งซื้อ
         </button>
         <span className="text-gray-300">/</span>
@@ -176,40 +176,40 @@ function OrderVerify() {
           <div className="rounded-2xl bg-other p-6">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-medium text-gray-500">สรุปคำสั่งซื้อ (ORDER SUMMARY)</p>
+                <p className="text-xs font-medium text-gray-700">สรุปคำสั่งซื้อ (ORDER SUMMARY)</p>
                 <h2 className="text-2xl font-bold text-gray-900">{order.shippingAddress?.fullName || '-'}</h2>
               </div>
               <div className="text-right">
                 <span className="text-xs font-medium text-green-700">ชำระเงินสำเร็จ</span>
-                <p className="text-xs text-gray-500">วันที่: {formatDate(order.orderDate)}</p>
+                <p className="text-xs text-gray-700">วันที่: {formatDate(order.orderDate)}</p>
               </div>
             </div>
             <div className="mt-6 grid grid-cols-3 gap-4 text-sm">
               <div>
-                <p className="text-gray-500">เบอร์โทรศัพท์</p>
+                <p className="text-gray-700">เบอร์โทรศัพท์</p>
                 <p className="font-medium text-gray-900">{order.shippingAddress?.phone || '-'}</p>
               </div>
               <div>
-                <p className="text-gray-500">ที่อยู่จัดส่ง</p>
+                <p className="text-gray-700">ที่อยู่จัดส่ง</p>
                 <p className="font-medium text-gray-900">
                   {order.shippingAddress?.street}, {order.shippingAddress?.city} {order.shippingAddress?.postalCode}
                 </p>
               </div>
               <div>
-                <p className="text-gray-500">ยอดรวม</p>
+                <p className="text-gray-700">ยอดรวม</p>
                 <p className="text-lg font-bold text-gray-900">{money(order.totalAmount)}</p>
               </div>
             </div>
             {order.shipping?.trackingNumber && (
               <div className="mt-4 rounded-lg bg-white/70 px-4 py-2 text-sm">
-                <span className="text-gray-500">เลขพัสดุ: </span>
+                <span className="text-gray-700">เลขพัสดุ: </span>
                 <span className="font-semibold text-gray-900">{order.shipping.trackingNumber}</span>
-                <span className="text-gray-500"> ({order.shipping.carrier})</span>
+                <span className="text-gray-700"> ({order.shipping.carrier})</span>
               </div>
             )}
           </div>
 
-          <div className="rounded-2xl bg-white shadow-sm">
+          <div className="rounded-2xl bg-other shadow-sm">
             <div className="flex items-center justify-between border-b border-gray-100 p-6">
               <h3 className="text-lg font-semibold text-gray-900">
                 {order.status === 'Confirmed' ? 'รายการตรวจสอบ' : `รายการสินค้า (${order.items.length})`}
@@ -220,7 +220,7 @@ function OrderVerify() {
             </div>
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs uppercase tracking-wide text-gray-400">
+                <tr className="text-left text-xs uppercase tracking-wide text-gray-700">
                   <th className="px-6 py-3">สินค้า</th>
                   <th className="px-6 py-3">จำนวน</th>
                   <th className="px-6 py-3">ราคา</th>
@@ -232,7 +232,16 @@ function OrderVerify() {
                 {order.items.map((item) => (
                   <tr key={item.orderItemId} className="border-t border-gray-100">
                     <td className="px-6 py-4">
-                      <p className="font-semibold text-gray-900">{item.name}</p>
+                      <div className="flex items-center gap-3">
+                        {item.imageUrl ? (
+                          <img src={item.imageUrl} alt={item.name} className="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                        ) : (
+                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-300">
+                            <ImageIcon size={16} />
+                          </span>
+                        )}
+                        <p className="font-semibold text-gray-900">{item.name}</p>
+                      </div>
                     </td>
                     <td className="px-6 py-4 text-gray-700">{item.quantity}</td>
                     <td className="px-6 py-4 text-gray-700">{money(item.unitPrice)}</td>
@@ -286,28 +295,28 @@ function OrderVerify() {
 
         {/* ฝั่งขวา */}
         <div className="space-y-6">
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
+          <div className="rounded-2xl bg-other p-6 shadow-sm">
             <h3 className="mb-4 text-lg font-semibold text-gray-900">หลักฐานการชำระเงิน</h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <p className="text-gray-500">ช่องทางชำระเงิน</p>
+                <p className="text-gray-700">ช่องทางชำระเงิน</p>
                 <p className="font-semibold text-gray-900">{order.payment?.method}</p>
               </div>
               <div>
-                <p className="text-gray-500">เลขอ้างอิง</p>
+                <p className="text-gray-700">เลขอ้างอิง</p>
                 <p className="font-semibold text-gray-900">{order.payment?.transactionId}</p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
-            <h3 className="mb-4 text-sm font-semibold uppercase text-gray-500">ไทม์ไลน์</h3>
+          <div className="rounded-2xl bg-other p-6 shadow-sm">
+            <h3 className="mb-4 text-sm font-semibold uppercase text-gray-700">ไทม์ไลน์</h3>
             <ul className="space-y-4">
               <li className="flex gap-3">
                 <CheckCircle2 size={18} className="mt-0.5 text-primary" />
                 <div>
                   <p className="text-sm font-medium text-gray-900">สร้างออเดอร์</p>
-                  <p className="text-xs text-gray-400">{formatDate(order.orderDate)}</p>
+                  <p className="text-xs text-gray-700">{formatDate(order.orderDate)}</p>
                 </div>
               </li>
               {STATUS_FLOW.map((step, idx) => {
@@ -324,7 +333,7 @@ function OrderVerify() {
                       <p className={`text-sm font-medium ${current ? 'text-gray-900' : done ? 'text-gray-900' : 'text-gray-400'}`}>
                         {TIMELINE_LABELS[step]}
                       </p>
-                      {current && <p className="text-xs text-gray-400">กำลังดำเนินการ</p>}
+                      {current && <p className="text-xs text-gray-700">กำลังดำเนินการ</p>}
                     </div>
                   </li>
                 );
