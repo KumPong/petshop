@@ -6,15 +6,17 @@
 2. [หลักการและเหตุผล (Rationale)](#rationale)
 3. [วัตถุประสงค์ของโครงงาน (Objectives)](#objectives)
 4. [ขอบเขตของระบบ (System Scope)](#system-scope)
-5. [User Personas (กลุ่มผู้ใช้งานเป้าหมาย)](#user-personas)
-6. [UI/UX Design & Prototype](#ui-ux)
-7. [Tech Stack (เครื่องมือและเทคโนโลยีที่ใช้)](#tech-stack)
-8. [แผนการดำเนินงาน (Work Plan)](#work-plan)
-9. [Use Case Diagram](#use-case)
-10. [Class Diagram](#class-diagram)
-11. [Sequence Diagrams](#sequence-diagrams)
-12. [System Architecture](#system-architecture)
-13. [Data Schema](#data-schema)
+5. [แนวทางของการพัฒนาตาม SDLC (System Development Life Cycle)](#system-development-life-cycle)
+6. [User Personas (กลุ่มผู้ใช้งานเป้าหมาย)](#user-personas)
+7. [UI/UX Design & Prototype](#ui-ux)
+8. [Tech Stack (เครื่องมือและเทคโนโลยีที่ใช้)](#tech-stack)
+9. [แผนการดำเนินงาน (Work Plan)](#work-plan)
+10. [Use Case Diagram](#use-case)
+11. [Class Diagram](#class-diagram)
+12. [Sequence Diagrams](#sequence-diagrams)
+13. [System Architecture](#system-architecture)
+14. [Wireframe](#wireframe)
+15. [Data Schema](#data-schema)
 
 ---
 
@@ -57,6 +59,20 @@
 
 ---
 
+## <a id="system-development-life-cycle"></a>🧑‍💻 แนวทางของการพัฒนาตาม SDLC (System Development Life Cycle)
+
+| ขั้นตอน (Phase) | รายละเอียดโดยย่อ (Brief Description) |
+| :--- | :--- |
+| **1. Planning** | กำหนดเป้าหมาย ขอบเขตการทำงานของเว็บ วางแผนระยะเวลา และแบ่งหน้าที่ในทีม |
+| **2. Analysis** | วิเคราะห์ความต้องการโดยอิงจาก Persona, Usecase & Class Diagram |
+| **3. Design** | ออกแบบ Frontend ด้วย Figma ออกแบบ Backend ด้วย System Architecture |
+| **4. Development** | เขียนโค้ดสร้างระบบ ฐานข้อมูล ตามที่วิเคราะห์ |
+| **5. Testing** | ทดสอบเครื่องมือต่างๆ และ ทดสอบด้วยมือ |
+| **6. Deployment** | นำโค้ดขึ้น Production เพื่อเปิดให้ผู้ใช้งานจริงสามารถเข้าถึงได้ |
+| **7. Maintenance** | ติดตามดูแลระบบ แก้ไขปัญหาที่เกิดขึ้นหลังจากการเปิดใช้งาน |
+
+---
+
 ## <a id="user-personas"></a>🧑‍🤝‍🧑 User Personas (กลุ่มผู้ใช้งานเป้าหมาย)
 
 ### 1. ลูกค้า (Customer) - คุณ มิยาบิ 
@@ -82,8 +98,6 @@
 ---
 
 ## <a id="ui-ux"></a>🎨 UI/UX Design & Prototype
-
-🔗 **Figma Prototype:** [คลิกเพื่อดูการออกแบบ PetStop บน Figma](https://www.figma.com/design/By0aa0Ia9NAwNOilaYCD85/PetStop?node-id=135-411&t=6x1Jdpxown9icMEu-1)
 
 ### Color Palette (โทนสีที่ใช้)
 * 🟩 `#CCD5AE` (สีเขียวอ่อน)
@@ -122,85 +136,78 @@
 
 ```mermaid
 flowchart LR
+    flowchart LR
     %% Actors
-    Customer([ลูกค้า - Customer])
-    Staff([พนักงาน - Staff])
-    Manager([ผู้จัดการ - Manager])
+    Customer([Customer])
+    Staff([Staff])
+    Manager([Manager])
 
     %% Customer Subgraph
-    subgraph Customer_Functions [ฟังก์ชันสำหรับลูกค้า]
+    subgraph Customer_Functions [ฟังก์ชั่นสำหรับลูกค้า]
         direction TB
         C1(สมัครสมาชิก)
         C2(เข้าสู่ระบบ)
         C3(ค้นหาสินค้า)
         C4(ดูรายละเอียดสินค้า)
         C5(เพิ่มสินค้าลงตะกร้า)
-        C6(จัดการตะกร้าสินค้า)
+        C6("จัดการตะกร้าสินค้า<br/>(แก้ไข/ลบ/ดูรายการ)")
         C7(สั่งซื้อสินค้า)
         C8(ชำระเงิน)
         C9(ติดตามสถานะคำสั่งซื้อ)
         C10(ประวัติการสั่งซื้อ)
         
-        C_Ext1(ตัวกรองการค้นหา: แบรนด์, รุ่น, ราคา, ประเภท)
+        C_Ext1("ตัวกรองการค้นหา<br/>- แบรนด์<br/>- ราคา<br/>- ประเภท")
         C_Ext2(ยืนยันคำสั่งซื้อ)
         C_Ext3(เลือกช่องทางชำระเงิน)
         
-        C3 -.->|"&lt;&lt;extend&gt;&gt;"| C_Ext1
-        C7 -.->|"&lt;&lt;include&gt;&gt;"| C_Ext2
-        C8 -.->|"&lt;&lt;include&gt;&gt;"| C_Ext3
+        C3 -.-> C_Ext1
+        C7 -.-> C_Ext2
+        C8 -.-> C_Ext3
     end
 
     %% External Services
     subgraph External_Services [บริการภายนอก]
         direction TB
-        E1(ระบบชำระเงินออนไลน์)
-        E2(ระบบขนส่ง)
+        E1("ระบบชำระเงินออนไลน์<br/>(เช่น Credit card / PromptPay)")
+        E2("ระบบขนส่ง<br/>(เช่น EMS / Kerry / Flash)")
     end
+        
     C8 -.-> E1
     C9 -.-> E2
 
     %% Staff Subgraph
-    subgraph Staff_Functions [ฟังก์ชันสำหรับพนักงาน]
+    subgraph Staff_Functions [ฟังก์ชั่นสำหรับพนักงาน]
         direction TB
         S1(เข้าสู่ระบบ)
         S2(ดูรายการคำสั่งซื้อ)
         S3(ตรวจสอบและยืนยันคำสั่งซื้อ)
         S4(จัดเตรียมสินค้า / แพ็คสินค้า)
         S5(อัพเดตสถานะคำสั่งซื้อ)
-        S6(จัดการสต็อกสินค้า)
-        
-        S_Ext1(ตรวจสอบสต็อก)
-        S_Ext2(รับสินค้าเข้า)
-        S_Ext3(ปรับปรุงสต็อก)
-        
-        S6 -.->|"&lt;&lt;include&gt;&gt;"| S_Ext1
-        S6 -.->|"&lt;&lt;include&gt;&gt;"| S_Ext2
-        S6 -.->|"&lt;&lt;include&gt;&gt;"| S_Ext3
+        S6(จัดการสต๊อกสินค้า)
     end
 
     %% Manager Subgraph
-    subgraph Manager_Functions [ฟังก์ชันสำหรับผู้จัดการ]
+    subgraph Manager_Functions [ฟังก์ชั่นสำหรับเมเนเจอร์]
         direction TB
-        M1(ดูแดชบอร์ดภาพรวม)
-        M2(จัดการสินค้า)
-        M3(จัดการหมวดหมู่สินค้า)
-        M4(จัดการผู้ใช้ระบบ)
-        M5(รายงานยอดขาย)
+        M0(เข้าสู่ระบบ)
+        M1("ดูแดชบอร์ดภาพรวม<br/>(Dashboard)<br/><br/>ยอดขายรวม<br/>สินค้าขายดี<br/>คำสั่งซื้อรอจัดส่ง<br/>สต๊อกใกล้หมด")
+        M2("จัดการสินค้า<br/>(เพิ่ม / แก้ไข / ลบ)")
+        M3("จัดการหมวดหมู่สินค้า<br/>(เพิ่ม / แก้ไข / ลบ)")
+        M4("จัดการผู้ใช้ระบบ<br/>(เพิ่ม / แก้ไข / ลบ)")
+        M5("รายงานยอดขาย<br/>(รายวัน / รายเดือน / รายไตรมาส)")
         M6(รายงานสินค้าคงเหลือ)
-        M7(รายงานผลประกอบการ)
         
-        M1 -.->|"&lt;&lt;include&gt;&gt;"| M2
-        M1 -.->|"&lt;&lt;include&gt;&gt;"| M3
-        M1 -.->|"&lt;&lt;include&gt;&gt;"| M4
-        M1 -.->|"&lt;&lt;include&gt;&gt;"| M5
-        M1 -.->|"&lt;&lt;include&gt;&gt;"| M6
-        M1 -.->|"&lt;&lt;include&gt;&gt;"| M7
+        M1 -.-> M2
+        M1 -.-> M3
+        M1 -.-> M4
+        M1 -.-> M5
+        M1 -.-> M6
     end
 
     %% Actor Connections
     Customer --> C1 & C2 & C3 & C4 & C5 & C6 & C7 & C8 & C9 & C10
     Staff --> S1 & S2 & S3 & S4 & S5 & S6
-    Manager --> M1
+    Manager --> M1 & M0
 ```
 
 ---
@@ -211,15 +218,12 @@ flowchart LR
    classDiagram
     class User {
         -String userId
-        -String username
         -String email
-        -String passwordHash
+        -String password
         -String firstName
         -String lastName
         -String phone
         -String role
-        -Datetime createdAt
-        -Datetime updatedAt
         +register(userData: Object) boolean
         +login(email, password) boolean
         +logout() void
@@ -228,8 +232,6 @@ flowchart LR
     }
     
     class Customer {
-        -Date dateOfBirth
-        -String gender
         +viewProfile() Customer
         +viewOrders() List~Order~
         +addAddress(addressData: Object) boolean
@@ -244,7 +246,6 @@ flowchart LR
     }
     
     class Manager {
-        -String department
         +viewDashboard() Object
         +viewReports(reportType) Array
         +manageUsers(targetUserId, action) boolean
@@ -263,9 +264,6 @@ flowchart LR
         -String sku
         -String name
         -String description
-        -String gender
-        -String size
-        -String warranty
         -Number price
         -String status
         -Datetime createdAt
@@ -281,20 +279,9 @@ flowchart LR
         +getSubCategories() List~Category~
     }
     
-    class Brand {
-        -String brandId
-        -String name
-        -String country
-        -String logoUrl
-        -String description
-        -String status
-        +getProducts() List~Product~
-    }
-    
     class ProductImage {
         -String imageId
         -String productId
-        -String imageUrl
         -boolean isPrimary
         -Number sortOrder
     }
@@ -312,7 +299,6 @@ flowchart LR
     }
     
     Product --> Category : belongs to
-    Product --> Brand : belongs to
     Product --> ProductImage : has
     Product --> Inventory : manages
 
@@ -343,8 +329,6 @@ flowchart LR
         -String cartId
         -String customerId
         -String status
-        -Datetime createdAt
-        -Datetime updatedAt
         +addItem(productId, qty) boolean
         +updateItemQty(productId, qty) boolean
         +removeItem(productId) boolean
@@ -371,23 +355,19 @@ flowchart LR
         -String shippingAddressId
         -String shippingMethod
         -String status
-        -Datetime shippedDate
+        -Datetime shippedAt
         +updateStatus(status) boolean
     }
     
     class Address {
         -String addressId
         -String customerId
-        -String type
         -String fullName
         -String phone
-        -String addressLine1
-        -String addressLine2
-        -String district
+        -String street
         -String city
         -String province
         -String postalCode
-        -String country
         -boolean isDefault
     }
     
@@ -441,12 +421,10 @@ flowchart LR
     
     class ProductSearch {
         -String keyword
-        -String brandId
         -String categoryId
         -Number minPrice
         -Number maxPrice
         -String sortBy
-        -boolean isStockOnly
         +search() List~Product~
         +clear() void
     }
@@ -473,7 +451,7 @@ flowchart LR
     participant DB as ฐานข้อมูล (JSON)
 
     %% เฟส 1: การเข้าสู่ระบบ (Login)
-    rect rgb(240, 248, 255)
+    rect 
         Customer->>UI: กรอก Email & Password
         UI->>US: login(email, password)
         US->>DB: ตรวจสอบข้อมูลใน users.json
@@ -483,7 +461,7 @@ flowchart LR
     end
 
     %% เฟส 2: ค้นหาสินค้า (Search Product)
-    rect rgb(255, 250, 240)
+    rect
         Customer->>UI: พิมพ์คำค้นหา (เช่น "อาหารแมว")
         UI->>PS: search(keyword, minPrice, maxPrice)
         PS->>DB: ดึงข้อมูลจาก products.json
@@ -493,7 +471,7 @@ flowchart LR
     end
 
     %% เฟส 3: หยิบใส่ตะกร้า (Add to Cart)
-    rect rgb(240, 255, 240)
+    rect
         Customer->>UI: กดปุ่ม "เพิ่มลงตะกร้า"
         UI->>CS: addItem(productId, qty)
         CS->>DB: บันทึกข้อมูลลง carts.json
@@ -503,7 +481,7 @@ flowchart LR
     end
 
     %% เฟส 4: สั่งซื้อและชำระเงิน (Checkout)
-    rect rgb(255, 240, 245)
+    rect
         Customer->>UI: กดปุ่ม "ชำระเงิน" ในตะกร้า
         UI->>OS: calculateTotal()
         OS->>DB: ดึงราคาจากตะกร้ามาคำนวณ
@@ -533,7 +511,7 @@ flowchart LR
     participant DB as ฐานข้อมูล (JSON)
 
     %% เฟส 1: การเข้าสู่ระบบ (Staff Login)
-    rect rgb(240, 248, 255)
+    rect
         Staff->>UI: กรอก Email & Password
         UI->>US: login(email, password)
         US->>DB: ตรวจสอบสิทธิ์ใน users.json
@@ -543,7 +521,7 @@ flowchart LR
     end
 
     %% เฟส 2: ตรวจสอบและอัปเดตสต็อก (Manage Inventory)
-    rect rgb(255, 250, 240)
+    rect
         Staff->>UI: พิมพ์รหัสสินค้าเพื่อดูจำนวนคงเหลือ
         UI->>IS: ขอดูข้อมูลสต็อกปัจจุบัน
         IS->>DB: ดึงข้อมูลจาก inventory.json
@@ -559,7 +537,7 @@ flowchart LR
     end
 
     %% เฟส 3: อัปเดตสถานะคำสั่งซื้อ (Update Order Status)
-    rect rgb(240, 255, 240)
+    rect
         Staff->>UI: กดเข้าเมนู "ออเดอร์ที่รอจัดส่ง"
         UI->>OS: ขอดึงรายการออเดอร์ทั้งหมด
         OS->>DB: กวาดข้อมูลจาก orders.json
@@ -586,7 +564,7 @@ flowchart LR
     participant DB as ฐานข้อมูล (JSON)
 
     %% เฟส 1: การเข้าสู่ระบบ (Manager Login)
-    rect rgb(240, 248, 255)
+    rect
         Manager->>UI: กรอก Email & Password
         UI->>US: login(email, password)
         US->>DB: ตรวจสอบสิทธิ์ระดับบริหารใน users.json
@@ -596,7 +574,7 @@ flowchart LR
     end
 
     %% เฟส 2: การจัดการสินค้า (Manage Catalog)
-    rect rgb(255, 250, 240)
+    rect
         Manager->>UI: กรอกข้อมูลสินค้าใหม่ (เช่น อาหารแมวสูตรใหม่)
         UI->>PS: มัดรวมข้อมูลส่งไปบันทึก
         PS->>DB: เพิ่มข้อมูลลง products.json
@@ -606,7 +584,7 @@ flowchart LR
     end
 
     %% เฟส 3: การสร้างรายงาน (Generate Reports)
-    rect rgb(245, 240, 255)
+    rect
         Manager->>UI: กดเมนู "ดูรายงานยอดขายและกำไร"
         UI->>RS: เรียกคำสั่ง generate() [คลาส SalesReport]
         RS->>DB: กวาดข้อมูลจาก orders.json
@@ -634,66 +612,100 @@ flowchart LR
 
 ---
 
+### <a id="wireframe"></a> 🎯 Wireframe / Prototype - [Click to inspect](https://www.figma.com/design/By0aa0Ia9NAwNOilaYCD85/PetStop?node-id=87-393&p=f&t=l2h7526gFYC8L37D-0)
+
+---
+
 ## <a id="data-schema"></a>🗄️ Data Schema (JSON Database)
 
 ระบบ PetStop ใช้การจัดเก็บข้อมูลในรูปแบบไฟล์ JSON (Local Storage) โดยแบ่ง Collection หลักๆ ออกตาม Entity ดังนี้:
 
-### 1. 👤 Users (`users.json`)
-จัดเก็บข้อมูลผู้ใช้งานระบบทั้งหมด (Customer, Staff, Manager) สืบทอดคุณสมบัติมาจาก Class `User`
-* `userid` (String): รหัสผู้ใช้งาน (Primary Key)
-* `username` (String): ชื่อบัญชีผู้ใช้
-* `email` (String): อีเมลสำหรับการ Login
-* `passwordHash` (String): รหัสผ่านที่ผ่านการเข้ารหัส
-* `firstName` (String): ชื่อจริง
-* `lastName` (String): นามสกุล
-* `phone` (String): เบอร์โทรศัพท์
-* `role` (String): ประเภทผู้ใช้งาน (`Customer`, `Staff`, `Manager`)
-* `createdAt` (Datetime): วันที่สร้างบัญชี
-* `updatedAt` (Datetime): วันที่อัปเดตข้อมูลล่าสุด
-* **[Customer Only]** `addressList` (Array of Address Object): ข้อมูลที่อยู่สำหรับจัดส่ง
+#### 1. `inventory.json` (ข้อมูลคลังสินค้า)
+ไฟล์นี้ใช้สำหรับเก็บข้อมูลเชิงลึกและจำนวนสต็อกของสินค้าแต่ละรายการ
 
-### 2. 🛍️ Products (`products.json`)
-จัดเก็บข้อมูลสินค้า, แบรนด์, หมวดหมู่ และรูปภาพ
-* `productId` (String): รหัสสินค้า (Primary Key)
-* `categoryId` (String): รหัสหมวดหมู่ (อ้างอิง Category)
-* `sku` (String): รหัส SKU สินค้า
-* `name` (String): ชื่อสินค้า
-* `description` (String): รายละเอียดสินค้า
-* `price` (Number): ราคาสินค้า
-* `status` (String): สถานะสินค้า (เช่น Available, Out of stock)
-* `images` (Array of ProductImage Object): รายการรูปภาพสินค้า (`imageId`, `imageUrl`, `sortOrder`)
-* `createdAt` (Datetime): วันที่เพิ่มสินค้า
+| Field Name | Type | Description (รายละเอียด) |
+| :--- | :--- | :--- |
+| `id` | `string` | รหัสอ้างอิงสต็อก (เช่น DG-DRY-001) |
+| `sku` | `string` | รหัส SKU ของสินค้า |
+| `productId` | `string` | รหัสอ้างอิงไปยัง Product Master (เช่น PD-001) |
+| `name` | `string` | ชื่อสินค้า |
+| `subtitle` | `string` | คำบรรยายรอง (ถ้ามี) |
+| `unitLabel` | `string` | ป้ายกำกับหน่วยบรรจุภัณฑ์ |
+| `category` | `string` | หมวดหมู่สินค้า |
+| `supplier` | `string` | ชื่อผู้จัดจำหน่าย / ซัพพลายเออร์ |
+| `stock` | `number` | จำนวนคงเหลือในสต็อก |
+| `threshold` | `number` | จุดสั่งซื้อเพิ่ม (แจ้งเตือนเมื่อสต็อกต่ำ) |
+| `unitCost` | `number` | ต้นทุนต่อหน่วย |
+| `lastUpdated` | `string` | วันที่และเวลาที่อัปเดตล่าสุด (ISO 8601) |
+| `bestSeller` | `boolean` | สถานะสินค้าขายดี (อาจไม่มีในบางรายการ) |
+| `id-type` | `string` | ชนิดของไอดีหมวดหมู่ (เช่น dogs, cats, accessories) |
+| `specifications` | `object` | ข้อมูลจำเพาะของสินค้า (แบรนด์, ส่วนผสม, ขนาด, ฯลฯ) |
+| `image` | `string` | URL รูปภาพสินค้า |
+| `careInstructions` | `array` | คำแนะนำการเก็บรักษา (ถ้ามี) |
+| `lastAdjustment` | `object` | ประวัติการปรับสต็อกครั้งล่าสุด (ประเภท, จำนวน, เหตุผล) |
 
-### 3. 📦 Inventory (`inventory.json`)
-จัดเก็บข้อมูลคลังสินค้าและจำนวนสต็อก
-* `inventoryId` (String): รหัสคลังสินค้า (Primary Key)
-* `productId` (String): รหัสสินค้าที่เชื่อมโยง
-* `quantityOnHand` (Number): จำนวนสินค้าที่มีอยู่จริง
-* `reservedQty` (Number): จำนวนสินค้าที่ถูกจอง (รอชำระเงิน/จัดส่ง)
-* `reorderLevel` (Number): สั่งซื้อสินค้าเพิ่ม
-* `lastUpdated` (Datetime): วันที่อัปเดตสต็อกล่าสุด
+#### 2. `order.json` (ข้อมูลคำสั่งซื้อ)
+ไฟล์นี้เก็บข้อมูลธุรกรรมการสั่งซื้อของลูกค้า การจัดส่ง และการชำระเงิน
 
-### 4. 🛒 Carts (`carts.json`)
-จัดเก็บข้อมูลตะกร้าสินค้าของลูกค้าที่ยังไม่ได้ Checkout
-* `cartId` (String): รหัสตะกร้าสินค้า (Primary Key)
-* `customerId` (String): รหัสลูกค้า
-* `status` (String): สถานะตะกร้า (เช่น Active, Abandoned)
-* `items` (Array of OrderItem Object): รายการสินค้าในตะกร้า (`productId`, `quantity`, `unitPrice`)
-* `createdAt` (Datetime): วันที่สร้างตะกร้า
-* `updatedAt` (Datetime): วันที่อัปเดตตะกร้าล่าสุด
+| Field Name | Type | Description (รายละเอียด) |
+| :--- | :--- | :--- |
+| `orderId` | `string` | รหัสคำสั่งซื้อ (เช่น ORD-1001) |
+| `orderNo` | `string` | เลขที่อ้างอิงคำสั่งซื้อ |
+| `customerId` | `string` | รหัสลูกค้า (อ้างอิงจาก Users) |
+| `orderDate` | `string` | วันที่และเวลาที่สั่งซื้อ (ISO 8601) |
+| `status` | `string` | สถานะคำสั่งซื้อปัจจุบัน (เช่น Delivered) |
+| `statusHistory` | `array` | ประวัติการเปลี่ยนสถานะของคำสั่งซื้อ |
+| `subtotal` | `number` | ยอดรวมราคาสินค้า |
+| `shippingAmount` | `number` | ค่าจัดส่ง |
+| `taxAmount` | `number` | จำนวนภาษี |
+| `totalAmount` | `number` | ยอดรวมสุทธิที่ต้องชำระ |
+| `items` | `array` | รายการสินค้าในคำสั่งซื้อ (productId, ชื่อ, จำนวน, ราคา, ฯลฯ) |
+| `shippingAddress`| `object` | ข้อมูลที่อยู่สำหรับการจัดส่ง |
+| `shipping` | `object` | รายละเอียดวิธีจัดส่ง ขนส่ง และหมายเลขพัสดุ |
+| `payment` | `object` | รายละเอียดการชำระเงิน (วิธี, ยอดเงิน, สถานะ, transactionId) |
 
-### 5. 🧾 Orders (`orders.json`)
-จัดเก็บข้อมูลคำสั่งซื้อ, การชำระเงิน และการจัดส่ง
-* `orderId` (String): รหัสคำสั่งซื้อ (Primary Key)
-* `customerId` (String): รหัสลูกค้า
-* `orderDate` (Datetime): วัน-เวลาที่สั่งซื้อ
-* `status` (String): สถานะคำสั่งซื้อ (เช่น Pending, Paid, Shipped)
-* `totalAmount` (Number): ยอดรวมราคาสินค้า
-* `shippingAmount` (Number): ค่าจัดส่ง
-* `items` (Array of OrderItem Object): รายการสินค้าที่สั่ง
-* **Payment Info:**
-  * `payment` (Object): ข้อมูลการชำระเงิน (`paymentId`, `method`, `amount`, `status`, `transactionId`)
-* **Shipping Info:**
-  * `shipping` (Object): ข้อมูลการจัดส่ง (`shippingId`, `trackingNo`, `carrier`, `shippingMethod`, `shippingAddress`, `status`)
+#### 3. `product.json` (ข้อมูลหลักของสินค้า)
+ไฟล์นี้เป็น Master Data เก็บข้อมูลเบื้องต้นของสินค้าสำหรับใช้แสดงหน้าร้าน
+
+| Field Name | Type | Description (รายละเอียด) |
+| :--- | :--- | :--- |
+| `productId` | `string` | รหัสสินค้า (ใช้อ้างอิงไปยัง Inventory) |
+| `name` | `string` | ชื่อสินค้า |
+| `description` | `string` | คำอธิบายสินค้า |
+| `price` | `number` | ราคาขายหน้าร้าน |
+| `category` | `string` | หมวดหมู่สินค้า |
+| `status` | `string` | สถานะของสินค้า (เช่น Active) |
+| `imageUrl` | `string` | URL รูปภาพสินค้า (ถ้ามี) |
+
+#### 4. `purchaseOrders.json` (ใบสั่งซื้อสินค้าเข้าสต็อก)
+ไฟล์นี้ใช้บันทึกข้อมูลการสั่งซื้อของเข้ามาเติมในคลังสินค้า
+
+| Field Name | Type | Description (รายละเอียด) |
+| :--- | :--- | :--- |
+| `id` | `string` | รหัสใบสั่งซื้อ/ใบรับสินค้าเข้าสต็อก (เช่น PO-8821) |
+| `createdAt` | `string` | วันที่และเวลาที่สร้างรายการรับเข้า (ISO 8601) |
+| `status` | `string` | สถานะการรับของ (เช่น Received) |
+| `items` | `array` | รายการสินค้าที่รับเข้า (id, ชื่อ, จำนวนที่รับเข้า, ต้นทุนต่อหน่วย) |
+| `receivedAt` | `string` | วันที่และเวลาที่ได้รับสินค้าจริง (ISO 8601) |
+
+#### 5. `user.json` (ข้อมูลผู้ใช้งานระบบ)
+ไฟล์นี้เก็บข้อมูลของผู้ใช้งานทั้งหมด ทั้งลูกค้า (Customer), พนักงาน (Staff) และผู้จัดการ (Manager)
+
+| Field Name | Type | Description (รายละเอียด) |
+| :--- | :--- | :--- |
+| `id` | `string` | รหัสผู้ใช้งานระบบ (เช่น PS0001, CPS0001) |
+| `prefix` | `string` | คำนำหน้าชื่อ (มีเฉพาะพนักงาน) |
+| `firstName` | `string` | ชื่อจริง |
+| `lastName` | `string` | นามสกุล |
+| `email` | `string` | อีเมลสำหรับการล็อกอินและติดต่อ |
+| `phone` | `string` | เบอร์โทรศัพท์ |
+| `password` | `string` | รหัสผ่าน |
+| `role` | `string` | บทบาทในระบบ (Manager, Staff, Customer) |
+| `status` | `string` | สถานะบัญชีผู้ใช้ (เช่น ACTIVE, LEAVE) |
+| `idCard` | `string` | เลขบัตรประจำตัวประชาชน (เฉพาะพนักงาน) |
+| `bloodGroup` | `string` | กรุ๊ปเลือด (เฉพาะพนักงาน) |
+| `profileImage` | `string` | URL รูปโปรไฟล์ |
+| `emergencyContact` | `object` | ข้อมูลผู้ติดต่อฉุกเฉิน (ชื่อ, เบอร์, ความสัมพันธ์) (เฉพาะพนักงาน) |
+| `addresses` | `array` | รายการที่อยู่ (เฉพาะลูกค้า) |
 
 ---

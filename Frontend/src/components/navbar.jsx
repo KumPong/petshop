@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import Logo from "../assets/Logo.png";
 import { getCart, saveCart } from "../services/cart.service.js";
 import { getAllProducts } from "../services/product.service";
+import Swal from "sweetalert2";
 
 function Navbar() {
     const navigate = useNavigate();
@@ -195,7 +196,12 @@ function Navbar() {
     const handleCheckout = () => {
         const token = sessionStorage.getItem('token');
         if (!token) {
-            alert("กรุณาเข้าสู่ระบบก่อนชำระเงิน");
+            Swal.fire({
+                icon: 'warning',
+                title: 'กรุณาเข้าสู่ระบบก่อนชำระเงิน',
+                showConfirmButton: true,
+                confirmButtonText: 'ตกลง',
+            });
             navigate('/login');
             return;
         }
