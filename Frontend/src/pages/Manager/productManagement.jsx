@@ -97,9 +97,7 @@ function ProductModal({ open, onClose, onSave, initial }) {
     uploadFile(file);
   }
 
-  function handleLinkApply() {
-    setPreviewUrl(imageUrl);
-  }
+
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -169,18 +167,13 @@ function ProductModal({ open, onClose, onSave, initial }) {
                     <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
                   </div>
                 ) : (
-                  <div className="space-y-1.5">
                     <input
                       type="url"
                       value={imageUrl}
-                      onChange={(e) => setImageUrl(e.target.value)}
+                      onChange={(e) => { setImageUrl(e.target.value); setPreviewUrl(e.target.value); }}
                       placeholder="https://..."
                       className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
                     />
-                    <button type="button" onClick={handleLinkApply} className="w-full px-2 py-1 bg-[#5c6b3a] text-white text-xs rounded-lg hover:bg-[#4a5630]">
-                      Apply
-                    </button>
-                  </div>
                 )}
               </div>
 
