@@ -136,7 +136,6 @@
 
 ```mermaid
 flowchart LR
-    flowchart LR
     %% Actors
     Customer([Customer])
     Staff([Staff])
@@ -290,7 +289,6 @@ flowchart LR
         -String inventoryId
         -String productId
         -Number quantityOnHand
-        -Number reservedQty
         -Number reorderLevel
         -Datetime lastUpdated
         +adjustStock(qtyChange) boolean
@@ -612,7 +610,7 @@ flowchart LR
 
 ---
 
-### <a id="wireframe"></a> 🎯 Wireframe / Prototype - [Click to inspect](https://www.figma.com/design/By0aa0Ia9NAwNOilaYCD85/PetStop?node-id=87-393&p=f&t=l2h7526gFYC8L37D-0)
+### <a id="wireframe"></a>🎯 Wireframe / Prototype - [Click to inspect](https://www.figma.com/design/By0aa0Ia9NAwNOilaYCD85/PetStop?node-id=87-393&p=f&t=l2h7526gFYC8L37D-0)
 
 ---
 
