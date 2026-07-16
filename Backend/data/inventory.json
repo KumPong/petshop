@@ -11,7 +11,7 @@
     "stock": 64,
     "threshold": 20,
     "unitCost": 520,
-    "lastUpdated": "2026-07-14T16:11:51.633Z",
+    "lastUpdated": "2026-07-16T14:25:06.872Z",
     "bestSeller": true,
     "id-type": "dogs",
     "specifications": {
@@ -26,9 +26,9 @@
       "เก็บในที่แห้ง"
     ],
     "lastAdjustment": {
-      "type": "remove",
-      "amount": 1,
-      "reason": "สินค้าเสียหาย / สูญหาย"
+      "type": "add",
+      "amount": 0,
+      "reason": "ปรับแก้ยอดสต็อก"
     }
   },
   {
@@ -539,10 +539,10 @@
     "unitLabel": "1 ชิ้น",
     "category": "ของเล่นเคี้ยว",
     "supplier": "Eco-Pet Exports",
-    "stock": 24,
+    "stock": 14,
     "threshold": 10,
     "unitCost": 325,
-    "lastUpdated": "2026-07-14T14:59:23.705Z",
+    "lastUpdated": "2026-07-16T14:45:04.077Z",
     "bestSeller": true,
     "id-type": "accessories",
     "specifications": {
@@ -721,20 +721,5 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "image": "https://tailybuddy.com/products/8979/mesh-gotham.jpg"
-  },
-  {
-    "id": "PD-031",
-    "sku": "PD-031",
-    "productId": "PD-031",
-    "name": "ปืนหายาก",
-    "category": "อุปกรณ์",
-    "stock": 3,
-    "threshold": 10,
-    "lastUpdated": "2026-07-16T15:43:43.248Z",
-    "unitCost": 65,
-    "image": "http://localhost:4000/uploads/Products/Product-1784089595230-156913077.webp",
-    "id-type": "accessories",
-    "specifications": {},
-    "careInstructions": []
   }
 ]

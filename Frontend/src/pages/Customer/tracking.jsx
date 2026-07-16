@@ -138,7 +138,7 @@ function Tracking() {
                       <p className="text-xs text-gray-500">
                         {step.status === 'pending' ? 'รอดำเนินการ' : formatDateTimeTH(step.timestamp)}
                       </p>
-                      {step.status === 'current' && order.shipping.trackingNumber && (
+                      {step.key === 'in_transit' && step.status !== 'pending' && order.shipping.trackingNumber && (
                         <div className="mt-2 flex w-fit items-center gap-2 rounded-lg bg-other px-3 py-2 text-sm font-medium text-gray-800">
                           {order.shipping.trackingNumber}
                           <button onClick={copyTracking} className="flex items-center gap-1 text-xs text-gray-600 hover:text-gray-900">

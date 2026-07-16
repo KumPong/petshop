@@ -5,21 +5,15 @@ import {
   ClipboardCheck,
   AlertTriangle,
   RefreshCcw,
-  Pencil,
   Image as ImageIcon,
   ChevronLeft,
   ChevronRight,
-  X,
-  Plus,
-  Minus,
-  Package,
-  Check,
   CircleCheck,
   Circle,
 } from 'lucide-react';
-import { getInventory, adjustStock } from '../../services/inventory.service.js';
+import { getInventory } from '../../services/inventory.service.js';
 
-// สถานะคำนวณจาก stock เทียบ threshold ต่อ SKU (ไม่ใช่ค่าคงที่) — เรียกใหม่ทุกครั้งที่โหลด/ปรับสต็อก
+// สถานะคำนวณจาก stock เทียบ threshold ต่อ SKU (ไม่ใช่ค่าคงที่)
 function getStatus(stock, threshold) {
   if (stock <= 0) return 'Out of Stock';
   if (stock <= threshold) return 'Low Stock';
@@ -43,13 +37,7 @@ const STATUS_OPTIONS = ['All', 'In Stock', 'Low Stock', 'Out of Stock'];
 
 const PAGE_SIZE = 10;
 
-// เหตุผลแยกตามทิศทาง เพราะบางอย่างสมเหตุสมผลแค่ทางเดียว: "ลูกค้าคืนสินค้า" มีได้แค่ตอนเพิ่ม,
-// "สินค้าเสียหาย/สูญหาย" มีได้แค่ตอนตัดออก — "รับสินค้าใหม่เข้า" ตัดทิ้งแล้ว เพราะต้องรับผ่าน PO ของ Manager เท่านั้น
-const ADD_REASONS = ['ลูกค้าคืนสินค้า', 'ปรับแก้ยอดสต็อก', 'อื่นๆ'];
-const REMOVE_REASONS = ['สินค้าเสียหาย / สูญหาย', 'ปรับแก้ยอดสต็อก', 'อื่นๆ'];
-
 // backend ไม่ส่ง field "status" มาด้วย (มีแค่ stock/threshold ดิบๆ) — ฟังก์ชันนี้แปะ status ที่คำนวณแล้วให้
-// ใช้ทั้งตอนโหลดข้อมูลครั้งแรกและตอนได้ผลลัพธ์กลับมาหลังปรับสต็อก
 function withStatus(item) {
   return { ...item, status: getStatus(item.stock, item.threshold) };
 }
@@ -76,11 +64,6 @@ function Inventory() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
-  const [editingProduct, setEditingProduct] = useState(null);
-  const [actionType, setActionType] = useState('add');
-  const [adjustment, setAdjustment] = useState('0');
-  const [reason, setReason] = useState(ADD_REASONS[0]);
-  const [saving, setSaving] = useState(false);
 
   // โหลดสต็อกจาก backend ตอนเปิดหน้า — cancelled กัน setState หลัง component ถูก unmount ไปแล้ว
   useEffect(() => {
@@ -131,62 +114,19 @@ function Inventory() {
   }, [products, search, categoryFilter, statusFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
-  // กันกรณี page ค้างเกิน totalPages อยู่ (เช่น ปรับสต็อกจนสินค้าเลื่อนหมวดหมู่ status ไปแล้วรายการหน้าสุดท้ายหายไป)
   const currentPage = Math.min(page, totalPages);
   const pagedProducts = filteredProducts.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   );
 
-  const openEdit = (product) => {
-    setEditingProduct(product);
-    setActionType('add');
-    setAdjustment('0');
-    setReason(ADD_REASONS[0]);
-  };
-
-  const closeEdit = () => setEditingProduct(null);
-
-  // แปลงค่าที่พิมพ์ในช่อง input (string) ให้เป็นจำนวนเต็มที่ไม่ติดลบเสมอ
-  const adjustmentAmount = Math.max(0, Math.floor(Number(adjustment)) || 0);
-
-  // ยอดคงเหลือใหม่โดยประมาณ แสดงให้ดูก่อนกดยืนยันเฉยๆ (ยังไม่ยิง API) — backend คำนวณตัวจริงเองอีกที
-  const projectedTotal = editingProduct
-    ? actionType === 'add'
-      ? editingProduct.stock + adjustmentAmount
-      : Math.max(0, editingProduct.stock - adjustmentAmount)
-    : 0;
-
-  const saveEdit = async () => {
-    // ถ้าไม่ได้กรอกจำนวนที่จะปรับเลย (0) แค่ปิด modal เฉยๆ ไม่ต้องยิง API ให้เปลืองแรง
-    if (!editingProduct || adjustmentAmount === 0) return closeEdit();
-    setSaving(true);
-    try {
-      // ยิง PATCH ไป backend จริง — backend เป็นคนคำนวณสต็อกใหม่และบันทึกลงไฟล์
-      const updated = await adjustStock(editingProduct.id, {
-        type: actionType,
-        amount: adjustmentAmount,
-        reason,
-      });
-      // เอาผลลัพธ์จริงจาก backend มาแทนที่ข้อมูลเดิมใน state (ไม่ใช้ projectedTotal ที่คำนวณเองฝั่งนี้)
-      setProducts((prev) =>
-        prev.map((p) => (p.id === updated.id ? withStatus(updated) : p))
-      );
-      closeEdit();
-    } catch {
-      setError('บันทึกการปรับสต็อกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
-    } finally {
-      setSaving(false);
-    }
-  };
-
   return (
     <div className="-m-6 min-h-screen bg-background p-10">
       <div className="mb-8 flex items-start justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900">จัดการสินค้าคงคลัง</h1>
+          <h1 className="text-4xl font-bold text-gray-900">สินค้าคงคลัง</h1>
           <p className="mt-2 max-w-md text-gray-500">
-            ตรวจสอบ อัปเดต และจัดการระดับสต็อกสินค้าในคลังของคุณ
+            ตรวจสอบระดับสต็อกสินค้าในคลัง — ปรับสต็อกได้เฉพาะ Manager
           </p>
         </div>
 
@@ -221,7 +161,6 @@ function Inventory() {
         <StatCard
           bgClass="bg-primary"
           icon={<AlertTriangle size={22} />}
-          tag="ต้องดำเนินการ"
           value={lowStockCount}
           label="แจ้งเตือนสินค้าใกล้หมด"
         />
@@ -298,7 +237,6 @@ function Inventory() {
               <th className="px-6 py-3 font-medium">หมวดหมู่</th>
               <th className="px-6 py-3 font-medium">สถานะ</th>
               <th className="px-6 py-3 font-medium">จำนวนคงเหลือ</th>
-              <th className="px-6 py-3 font-medium">จัดการ</th>
             </tr>
           </thead>
           <tbody>
@@ -336,28 +274,19 @@ function Inventory() {
                   </span>
                 </td>
                 <td className="px-6 py-4 text-gray-700">{p.stock} หน่วย</td>
-                <td className="px-6 py-4">
-                  <button
-                    onClick={() => openEdit(p)}
-                    className="text-gray-400 hover:text-gray-700"
-                    title="ปรับจำนวนสต็อก"
-                  >
-                    <Pencil size={16} />
-                  </button>
-                </td>
               </tr>
               );
             })}
             {!loading && filteredProducts.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-6 py-10 text-center text-gray-400">
+                <td colSpan={5} className="px-6 py-10 text-center text-gray-400">
                   ไม่พบสินค้าที่ตรงกับเงื่อนไขการค้นหา/ตัวกรอง
                 </td>
               </tr>
             )}
             {loading && (
               <tr>
-                <td colSpan={6} className="px-6 py-10 text-center text-gray-400">
+                <td colSpan={5} className="px-6 py-10 text-center text-gray-400">
                   กำลังโหลดข้อมูลสต็อก...
                 </td>
               </tr>
@@ -399,132 +328,6 @@ function Inventory() {
           </div>
         </div>
       </div>
-
-      {editingProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-          <div className="w-full max-w-md overflow-hidden rounded-2xl bg-background shadow-xl">
-            <div className="flex items-center justify-between bg-other px-6 py-5">
-              <h3 className="text-2xl font-semibold text-gray-900">ปรับปรุงระดับสต็อก</h3>
-              <button onClick={closeEdit} className="text-gray-500 hover:text-gray-700">
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className="p-6">
-              <div className="mb-6 flex items-center gap-4 rounded-xl bg-other px-4 py-3">
-                {editingProduct.image ? (
-                  <img
-                    src={editingProduct.image}
-                    alt={editingProduct.name}
-                    className="h-12 w-12 shrink-0 rounded-lg object-cover"
-                  />
-                ) : (
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-gray-300">
-                    <ImageIcon size={20} />
-                  </span>
-                )}
-                <div>
-                  <p className="font-semibold text-gray-900">{editingProduct.name}</p>
-                  <p className="text-xs text-gray-500">SKU: {editingProduct.id}</p>
-                  <p className="mt-1 flex items-center gap-1.5 text-xs text-gray-600">
-                    <Package size={14} />
-                    <span className="font-semibold">{editingProduct.stock} หน่วย</span> คงเหลือในสต็อก
-                  </p>
-                </div>
-              </div>
-
-              <p className="mb-2 text-sm font-medium text-gray-700">ประเภทการดำเนินการ</p>
-              <div className="mb-6 flex gap-2 rounded-full bg-gray-50 p-1">
-                <button
-                  onClick={() => {
-                    setActionType('add');
-                    setReason(ADD_REASONS[0]);
-                  }}
-                  className={`flex flex-1 items-center justify-center gap-1.5 rounded-full py-2 text-sm font-medium transition-colors ${
-                    actionType === 'add' ? 'bg-primary text-gray-900' : 'text-gray-500'
-                  }`}
-                >
-                  <Plus size={16} />
-                  เพิ่มสต็อก
-                </button>
-                <button
-                  onClick={() => {
-                    setActionType('remove');
-                    setReason(REMOVE_REASONS[0]);
-                  }}
-                  className={`flex flex-1 items-center justify-center gap-1.5 rounded-full py-2 text-sm font-medium transition-colors ${
-                    actionType === 'remove' ? 'bg-primary text-gray-900' : 'text-gray-500'
-                  }`}
-                >
-                  <Minus size={16} />
-                  ตัดสต็อกออก
-                </button>
-              </div>
-
-              <div className="mb-6 grid grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
-                    จำนวนที่ปรับ
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    autoFocus
-                    value={adjustment}
-                    onChange={(e) => setAdjustment(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && saveEdit()}
-                    className="w-full rounded-xl border border-gray-200 bg-other px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
-                    เหตุผลในการปรับ
-                  </label>
-                  <select
-                    value={reason}
-                    onChange={(e) => setReason(e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 bg-other px-4 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    {(actionType === 'add' ? ADD_REASONS : REMOVE_REASONS).map((r) => (
-                      <option key={r} value={r}>
-                        {r}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="mb-6 flex items-center justify-between rounded-lg bg-other px-4 py-3">
-                <span className="text-xs font-medium uppercase tracking-wide text-gray-500">
-                  ยอดคงเหลือใหม่โดยประมาณ
-                </span>
-                <span className="flex items-center gap-2 text-gray-500">
-                  {editingProduct.stock}
-                  <span>→</span>
-                  <span className="text-xl font-bold text-gray-900">{projectedTotal}</span>
-                </span>
-              </div>
-
-              <div className="flex justify-end gap-3">
-                <button
-                  onClick={closeEdit}
-                  className="rounded-lg px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
-                >
-                  ยกเลิก
-                </button>
-                <button
-                  onClick={saveEdit}
-                  disabled={saving}
-                  className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-gray-900 hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <Check size={16} />
-                  {saving ? 'กำลังบันทึก...' : 'บันทึกการปรับสต็อก'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

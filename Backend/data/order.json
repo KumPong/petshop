@@ -148,11 +148,27 @@
     "orderNo": "ORD-1003",
     "customerId": "CPS0002",
     "orderDate": "2026-07-15T06:32:11.245Z",
-    "status": "Confirmed",
+    "status": "Delivered",
     "statusHistory": [
       {
         "status": "Confirmed",
         "at": "2026-07-15T06:32:11.245Z"
+      },
+      {
+        "status": "Processing",
+        "at": "2026-07-16T13:36:30.582Z"
+      },
+      {
+        "status": "Packed",
+        "at": "2026-07-16T13:36:52.814Z"
+      },
+      {
+        "status": "Shipped",
+        "at": "2026-07-16T13:37:37.674Z"
+      },
+      {
+        "status": "Delivered",
+        "at": "2026-07-16T13:38:32.285Z"
       }
     ],
     "courierNotes": "",
@@ -197,6 +213,74 @@
       "status": "Paid",
       "paymentDate": "2026-07-15T06:32:11.245Z",
       "transactionId": "TXN-1784097131245-7324"
+    }
+  },
+  {
+    "orderId": "ORD-1004",
+    "orderNo": "ORD-1004",
+    "customerId": "CPS0002",
+    "orderDate": "2026-07-16T14:45:04.077Z",
+    "status": "Shipped",
+    "statusHistory": [
+      {
+        "status": "Confirmed",
+        "at": "2026-07-16T14:45:04.077Z"
+      },
+      {
+        "status": "Processing",
+        "at": "2026-07-16T14:54:37.022Z"
+      },
+      {
+        "status": "Packed",
+        "at": "2026-07-16T14:54:57.021Z"
+      },
+      {
+        "status": "Shipped",
+        "at": "2026-07-16T14:55:16.609Z"
+      }
+    ],
+    "courierNotes": "",
+    "flagReason": "",
+    "statusBeforeFlag": null,
+    "subtotal": 5000,
+    "shippingAmount": 150,
+    "taxAmount": 350,
+    "totalAmount": 5500,
+    "items": [
+      {
+        "orderItemId": "OI-PD-004-1784213104076",
+        "productId": "PD-004",
+        "name": "Kong Classic",
+        "quantity": 10,
+        "unitPrice": 500,
+        "subTotal": 5000,
+        "picked": false,
+        "imageUrl": "https://m.media-amazon.com/images/I/61eVAqrR7uL._AC_UF894,1000_QL80_.jpg"
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Dora",
+      "street": "1234",
+      "city": "Pluto",
+      "postalCode": "99999",
+      "phone": "1234567890"
+    },
+    "shipping": {
+      "method": "express",
+      "methodLabel": "จัดส่งด่วน",
+      "cost": 150,
+      "carrier": "Kerry Express",
+      "trackingNumber": "KER-813348160",
+      "estimatedDeliveryStart": "2026-07-17T14:45:04.077Z",
+      "estimatedDeliveryEnd": "2026-07-18T14:45:04.077Z"
+    },
+    "payment": {
+      "paymentId": "PAY-ORD-1004",
+      "method": "บัตรเครดิต",
+      "amount": 5500,
+      "status": "Paid",
+      "paymentDate": "2026-07-16T14:45:04.077Z",
+      "transactionId": "TXN-1784213104077-6257"
     }
   }
 ]

@@ -5,19 +5,30 @@ import { getOrders } from '../../services/order.service';
 import { getInventory } from '../../services/inventory.service';
 
 // ---- helpers ----
-const STATUS_STYLE = {
-    Confirmed:  'bg-blue-100 text-blue-700',
-    Processing: 'bg-amber-100 text-amber-700',
-    Picking:    'bg-purple-100 text-purple-700',
-    Shipped:    'bg-green-100 text-green-700',
-    Delivered:  'bg-emerald-100 text-emerald-700',
-    Pending:    'bg-gray-100 text-gray-600',
-    Flagged:    'bg-red-100 text-red-600',
+// ใช้ label/สี เดียวกับ orderManage.jsx (/staff/orders) เป๊ะๆ กันออเดอร์เดียวกันโชว์คนละสถานะ/คนละสีระหว่างสองหน้า
+const STATUS_LABELS = {
+    Confirmed: 'รอตรวจสอบ',
+    Processing: 'กำลังเตรียม',
+    Packed: 'แพ็คเสร็จแล้ว',
+    Shipped: 'กำลังจัดส่ง',
+    Delivered: 'ส่งถึงแล้ว',
+    Flagged: 'พบปัญหา',
+    Cancelled: 'ยกเลิกแล้ว',
+};
+
+const STATUS_PILL = {
+    Confirmed: 'bg-orange-100 text-orange-700',
+    Processing: 'bg-lime-100 text-lime-800',
+    Packed: 'bg-teal-100 text-teal-700',
+    Shipped: 'bg-yellow-100 text-yellow-800',
+    Delivered: 'bg-emerald-100 text-emerald-700',
+    Flagged: 'bg-red-100 text-red-700',
+    Cancelled: 'bg-gray-200 text-gray-600',
 };
 
 function StatusBadge({ status }) {
-    const cls = STATUS_STYLE[status] || 'bg-gray-100 text-gray-600';
-    return <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${cls}`}>{status}</span>;
+    const cls = STATUS_PILL[status] || 'bg-gray-100 text-gray-600';
+    return <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${cls}`}>{STATUS_LABELS[status] || status}</span>;
 }
 
 function formatBaht(n) {
@@ -66,7 +77,9 @@ export default function StaffDashboard() {
     }, []);
 
     // ---- derived ----
-    const toProcess = orders.filter(o => ['Confirmed', 'Processing', 'Picking'].includes(o.status));
+    // นับแบบเดียวกับ "ออเดอร์ที่ต้องดำเนินการ" ใน orderManage.jsx — ทุกสถานะที่ไม่ใช่ Delivered/Cancelled
+    // (เดิมเช็คแค่ ['Confirmed','Processing','Picking'] ซึ่ง 'Picking' ไม่ใช่สถานะจริงและขาด Packed/Shipped ไปเลย)
+    const toProcess = orders.filter(o => !['Delivered', 'Cancelled'].includes(o.status));
     const lowStock   = inventory.filter(i => i.stock <= i.threshold);
 
     const todayStr = new Date().toISOString().slice(0, 10);
@@ -106,22 +119,18 @@ export default function StaffDashboard() {
                     icon={<AlertTriangle size={20} className="text-amber-500" />}
                     label="สินค้าสต็อกต่ำ"
                     value={lowStock.length}
-                    sub="⚠ ต้องดำเนินการ"
-                    subColor="text-amber-600"
                 />
                 <StatCard
                     icon={<ShoppingBag size={20} className="text-[#5c6b3a]" />}
                     label="จัดส่งสำเร็จวันนี้"
                     value={completedToday.length}
-                    sub="สัปดาห์นี้"
+                    sub="วันนี้"
                     subColor="text-gray-500"
                 />
                 <StatCard
                     icon={<TrendingUp size={20} className="text-[#5c6b3a]" />}
                     label="ยอดขายวันนี้"
                     value={formatBaht(revenueToday)}
-                    sub={`เป้าหมาย: ฿5,000`}
-                    subColor="text-gray-500"
                 />
             </div>
 
@@ -213,7 +222,7 @@ export default function StaffDashboard() {
                                         onClick={() => navigate('/staff/inventory')}
                                         className="shrink-0 text-xs font-semibold text-[#5c6b3a] hover:underline"
                                     >
-                                        เติมสต็อก
+                                        ดูรายละเอียด
                                     </button>
                                 </div>
                             );
@@ -224,7 +233,7 @@ export default function StaffDashboard() {
                             onClick={() => navigate('/staff/inventory')}
                             className="w-full py-2 bg-[#f0f2ea] text-[#5c6b3a] text-sm font-semibold rounded-xl hover:bg-[#e3e8d6] transition-colors"
                         >
-                            จัดการคลังสินค้า
+                            ดูสินค้าคงคลัง
                         </button>
                     </div>
                 </div>

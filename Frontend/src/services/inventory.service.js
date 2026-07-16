@@ -13,9 +13,3 @@ export async function getLowStockInventory() {
   const { data } = await api.get('/inventory/low-stock');
   return data;
 }
-
-// ปรับสต็อก 1 ชิ้น — type: 'add' | 'remove', amount: จำนวน, reason: เหตุผล (ดู ADD_REASONS/REMOVE_REASONS ใน inventory.jsx)
-export async function adjustStock(id, { type, amount, reason }) {
-  const { data } = await api.patch(`/inventory/${id}/adjust`, { type, amount, reason });
-  return data;
-}

@@ -74,8 +74,9 @@ function ManagerDashboard() {
     // ---- derived data ----
     const totalSales = orders.reduce((s, o) => s + (o.totalAmount || 0), 0);
 
-    const pendingStatuses = ['Confirmed', 'Processing', 'Picking'];
-    const pendingOrders = orders.filter(o => pendingStatuses.includes(o.status));
+    // นับแบบเดียวกับ "ออเดอร์ที่ต้องดำเนินการ" ใน orderManage.jsx — ทุกสถานะที่ไม่ใช่ Delivered/Cancelled
+    // (เดิมเช็คแค่ ['Confirmed','Processing','Picking'] ซึ่ง 'Picking' ไม่ใช่สถานะจริงและขาด Packed/Shipped ไปเลย)
+    const pendingOrders = orders.filter(o => !['Delivered', 'Cancelled'].includes(o.status));
 
     // product sales aggregation
     const salesMap = {};

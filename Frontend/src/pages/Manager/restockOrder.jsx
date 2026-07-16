@@ -23,7 +23,7 @@ import {
 const PENDING_LABEL = "รอดำเนินการ";
 
 const STATUS_LABELS = {
-  Shipped: "จัดส่งแล้ว",
+  Shipped: "กำลังจัดส่ง",
   Received: "ได้รับแล้ว",
   Pending: PENDING_LABEL,
 };

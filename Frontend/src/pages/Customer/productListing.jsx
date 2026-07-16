@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom'
 import { getInventory } from '../../services/inventory.service.js'
+import { getProducts } from '../../services/product.service.js'
 import { addToCart } from '../../services/cart.service.js'
 
 function ProductListing({ selectedSegment = 'all' }) {
@@ -85,7 +86,10 @@ function InventoryGrid({ sort, selectedSegment, search }) {
     async function load() {
       setLoading(true)
       try {
-        const data = await getInventory()
+        const [inventory, products] = await Promise.all([getInventory(), getProducts()])
+        // inventory.json ไม่มี field ราคาขายจริง (มีแค่ unitCost = ต้นทุน) ราคาขายจริงอยู่ใน product.json เท่านั้น
+        const priceByProductId = new Map(products.map((p) => [p.productId, p.price]))
+        const data = inventory.map((item) => ({ ...item, price: priceByProductId.get(item.productId) }))
         if (!canceled) setItems(data)
       } catch (err) {
         if (!canceled) setError(err.message || 'ไม่สามารถโหลดสินค้าจาก inventory ได้')
@@ -121,9 +125,9 @@ function InventoryGrid({ sort, selectedSegment, search }) {
   // apply sorting — Best Seller items always first, then apply chosen sort within each group
   let sorted = [...filteredItems]
   if (sort === 'price-asc') {
-    sorted.sort((a, b) => (a.unitCost ?? a.price ?? 0) - (b.unitCost ?? b.price ?? 0))
+    sorted.sort((a, b) => (a.price ?? a.unitCost ?? 0) - (b.price ?? b.unitCost ?? 0))
   } else if (sort === 'price-desc') {
-    sorted.sort((a, b) => (b.unitCost ?? b.price ?? 0) - (a.unitCost ?? a.price ?? 0))
+    sorted.sort((a, b) => (b.price ?? b.unitCost ?? 0) - (a.price ?? a.unitCost ?? 0))
   } else if (sort === 'name-asc') {
     sorted.sort((a, b) => ('' + (a.name || '')).localeCompare('' + (b.name || ''), undefined, { sensitivity: 'base' }))
   }
@@ -142,7 +146,7 @@ function InventoryGrid({ sort, selectedSegment, search }) {
   function handleAddToCart(e, item) {
     e.preventDefault()
     e.stopPropagation()
-    addToCart({ productId: item.productId, name: item.name, price: item.unitCost ?? item.price, image: item.image })
+    addToCart({ productId: item.productId, name: item.name, price: item.price ?? item.unitCost, image: item.image })
   }
 
   return (
@@ -159,7 +163,7 @@ function InventoryGrid({ sort, selectedSegment, search }) {
             <h3 className="text-lg font-semibold mb-1 line-clamp-2">{p.name}</h3>
             <p className="text-gray-700 text-sm mb-3 line-clamp-2 flex-1">{p.subtitle || p.description || ''}</p>
             <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
-              <span className="text-xl font-bold text-green-700">{p.unitCost ? `฿${p.unitCost}` : (p.price ? `฿${p.price}` : 'ราคาไม่ระบุ')}</span>
+              <span className="text-xl font-bold text-green-700">{p.price ? `฿${p.price}` : (p.unitCost ? `฿${p.unitCost}` : 'ราคาไม่ระบุ')}</span>
               <button
                 aria-label="Add to cart"
                 onClick={(e) => handleAddToCart(e, p)}

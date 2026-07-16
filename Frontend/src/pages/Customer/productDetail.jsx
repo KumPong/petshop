@@ -44,7 +44,7 @@ function ProductDetail() {
           productId: item.productId,
           name: item.name,
           description: item.subtitle || item.description || '',
-          price: item.unitCost,
+          price: item.price,
           image: item.image || null,
           stock: item.stock,
           specifications: item.specifications || {},

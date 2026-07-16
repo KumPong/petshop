@@ -1,11 +1,23 @@
 import { readFile, writeFile } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import jwt from 'jsonwebtoken';
 
 // __dirname ไม่มีให้ใช้อัตโนมัติใน ES module (import/export) แบบที่ใช้ในโปรเจกต์นี้
 // เลยต้องคำนวณเอง จาก path ของไฟล์นี้เอง (import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_PATH = path.join(__dirname, '..', 'data', 'inventory.json');
+
+// แกะ user จาก Authorization header (secret key เดียวกับ order.controller.js/report.controller.js) คืน null ถ้าไม่มี/ไม่ถูกต้อง
+function getAuthUser(req) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+  try {
+    return jwt.verify(authHeader.split(' ')[1], 'YOUR_SECRET_KEY_PETSTOP');
+  } catch {
+    return null;
+  }
+}
 
 // โปรเจกต์นี้ใช้ไฟล์ JSON แทนฐานข้อมูลจริง (ตามที่ README ระบุ)
 // ฟังก์ชัน 2 ตัวนี้เลยทำหน้าที่แทน "query" และ "save" ของฐานข้อมูล
@@ -31,9 +43,14 @@ export async function getLowStockInventory(req, res) {
   res.json(items.filter((item) => item.stock <= item.threshold));
 }
 
-// PATCH /api/inventory/:id/adjust — ปรับจำนวนสต็อกของสินค้า 1 ชิ้น
+// PATCH /api/inventory/:id/adjust — ปรับจำนวนสต็อกของสินค้า 1 ชิ้น (Manager เท่านั้น — Staff ดูได้อย่างเดียว
+// เพราะยังไม่มีระบบคืนสินค้าจริงจากลูกค้ามารองรับเหตุผล "ลูกค้าคืนสินค้า" ให้ตรวจสอบย้อนหลังได้)
 // body ที่ต้องส่งมา: { type: 'add' | 'remove', amount: number, reason?: string }
 export async function adjustStock(req, res) {
+  const authUser = getAuthUser(req);
+  if (!authUser) return res.status(401).json({ message: 'กรุณาเข้าสู่ระบบ' });
+  if (authUser.role !== 'Manager') return res.status(403).json({ message: 'ไม่มีสิทธิ์ปรับสต็อก' });
+
   const { id } = req.params; // :id จาก path เช่น /api/inventory/FD-SAL-05/adjust
   const { type, amount, reason } = req.body;
 

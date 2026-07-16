@@ -22,7 +22,7 @@ const STATUS_LABELS = {
   Confirmed: 'รอตรวจสอบ',
   Processing: 'กำลังเตรียม',
   Packed: 'แพ็คเสร็จแล้ว',
-  Shipped: 'จัดส่งแล้ว',
+  Shipped: 'กำลังจัดส่ง',
   Delivered: 'ส่งถึงแล้ว',
   Flagged: 'พบปัญหา',
   Cancelled: 'ยกเลิกแล้ว',

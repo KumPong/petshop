@@ -5,7 +5,8 @@
     "description": "อาหารสุนัขชนิดแห้ง • 2 กก.",
     "price": 800,
     "category": "อาหารแห้ง",
-    "status": "Active"
+    "status": "Active",
+    "imageUrl": "https://www.feedmeplease.com/images/pdimg/24/1.webp"
   },
   {
     "productId": "PD-002",
@@ -238,14 +239,5 @@
     "price": 1300,
     "category": "สายรัดอก",
     "status": "Active"
-  },
-  {
-    "productId": "PD-031",
-    "name": "ปืนหายาก",
-    "description": "ยิงตายเลย",
-    "price": 100,
-    "category": "อุปกรณ์",
-    "status": "Active",
-    "imageUrl": "http://localhost:4000/uploads/Products/Product-1784089595230-156913077.webp"
   }
 ]

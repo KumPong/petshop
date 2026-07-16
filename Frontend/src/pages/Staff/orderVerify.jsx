@@ -25,7 +25,7 @@ const TIMELINE_LABELS = {
 
 // ป้ายสถานะภาษาไทยที่โชว์ในหน้า (แยกจาก key ภายในที่ยังใช้ภาษาอังกฤษ เพื่อให้ตรงกับ backend/order.json)
 const STATUS_LABEL_TH = {
-  Confirmed: 'ยืนยันแล้ว',
+  Confirmed: 'รอตรวจสอบ',
   Processing: 'กำลังเตรียม',
   Packed: 'แพ็คเสร็จแล้ว',
   Shipped: 'กำลังจัดส่ง',
@@ -320,8 +320,11 @@ function OrderVerify() {
                 </div>
               </li>
               {STATUS_FLOW.map((step, idx) => {
-                const done = idx < currentStepIndex || (idx === currentStepIndex && isTerminal);
-                const current = idx === currentStepIndex && !isTerminal;
+                // ทุกสถานะยกเว้น Processing เป็นแค่การกดยืนยันเหตุการณ์ที่เกิดขึ้นแล้ว (เช่น "ส่งมอบให้ขนส่งแล้ว")
+                // พอสถานะไปถึงจุดนั้นแปลว่าเสร็จแล้วจริงๆ ไม่ใช่กำลังทำอยู่ — มีแค่ Processing เท่านั้นที่เป็นงานที่ยัง
+                // ไม่เสร็จจริง (staff กำลังแพ็คของอยู่) เลยโชว์เป็น "กำลังดำเนินการ" ได้ตามชื่อ
+                const done = idx < currentStepIndex || (idx === currentStepIndex && (isTerminal || step !== 'Processing'));
+                const current = idx === currentStepIndex && !done;
                 return (
                   <li key={step} className="flex gap-3">
                     {done ? (
