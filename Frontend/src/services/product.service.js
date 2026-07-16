@@ -5,6 +5,11 @@ export async function getProducts() {
   return data;
 }
 
+export async function getBestSellers() {
+  const { data } = await api.get('/products/best-sellers');
+  return data;
+}
+
 export async function createProduct(payload) {
   const { data } = await api.post('/products', payload);
   return data;

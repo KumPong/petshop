@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
-import { getProducts, getProduct, createProduct, updateProduct, deleteProduct } from '../controllers/product.controller.js';
+import { getProducts, getProduct, createProduct, updateProduct, deleteProduct, getBestSellers } from '../controllers/product.controller.js';
 
 const router = Router();
 
@@ -25,6 +25,7 @@ router.post('/upload-image', upload.single('image'), (req, res) => {
   res.status(200).json({ imageUrl });
 });
 
+router.get('/best-sellers', getBestSellers);
 router.get('/', getProducts);
 router.get('/:id', getProduct);
 router.post('/', createProduct);

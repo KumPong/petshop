@@ -5,6 +5,26 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PRODUCT_PATH = path.join(__dirname, '..', 'data', 'product.json');
 const INVENTORY_PATH = path.join(__dirname, '..', 'data', 'inventory.json');
+const ORDERS_PATH = path.join(__dirname, '..', 'data', 'order.json');
+
+async function readOrders() {
+  const raw = await readFile(ORDERS_PATH, 'utf-8');
+  return JSON.parse(raw);
+}
+
+// GET /api/products/best-sellers — public endpoint, คำนวณ top sellers จากยอดขายจริง
+export async function getBestSellers(req, res) {
+  const orders = await readOrders();
+  const salesMap = {};
+  orders.forEach(o => (o.items || []).forEach(item => {
+    salesMap[item.productId] = (salesMap[item.productId] || 0) + item.quantity;
+  }));
+  const top = Object.entries(salesMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([productId, sold]) => ({ productId, sold }));
+  res.json(top);
+}
 
 async function readProducts() {
   const raw = await readFile(PRODUCT_PATH, 'utf-8');

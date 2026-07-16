@@ -12,7 +12,6 @@
     "threshold": 20,
     "unitCost": 520,
     "lastUpdated": "2026-07-16T14:25:06.872Z",
-    "bestSeller": true,
     "id-type": "dogs",
     "specifications": {
       "ingredients": "Chicken",
@@ -66,7 +65,6 @@
     "threshold": 25,
     "unitCost": 33,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
-    "bestSeller": true,
     "id-type": "dogs",
     "specifications": {
       "ingredients": "Chicken",
@@ -139,7 +137,6 @@
     "threshold": 15,
     "unitCost": 195,
     "lastUpdated": "2026-07-05T07:07:32.335Z",
-    "bestSeller": true,
     "id-type": "dogs",
     "specifications": {
       "ingredients": "Beef",
@@ -260,7 +257,6 @@
     "threshold": 15,
     "unitCost": 650,
     "lastUpdated": "2026-07-15T06:32:11.245Z",
-    "bestSeller": true,
     "id-type": "cats",
     "specifications": {
       "ingredients": "Chicken, Rice",
@@ -310,7 +306,6 @@
     "threshold": 20,
     "unitCost": 29,
     "lastUpdated": "2026-07-01T00:00:00.000Z",
-    "bestSeller": true,
     "id-type": "cats",
     "specifications": {
       "ingredients": "Chicken, Pork",
@@ -503,7 +498,6 @@
     "threshold": 10,
     "unitCost": 325,
     "lastUpdated": "2026-07-16T14:45:04.077Z",
-    "bestSeller": true,
     "id-type": "accessories",
     "specifications": {
       "material": "ยางธรรมชาติ",

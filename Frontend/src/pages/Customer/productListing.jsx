@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom'
 import { getInventory } from '../../services/inventory.service.js'
-import { getProducts } from '../../services/product.service.js'
+import { getProducts, getBestSellers } from '../../services/product.service.js'
 import { addToCart } from '../../services/cart.service.js'
 
 function ProductListing({ selectedSegment = 'all' }) {
@@ -86,10 +86,16 @@ function InventoryGrid({ sort, selectedSegment, search }) {
     async function load() {
       setLoading(true)
       try {
-        const [inventory, products] = await Promise.all([getInventory(), getProducts()])
+        const [inventory, products, topSellers] = await Promise.all([getInventory(), getProducts(), getBestSellers()])
         // inventory.json ไม่มี field ราคาขายจริง (มีแค่ unitCost = ต้นทุน) ราคาขายจริงอยู่ใน product.json เท่านั้น
         const priceByProductId = new Map(products.map((p) => [p.productId, p.price]))
-        const data = inventory.map((item) => ({ ...item, price: priceByProductId.get(item.productId) }))
+        // คำนวณ bestSeller จากยอดขายจริงผ่าน API
+        const topProductIds = new Set(topSellers.slice(0, 5).map(s => s.productId))
+        const data = inventory.map((item) => ({
+          ...item,
+          price: priceByProductId.get(item.productId),
+          bestSeller: topProductIds.has(item.productId),
+        }))
         if (!canceled) setItems(data)
       } catch (err) {
         if (!canceled) setError(err.message || 'ไม่สามารถโหลดสินค้าจาก inventory ได้')

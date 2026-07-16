@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getInventory } from "../../services/inventory.service.js";
+import { getBestSellers } from "../../services/product.service.js";
 import PromoBanner from "../../assets/promo-banner.png"
 
 function CustomerDashboard() {
   const [bestSellers, setBestSellers] = useState([]);
 
   useEffect(() => {
-    getInventory()
-      .then((data) => setBestSellers(data.filter((item) => item.bestSeller).slice(0, 6)))
+    Promise.all([getInventory(), getBestSellers()])
+      .then(([inventory, topSellers]) => {
+        const topItems = topSellers
+          .slice(0, 6)
+          .map(({ productId }) => inventory.find(i => i.productId === productId))
+          .filter(Boolean);
+        setBestSellers(topItems);
+      })
       .catch(() => {});
   }, []);
   return (
