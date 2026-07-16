@@ -38,11 +38,13 @@ export function addToCart(product, quantity = 1) {
   const productId = product.productId || product.id;
   const cart = getCart();
   const existing = cart.find((item) => (item.productId || item.id) === productId);
+  // ถ้า caller ส่ง stock มาด้วย (เช่นจากหน้ารายการ/รายละเอียดสินค้า) ใช้จำกัดไม่ให้เพิ่มเกินของจริง
+  const maxQty = typeof product.stock === 'number' ? product.stock : Infinity;
 
   if (existing) {
-    existing.quantity += quantity;
+    existing.quantity = Math.min(maxQty, existing.quantity + quantity);
   } else {
-    cart.push({ productId, name: product.name, price: product.price, image: product.image, quantity });
+    cart.push({ productId, name: product.name, price: product.price, image: product.image, quantity: Math.min(maxQty, quantity) });
   }
   return saveCart(cart);
 }

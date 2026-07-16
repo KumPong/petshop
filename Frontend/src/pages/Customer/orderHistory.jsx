@@ -2,6 +2,18 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomerSidebar from "../../components/customerSidebar";
 import api from "../../services/api";
+import { addToCart, getCart } from "../../services/cart.service.js";
+import { getProducts } from "../../services/product.service.js";
+import Swal from 'sweetalert2';
+
+// สีของ badge อิงตามข้อความ shipping.statusLabel ที่ backend คำนวณให้ (ตัวเดียวกับที่หน้า Tracking ใช้)
+// ดู attachLiveTimeline()/STATUS_BADGE_LABEL ใน Backend/controllers/order.controller.js
+const STATUS_LABEL_COLOR = {
+    'ชำระเงินสำเร็จ': 'bg-blue-100 text-blue-700',
+    'กำลังเตรียมสินค้า': 'bg-lime-100 text-lime-800',
+    'อยู่ระหว่างการขนส่ง': 'bg-yellow-100 text-yellow-800',
+    'จัดส่งสำเร็จ': 'bg-emerald-100 text-emerald-700',
+};
 
 function OrderHistory() {
     const navigate = useNavigate();
@@ -22,11 +34,10 @@ function OrderHistory() {
                     }
                 });
 
-                // กรองเอาเฉพาะออเดอร์ที่มีสถานะ "Delivered" (จัดส่งสำเร็จ) เท่านั้น
-                const deliveredOrders = response.data.filter(order => 
-                    order.status === 'Delivered' && order.customerId === currentUser.id
-                );
-                setOrders(deliveredOrders);
+                // แสดงออเดอร์ทั้งหมดของลูกค้าคนนี้ ตั้งแต่ชำระเงินสำเร็จ (สร้างออเดอร์ = ชำระเงินสำเร็จแล้วในระบบนี้)
+                // ไม่กรองเฉพาะ Delivered อีกต่อไป
+                const myOrders = response.data.filter(order => order.customerId === currentUser.id);
+                setOrders(myOrders);
             } catch (error) {
                 console.error("Error fetching orders", error);
             } finally {
@@ -37,10 +48,45 @@ function OrderHistory() {
         fetchOrders();
     }, [currentUser.id]);
 
-    // ฟังก์ชันสั่งซื้อซ้ำ
-    const handleReorder = (orderItems) => {
-        // ส่งข้อมูลสินค้าในออเดอร์เก่าแนบไปกับ state แล้วพุ่งไปหน้า payment
-        navigate('/payment', { state: { reorderItems: orderItems } });
+    // ฟังก์ชันสั่งซื้อซ้ำ — เพิ่มสินค้าจากออเดอร์เก่าเข้าตะกร้าจริงผ่าน cart.service.js (เดิม navigate ไปหน้า
+    // payment เฉยๆ แต่ payment.jsx ไม่เคยอ่าน state ที่ส่งไปเลย เลยไม่มีอะไรเกิดขึ้น) แล้วค่อยพาไปหน้าชำระเงิน
+    // ดึงสต็อกจริงมาก่อนเพื่อส่งให้ addToCart คลัมป์จำนวนไม่ให้เกินของจริง (เมื่อก่อนสั่งซ้ำได้เกินสต็อกเพราะ
+    // ไม่เคยส่ง stock ไปเลย ต้องรอ backend เช็คตอนกดสั่งซื้อสุดท้ายเท่านั้น)
+    const handleReorder = async (orderItems) => {
+        try {
+            const products = await getProducts();
+            const stockByProductId = {};
+            products.forEach((p) => { stockByProductId[p.productId] = p.stock; });
+
+            // เก็บรายการที่โดนคลัมป์ไว้แจ้งเตือน (เทียบจำนวนที่ต้องการเพิ่มจริงกับสต็อกที่มี ก่อนเรียก addToCart)
+            const clampedItems = [];
+            orderItems.forEach((item) => {
+                const stock = stockByProductId[item.productId];
+                if (typeof stock === 'number') {
+                    const existingQty = getCart().find((c) => c.productId === item.productId)?.quantity || 0;
+                    if (existingQty + item.quantity > stock) {
+                        clampedItems.push({ name: item.name, stock });
+                    }
+                }
+                addToCart(
+                    { productId: item.productId, name: item.name, price: item.unitPrice, image: item.imageUrl, stock },
+                    item.quantity
+                );
+            });
+
+            if (clampedItems.length > 0) {
+                // รอให้ผู้ใช้กดปิด alert ก่อน ค่อย navigate ไม่งั้นหน้าจะเปลี่ยนทับ alert ทันที
+                await Swal.fire({
+                    icon: 'warning',
+                    title: 'สินค้าบางรายการเหลือไม่พอ',
+                    html: clampedItems.map((i) => `${i.name} — เพิ่มให้สูงสุดเท่าที่มีสต็อก (${i.stock} ชิ้น)`).join('<br/>'),
+                    confirmButtonText: 'ตกลง',
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+        navigate('/payment');
     };
 
 
@@ -68,7 +114,7 @@ function OrderHistory() {
                     <div className="space-y-4">
                         {orders.length === 0 ? (
                             <div className="bg-other p-10 rounded-2xl shadow-sm border border-gray-100 text-center text-gray-500">
-                                ยังไม่มีประวัติการสั่งซื้อที่จัดส่งสำเร็จ
+                                ยังไม่มีประวัติการสั่งซื้อ
                             </div>
                         ) : (
                             orders.map(order => (
@@ -76,8 +122,8 @@ function OrderHistory() {
                                     <div className="flex-1">
                                         <div className="flex items-center gap-3 mb-2">
                                             <h3 className="font-bold text-lg text-black">{order.orderNo}</h3>
-                                            <span className="px-3 py-1 rounded-full text-sm font-semibold bg-secondary text-gray-700">
-                                                จัดส่งสำเร็จ
+                                            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${STATUS_LABEL_COLOR[order.shipping?.statusLabel] || 'bg-secondary text-gray-700'}`}>
+                                                {order.shipping?.statusLabel || 'กำลังดำเนินการ'}
                                             </span>
                                         </div>
                                         <div className="text-sm text-gray-600 flex items-center gap-2 mb-1">

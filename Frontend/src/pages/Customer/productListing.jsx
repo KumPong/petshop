@@ -148,7 +148,7 @@ function InventoryGrid({ sort, selectedSegment, search }) {
   function handleAddToCart(e, item) {
     e.preventDefault()
     e.stopPropagation()
-    addToCart({ productId: item.productId, name: item.name, price: item.price ?? item.unitCost, image: item.image })
+    addToCart({ productId: item.productId, name: item.name, price: item.price ?? item.unitCost, image: item.image, stock: item.stock })
   }
 
   return (

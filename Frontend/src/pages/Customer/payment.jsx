@@ -4,6 +4,7 @@ import { Truck, CreditCard, QrCode, Landmark, ShieldCheck, BadgeCheck, MessageCi
 import { createOrder } from '../../services/order.service.js';
 import { getUserAddresses, updateUserAddresses } from "../../services/auth.service.js";
 import { getCart, saveCart, clearCart } from '../../services/cart.service.js';
+import { getProducts } from '../../services/product.service.js';
 import Swal from 'sweetalert2'
 
 const SHIPPING_METHODS = [
@@ -35,6 +36,18 @@ function Payment() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [savedAddresses, setSavedAddresses] = useState([]);
+  const [stockByProductId, setStockByProductId] = useState({});
+
+  // ดึงสต็อกจริงจาก backend มาจำกัดจำนวนที่แก้ไขในตะกร้าไม่ให้เกินของที่มีจริง
+  useEffect(() => {
+    getProducts()
+      .then((products) => {
+        const map = {};
+        products.forEach((p) => { map[p.productId] = p.stock; });
+        setStockByProductId(map);
+      })
+      .catch((error) => console.error(error));
+  }, []);
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shippingCost = SHIPPING_METHODS.find((m) => m.value === shippingMethod).cost;
@@ -80,11 +93,16 @@ function Payment() {
   };
 
   // ใช้ทั้งตอนพิมพ์เลขเองและกด +/- — ตั้งเป็น 0 หรือต่ำกว่า = ลบออกจากตะกร้าเลย (ไม่ clamp ไว้ที่ 1)
+  // จำกัดไม่ให้เกินสต็อกจริงของสินค้านั้น (ถ้ายังไม่รู้สต็อก ปล่อยผ่านไปก่อน ให้ backend เช็คตอนสั่งซื้อ)
   const setQty = (productId, rawValue) => {
-    const qty = Math.floor(Number(rawValue));
+    let qty = Math.floor(Number(rawValue));
     if (!Number.isFinite(qty) || qty <= 0) {
       removeItem(productId);
       return;
+    }
+    const stock = stockByProductId[productId];
+    if (typeof stock === 'number') {
+      qty = Math.min(qty, stock);
     }
     setCart((prev) => saveCart(prev.map((item) => (item.productId === productId ? { ...item, quantity: qty } : item))));
   };
@@ -444,16 +462,21 @@ function Payment() {
                       <input
                         type="number"
                         min="0"
+                        max={stockByProductId[item.productId]}
                         value={item.quantity}
                         onChange={(e) => setQty(item.productId, e.target.value)}
                         className="w-10 rounded-md border border-gray-200 bg-white text-center text-xs font-medium text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
                       <button
                         onClick={() => changeQty(item.productId, 1)}
-                        className="rounded-full bg-white p-1 text-gray-500 hover:text-gray-800"
+                        disabled={item.quantity >= stockByProductId[item.productId]}
+                        className="rounded-full bg-white p-1 text-gray-500 hover:text-gray-800 disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         <Plus size={12} />
                       </button>
+                      {typeof stockByProductId[item.productId] === 'number' && (
+                        <span className="text-xs text-gray-400">/ {stockByProductId[item.productId]} ชิ้น</span>
+                      )}
                     </div>
                   </div>
                   <span className="font-semibold text-gray-900">{money(item.price * item.quantity)}</span>

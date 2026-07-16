@@ -47,15 +47,17 @@ function Navbar() {
         };
     }, []); // เอา setCartItems ออกจาก dependency เพราะเป็น stable reference
 
-    // ฟังก์ชันปรับจำนวนสินค้า
+    // ฟังก์ชันปรับจำนวนสินค้า — จำกัดไม่ให้เกินสต็อกจริง (จาก products ที่ดึงมาจาก backend)
     const handleUpdateQuantity = (e, targetId, change) => {
         e.preventDefault();
         e.stopPropagation(); // ป้องกันการคลิกแล้วไปปิด Dropdown
         const updatedCart = cartItems.map(item => {
             const currentId = item.productId || item.id;
             if (currentId === targetId) {
-                const newQuantity = item.quantity + change;
-                return { ...item, quantity: Math.max(1, newQuantity) };
+                const stock = products.find((p) => p.productId === currentId)?.stock;
+                const maxQty = typeof stock === 'number' ? stock : Infinity;
+                const newQuantity = Math.min(maxQty, Math.max(1, item.quantity + change));
+                return { ...item, quantity: newQuantity };
             }
             return item;
         });
@@ -386,9 +388,13 @@ function Navbar() {
                                                                 -
                                                             </button>
                                                             <span className="w-10 h-6 border border-gray-200 bg-background rounded-md py-0.5 px-3 text-center font-semibold disabled:bg-gray-100 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">{item.quantity}</span>
-                                                            <button 
+                                                            <button
                                                                 onClick={(e) => handleUpdateQuantity(e, itemId, 1)}
-                                                                className="w-6 h-6 flex items-center justify-center bg-background border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
+                                                                className="w-6 h-6 flex items-center justify-center bg-background border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                                disabled={(() => {
+                                                                    const stock = products.find((p) => p.productId === itemId)?.stock;
+                                                                    return typeof stock === 'number' && item.quantity >= stock;
+                                                                })()}
                                                             >
                                                                 +
                                                             </button>
