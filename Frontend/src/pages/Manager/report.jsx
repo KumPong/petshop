@@ -377,7 +377,7 @@ function ProfitTab({ period, onPeriodChange }) {
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-3 gap-6">
         <StatCard
           icon={<Wallet size={22} />}
           label="รายรับ"
@@ -406,12 +406,6 @@ function ProfitTab({ period, onPeriodChange }) {
           caption={
             data.trend.profit && `${data.trend.profit.delta >= 0 ? '+' : '-'}${money(Math.abs(data.trend.profit.delta))} จากช่วงก่อนหน้า`
           }
-        />
-        <StatCard
-          icon={<TrendingUp size={22} />}
-          label="กำไรสุทธิ"
-          value={money(data.summary.netProfit)}
-          tone={data.summary.netProfit >= 0 ? 'text-green-700' : 'text-red-600'}
         />
       </div>
 
