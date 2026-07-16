@@ -15,10 +15,8 @@
     "bestSeller": true,
     "id-type": "dogs",
     "specifications": {
-      "brand": "Royal Canin",
       "ingredients": "Chicken",
       "type": "อาหารแห้ง",
-      "size": "2 กก.",
       "proteinContent": "27%"
     },
     "image": "https://www.feedmeplease.com/images/pdimg/24/1.webp",
@@ -46,10 +44,8 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
-      "brand": "Hill's",
       "ingredients": "Lamb",
       "type": "อาหารแห้ง",
-      "size": "2 กก.",
       "proteinContent": "24%"
     },
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYZmd8hsmQ0eoAfVWmIcUaTLWafyGQV-tEVecotk39_w&s",
@@ -73,10 +69,8 @@
     "bestSeller": true,
     "id-type": "dogs",
     "specifications": {
-      "brand": "Royal Canin",
       "ingredients": "Chicken",
       "type": "อาหารเปียก",
-      "size": "85 กรัม/ซอง",
       "proteinContent": "10%"
     },
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpyyswhwiMHYEEO4RlU2NFJyyEIFIbCj99OiTWTP0f3flYbJjBvz0hrSc&s=10",
@@ -99,10 +93,8 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
-      "brand": "Pedigree",
       "ingredients": "Beef",
       "type": "อาหารเปียก",
-      "size": "130 กรัม/ซอง",
       "proteinContent": "8%"
     },
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtIFjtca-esO7TKcQGwrZ_0XkywX5ciinOaJ8MpPf0Lyj_YAry0viO5dI&s=10",
@@ -125,10 +117,8 @@
     "lastUpdated": "2026-07-05T07:07:32.335Z",
     "id-type": "dogs",
     "specifications": {
-      "brand": "Orijen",
       "ingredients": "Chicken, Turkey",
       "type": "อาหารแห้ง",
-      "size": "2 กก.",
       "proteinContent": "38%"
     },
     "image": "https://tailybuddy.com/products/3375/2kg.jpg",
@@ -152,10 +142,8 @@
     "bestSeller": true,
     "id-type": "dogs",
     "specifications": {
-      "brand": "SmartHeart",
       "ingredients": "Beef",
       "type": "อาหารแห้ง",
-      "size": "3 กก.",
       "proteinContent": "24%"
     },
     "image": "https://cdn.shopify.com/s/files/1/0386/4113/9843/files/10265290-SmartHeart-Adult-Roast-Beef-3kg_d_480x480.jpg?v=1601291702",
@@ -178,10 +166,8 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
-      "brand": "Cesar",
       "ingredients": "Chicken",
       "type": "อาหารเปียก",
-      "size": "100 กรัม/ถาด",
       "proteinContent": "8%"
     },
     "image": "https://tailybuddy.com/products/570/%E0%B8%A3%E0%B8%AA%E0%B9%80%E0%B8%99%E0%B8%B7%E0%B9%89%E0%B8%AD%E0%B9%84%E0%B8%81%E0%B9%88.jpg",
@@ -204,10 +190,8 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
-      "brand": "Purina",
       "ingredients": "Salmon",
       "type": "อาหารแห้ง",
-      "size": "2.5 กก.",
       "proteinContent": "29%"
     },
     "image": "https://m.media-amazon.com/images/I/81m2MULtxgL._AC_UF350,350_QL80_.jpg",
@@ -230,10 +214,8 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
-      "brand": "Taste of the Wild",
       "ingredients": "Bison",
       "type": "อาหารแห้ง",
-      "size": "2 กก.",
       "proteinContent": "32%"
     },
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB_gwtSiJABZqqeudp0jTa7XyCmvyfrtHMcp4AX8HQNFdK-rQcIX43avKy&s=10",
@@ -256,10 +238,8 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "dogs",
     "specifications": {
-      "brand": "IAMS",
       "ingredients": "Chicken",
       "type": "อาหารแห้ง",
-      "size": "3 กก.",
       "proteinContent": "25%"
     },
     "image": "https://www.petloverscentre.com/Admin/Public/Getimage.ashx?width=300&&format=webp&image=/Files/Images/Ecom/Products/70970.jpg",
@@ -283,10 +263,8 @@
     "bestSeller": true,
     "id-type": "cats",
     "specifications": {
-      "brand": "Royal Canin",
       "ingredients": "Chicken, Rice",
       "type": "อาหารแห้ง",
-      "size": "2 กก.",
       "proteinContent": "27%"
     },
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3nHujcKPeMCPcvaMMTkhTWFCMOIDD0kGGEYspObhB5oM4RnpxbauAGu4T&s=10",
@@ -310,10 +288,8 @@
     "lastUpdated": "2026-07-06T09:05:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "Hill's",
       "ingredients": "Chicken Meal",
       "type": "อาหารแห้ง",
-      "size": "1.5 กก.",
       "proteinContent": "32%"
     },
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkQvGCVtxHmvw7YZLAZQNTEI0M-mPI_iJ9fM0fDKkn_23dk0GMvLJwrbPG&s=10",
@@ -337,10 +313,8 @@
     "bestSeller": true,
     "id-type": "cats",
     "specifications": {
-      "brand": "Royal Canin",
       "ingredients": "Chicken, Pork",
       "type": "อาหารเปียก",
-      "size": "85 กรัม/ซอง",
       "quantity": "24 ซอง"
     },
     "image": "https://www.petloverscentre.co.th/Admin/Public/Getimage.ashx?width=300&height=300&compression=60&Crop=5&image=/Files/Images/Ecom/Products/23871.jpg",
@@ -363,10 +337,8 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "Hill's",
       "ingredients": "Ocean Fish",
       "type": "อาหารเปียก",
-      "size": "82 กรัม/ซอง",
       "quantity": "12 ซอง"
     },
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDhpC0DluV4tICDGbcsOUmX9FxADDn_IgLQUp3-YlVs9PkWpYRj7XDVRlS&s=10",
@@ -389,10 +361,8 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "Me-O",
       "ingredients": "Tuna",
       "type": "อาหารเปียก",
-      "size": "80 กรัม/ซอง",
       "quantity": "12 ซอง"
     },
     "image": "https://media.allonline.7eleven.co.th/pdmain/350948-01-allonline-sm-new1.jpg",
@@ -415,10 +385,8 @@
     "lastUpdated": "2026-07-06T09:10:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "Orijen",
       "ingredients": "Fresh Chicken, Turkey",
       "type": "อาหารแห้ง",
-      "size": "1.8 กก.",
       "proteinContent": "40%"
     },
     "image": "https://www.feedmeplease.com/images/pdimg/2091/1.webp",
@@ -441,10 +409,8 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "Me-O",
       "ingredients": "Fish Meal",
       "type": "อาหารแห้ง",
-      "size": "1.2 กก.",
       "proteinContent": "30%"
     },
     "image": "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/52/88/8850477056152/8850477056152_1-20260609141213-.jpg",
@@ -467,10 +433,8 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "Purina",
       "ingredients": "Chicken",
       "type": "อาหารแห้ง",
-      "size": "1.4 กก.",
       "proteinContent": "34%"
     },
     "image": "https://thonglorpetshop.com/wp-content/uploads/2025/04/8850127004847_C1L2_AOA.jpg",
@@ -493,10 +457,8 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "Fancy Feast",
       "ingredients": "Tuna",
       "type": "อาหารเปียก",
-      "size": "85 กรัม/กระป๋อง",
       "proteinContent": "12%"
     },
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRe4kDIVE12FyKd-CSWUmCB35w1drhV7LfML-hLRCABaA&s",
@@ -519,10 +481,8 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "cats",
     "specifications": {
-      "brand": "Whiskas",
       "ingredients": "Fish",
       "type": "อาหารแห้ง",
-      "size": "1.1 กก.",
       "proteinContent": "30%"
     },
     "image": "https://s20022.lnwfile.com/_b/fu/_raw/tv/mg/0h.jpg",
@@ -546,10 +506,7 @@
     "bestSeller": true,
     "id-type": "accessories",
     "specifications": {
-      "brand": "KONG",
       "material": "ยางธรรมชาติ",
-      "adjustable": "L",
-      "weight": "ตามขนาด",
       "type": "ของเล่นเคี้ยว",
       "color": "Red"
     },
@@ -573,11 +530,8 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "specifications": {
-      "brand": "KONG",
       "material": "ผ้า + Catnip",
-      "base": "ผ้าฝ้าย",
-      "size": "30 ซม.",
-      "weight": "ตามขนาด"
+      "base": "ผ้าฝ้าย"
     },
     "image": "https://pdsapetstore.org.uk/cdn/shop/files/kong-cat-kickeroo-giraffe-7990061.png?v=1753283398",
     "careInstructions": [
@@ -599,10 +553,7 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "specifications": {
-      "brand": "Chuckit!",
       "type": "ลูกบอล",
-      "flavor": "ไม่ระบุ",
-      "weight": "ไซส์ M",
       "ingredients": "ยาง"
     },
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAmS2MKvyK3Dz0UMaqgOQfRm9BJnUsd3SMfQ2-1oSVcmil4iP1Jlu9UNg&s=10",
@@ -721,5 +672,24 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "image": "https://tailybuddy.com/products/8979/mesh-gotham.jpg"
+  },
+  {
+    "id": "PD-031",
+    "sku": "PD-031",
+    "productId": "PD-031",
+    "name": "goddora",
+    "category": "ของเล่น",
+    "stock": 1,
+    "threshold": 10,
+    "lastUpdated": "2026-07-16T16:23:50.774Z",
+    "image": "http://localhost:4000/uploads/Products/Product-1784218969913-863455265.jpeg",
+    "unitCost": 5,
+    "id-type": "accessories",
+    "specifications": {
+      "ไม่บอก": ""
+    },
+    "careInstructions": [
+      "ยุ่ง"
+    ]
   }
 ]

@@ -53,12 +53,12 @@ function ProductListing({ selectedSegment = 'all' }) {
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold">{title}</h1>
             <div className="flex items-center gap-2">
-              <span className="text-gray-600">Sort by:</span>
+              <span className="text-gray-600">จัดเรียง:</span>
               <select value={sort} onChange={(e) => setSort(e.target.value)} className="border rounded-md px-3 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-primary">
-                <option value="all">All</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="name-asc">Name: A-Z</option>
+                <option value="all">ทั้งหมด</option>
+                <option value="price-asc">ราคา: ต่ำไปสูง</option>
+                <option value="price-desc">ราคา: สูงไปต่ำ</option>
+                <option value="name-asc">เรียงตามชื่อ</option>
               </select>
             </div>
           </div>
@@ -124,14 +124,16 @@ function InventoryGrid({ sort, selectedSegment, search }) {
 
   // apply sorting — Best Seller items always first, then apply chosen sort within each group
   let sorted = [...filteredItems]
-  if (sort === 'price-asc') {
-    sorted.sort((a, b) => (a.price ?? a.unitCost ?? 0) - (b.price ?? b.unitCost ?? 0))
-  } else if (sort === 'price-desc') {
-    sorted.sort((a, b) => (b.price ?? b.unitCost ?? 0) - (a.price ?? a.unitCost ?? 0))
-  } else if (sort === 'name-asc') {
-    sorted.sort((a, b) => ('' + (a.name || '')).localeCompare('' + (b.name || ''), undefined, { sensitivity: 'base' }))
-  }
-  sorted.sort((a, b) => (b.bestSeller ? 1 : 0) - (a.bestSeller ? 1 : 0))
+  sorted.sort((a, b) => {
+    // Best Seller items always come first
+    const bsDiff = (b.bestSeller ? 1 : 0) - (a.bestSeller ? 1 : 0)
+    if (bsDiff !== 0) return bsDiff
+    // Then apply chosen sort
+    if (sort === 'price-asc') return (a.price ?? a.unitCost ?? 0) - (b.price ?? b.unitCost ?? 0)
+    if (sort === 'price-desc') return (b.price ?? b.unitCost ?? 0) - (a.price ?? a.unitCost ?? 0)
+    if (sort === 'name-asc') return (a.name || '').localeCompare(b.name || '', 'th')
+    return 0
+  })
 
   const totalPages = Math.max(1, Math.ceil(sorted.length / ITEMS_PER_PAGE))
   const start = (page - 1) * ITEMS_PER_PAGE

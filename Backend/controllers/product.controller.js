@@ -47,6 +47,8 @@ export async function getProducts(req, res) {
       threshold: inv?.threshold ?? null,
       cost: inv?.unitCost ?? null,
       inventoryId: inv?.id || null,
+      specifications: inv?.specifications || {},
+      careInstructions: inv?.careInstructions || [],
     };
   });
   res.json(result);

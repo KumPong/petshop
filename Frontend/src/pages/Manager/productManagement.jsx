@@ -298,7 +298,7 @@ function ProductModal({ open, onClose, onSave, initial }) {
             {/* Specifications */}
             <div className="border-t border-gray-100 pt-4">
               <label className="text-sm font-medium text-gray-700 mb-2 block">
-                ข้อมูลจำเพาะ <span className="text-gray-400 font-normal text-xs">(เช่น brand, size)</span>
+                ข้อมูลจำเพาะ <span className="text-gray-400 font-normal text-xs">(เช่น type)</span>
               </label>
               <div className="space-y-2">
                 {specs.map((spec, i) => (
@@ -306,13 +306,13 @@ function ProductModal({ open, onClose, onSave, initial }) {
                     <input
                       value={spec.key}
                       onChange={(e) => { const s = [...specs]; s[i] = { ...s[i], key: e.target.value }; setSpecs(s); }}
-                      placeholder="หัวข้อ (เช่น brand)"
+                      placeholder="หัวข้อ (เช่น type)"
                       className="flex-1 border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
                     />
                     <input
                       value={spec.value}
                       onChange={(e) => { const s = [...specs]; s[i] = { ...s[i], value: e.target.value }; setSpecs(s); }}
-                      placeholder="ค่า (เช่น Royal Canin)"
+                      placeholder="ค่า (เช่น อาหารแห้ง)"
                       className="flex-1 border bg-other border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5c6b3a]/30"
                     />
                     <button

@@ -95,7 +95,7 @@ function ProductDetail() {
           <p className="text-gray-700 mb-4">{product.description || 'ไม่มีคำอธิบายสำหรับสินค้านี้'}</p>
           <div className="flex items-center gap-4 mb-8">
             <span className="text-3xl font-extrabold text-green-700">{product.price ? `฿${product.price}` : 'ราคาไม่ระบุ'}</span>
-            <span className="text-sm text-gray-500">(รหัสสินค้า: {product.id || id})</span>
+
           </div>
 
           {/* Tabs */}
@@ -120,7 +120,7 @@ function ProductDetail() {
           {activeTab === 'specs' && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                {product.specifications && Object.entries(product.specifications).map(([key, value]) => (
+                {product.specifications && Object.entries(product.specifications).filter(([key]) => key !== 'brand' && key !== 'size').map(([key, value]) => (
                   <div key={key} className="bg-background p-4 rounded-md">
                     <p className="text-sm text-gray-700 capitalize">{key}</p>
                     <p className="font-semibold text-gray-900">{value}</p>
