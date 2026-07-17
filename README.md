@@ -214,8 +214,12 @@ flowchart LR
 ## <a id="class-diagram"></a>⚙️ Class Diagram
 
 ```mermaid
+---
+config:
+  layout: elk
+---
 classDiagram
-    direction LR
+    direction TB
     %% ระบบจัดเก็บเป็นไฟล์ JSON (Backend/data) — ไม่มี "คลาส" จริงในโค้ด
     %% ไดอะแกรมนี้จำลองโครงสร้างข้อมูล (entity/DTO) ตามไฟล์จริง ส่วนตรรกะ (login/สร้างออเดอร์/รายงาน)
     %% อยู่ใน Express controllers ไม่ใช่ method ของ entity
@@ -247,8 +251,6 @@ classDiagram
         +updateUser(id, data) User
         +deleteUser(id) boolean
     }
-    note for User "user.json ไฟล์เดียว · role = Customer / Staff / Manager · prefix,idCard,bloodGroup,emergencyContact เฉพาะ Staff/Manager · addresses เฉพาะ Customer"
-    note for User "Method = ฟังก์ชันจริงใน Express controllers (auth/user.controller.js) เรียกผ่าน REST API — ไม่ใช่ instance method"
 
     class EmergencyContact {
         +String name
@@ -282,7 +284,6 @@ classDiagram
         +updateProduct(id, data) Product
         +deleteProduct(id) boolean
     }
-    note for Product "product.json — Master data สำหรับแสดงหน้าร้าน (ไม่มี Category/ProductImage แยกเป็น entity, หมวดหมู่เป็น string)"
 
     class Inventory {
         +String id
@@ -306,7 +307,6 @@ classDiagram
         +getLowStockInventory() List~Inventory~
         +adjustStock(id, type, amount, reason) Inventory
     }
-    note for Inventory "id_type = JSON key 'id-type' (dogs/cats/accessories) · specifications เป็น object อิสระ"
 
     class StockAdjustment {
         +String type
@@ -377,7 +377,6 @@ classDiagram
         +String paymentDate
         +String transactionId
     }
-    note for Order "order.json — payment/shipping/shippingAddress/items/statusHistory เป็น object ฝังในออเดอร์ ไม่ใช่ไฟล์แยก"
 
     User "1" --> "0..*" Order : places (customerId)
     Order "1" *-- "1..*" OrderItem : contains
@@ -422,7 +421,6 @@ classDiagram
         +String image
         +Number quantity
     }
-    note for Cart "เก็บใน localStorage ฝั่งเบราว์เซอร์ (key: cart_[userId] / cart_guest) — ไม่มีไฟล์ใน DB, ดู cart.service.js"
     Cart "1" *-- "0..*" CartItem : holds
     CartItem "0..*" --> "1" Product : references
 
@@ -451,7 +449,6 @@ classDiagram
         +List chart
         +getProfitReport(periodType) ProfitReport
     }
-    note for SalesReport "รายงานคำนวณสด (on-the-fly) ไม่ persist — GET /api/reports/{sales,inventory,profit}"
     SalesReport ..> Order : analyzes
     InventoryReport ..> Inventory : analyzes
     ProfitReport ..> Order : analyzes
