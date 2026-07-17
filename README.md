@@ -214,222 +214,248 @@ flowchart LR
 ## <a id="class-diagram"></a>⚙️ Class Diagram
 
 ```mermaid
-   classDiagram
+classDiagram
+    direction LR
+    %% ระบบจัดเก็บเป็นไฟล์ JSON (Backend/data) — ไม่มี "คลาส" จริงในโค้ด
+    %% ไดอะแกรมนี้จำลองโครงสร้างข้อมูล (entity/DTO) ตามไฟล์จริง ส่วนตรรกะ (login/สร้างออเดอร์/รายงาน)
+    %% อยู่ใน Express controllers ไม่ใช่ method ของ entity
+
     class User {
-        -String userId
-        -String email
-        -String password
-        -String firstName
-        -String lastName
-        -String phone
-        -String role
-        +register(userData: Object) boolean
-        +login(email, password) boolean
-        +logout() void
-        +updateProfile(newData: Object) void
+        +String id
+        +String role
+        +String firstName
+        +String lastName
+        +String email
+        +String phone
+        +String password
+        +String status
+        +String profileImage
+        +String prefix
+        +String idCard
+        +String bloodGroup
+        +EmergencyContact emergencyContact
+        +List~Address~ addresses
+        +register(userData) User
+        +login(email, password) token
+        +getProfile() User
+        +updateProfile(newData) User
         +changePassword(oldPass, newPass) boolean
+        +getAddresses() List~Address~
+        +updateAddresses(addresses) List~Address~
+        +getAllUsers() List~User~
+        +createUser(userData) User
+        +updateUser(id, data) User
+        +deleteUser(id) boolean
     }
-    
-    class Customer {
-        +viewProfile() Customer
-        +viewOrders() List~Order~
-        +addAddress(addressData: Object) boolean
+    note for User "user.json ไฟล์เดียว · role = Customer / Staff / Manager · prefix,idCard,bloodGroup,emergencyContact เฉพาะ Staff/Manager · addresses เฉพาะ Customer"
+    note for User "Method = ฟังก์ชันจริงใน Express controllers (auth/user.controller.js) เรียกผ่าน REST API — ไม่ใช่ instance method"
+
+    class EmergencyContact {
+        +String name
+        +String phone
+        +String relationship
     }
-    
-    class Staff {
-        -String position
-        +viewPendingOrders() Array
-        +updateOrderStatus(orderId, status) boolean
-        +checkStock(productId) Number
-        +manageInventory(productId, qty) boolean
+    class Address {
+        +Number id
+        +String fullName
+        +String street
+        +String city
+        +String postalCode
+        +String phone
+        +Boolean isDefault
     }
-    
-    class Manager {
-        +viewDashboard() Object
-        +viewReports(reportType) Array
-        +manageUsers(targetUserId, action) boolean
-        +manageProducts(productData, action) boolean
-        +manageCategories(categoryData, action) boolean
-    }
-    
-    User <|-- Customer
-    User <|-- Staff
-    User <|-- Manager
+    User "1" *-- "0..1" EmergencyContact : embeds
+    User "1" *-- "0..*" Address : embeds
 
     class Product {
-        -String productId
-        -String modelId
-        -String categoryId
-        -String sku
-        -String name
-        -String description
-        -Number price
-        -String status
-        -Datetime createdAt
-        +getImages() Array
-        +getCurrentPrice() Number
+        +String productId
+        +String name
+        +String description
+        +Number price
+        +String category
+        +String status
+        +String imageUrl
+        +getProducts() List~Product~
+        +getProduct(id) Product
+        +getBestSellers() List~Product~
+        +createProduct(data) Product
+        +updateProduct(id, data) Product
+        +deleteProduct(id) boolean
     }
-    
-    class Category {
-        -String categoryId
-        -String name
-        -String description
-        -String status
-        +getSubCategories() List~Category~
-    }
-    
-    class ProductImage {
-        -String imageId
-        -String productId
-        -boolean isPrimary
-        -Number sortOrder
-    }
-    
+    note for Product "product.json — Master data สำหรับแสดงหน้าร้าน (ไม่มี Category/ProductImage แยกเป็น entity, หมวดหมู่เป็น string)"
+
     class Inventory {
-        -String inventoryId
-        -String productId
-        -Number quantityOnHand
-        -Number reorderLevel
-        -Datetime lastUpdated
-        +adjustStock(qtyChange) boolean
-        +updateReservedQty(qty) boolean
-        +checkReorderLevel() boolean
+        +String id
+        +String sku
+        +String productId
+        +String name
+        +String subtitle
+        +String unitLabel
+        +String category
+        +String supplier
+        +Number stock
+        +Number threshold
+        +Number unitCost
+        +String lastUpdated
+        +String id_type
+        +Object specifications
+        +String image
+        +List~String~ careInstructions
+        +StockAdjustment lastAdjustment
+        +getInventory() List~Inventory~
+        +getLowStockInventory() List~Inventory~
+        +adjustStock(id, type, amount, reason) Inventory
     }
-    
-    Product --> Category : belongs to
-    Product --> ProductImage : has
-    Product --> Inventory : manages
+    note for Inventory "id_type = JSON key 'id-type' (dogs/cats/accessories) · specifications เป็น object อิสระ"
+
+    class StockAdjustment {
+        +String type
+        +Number amount
+        +String reason
+    }
+    Inventory "1" *-- "0..1" StockAdjustment : embeds
+    Inventory "1" --> "1" Product : linked by productId
 
     class Order {
-        -String orderId
-        -String orderNo
-        -String customerId
-        -Datetime orderDate
-        -String status
-        -Number totalAmount
-        -Number shippingAmount
-        +calculateTotal() Number
-        +confirmOrder() boolean
-        +cancel() boolean
-        +changeStatus(status) boolean
+        +String orderId
+        +String orderNo
+        +String customerId
+        +String orderDate
+        +String status
+        +String courierNotes
+        +String flagReason
+        +String statusBeforeFlag
+        +Number subtotal
+        +Number shippingAmount
+        +Number taxAmount
+        +Number totalAmount
+        +List~StatusEntry~ statusHistory
+        +List~OrderItem~ items
+        +ShippingAddress shippingAddress
+        +Shipping shipping
+        +Payment payment
+        +getOrders() List~Order~
+        +getOrderById(id) Order
+        +createOrder(items, paymentMethod, shippingAddress, shippingMethod) Order
+        +updateOrderStatus(id, payload) Order
     }
-    
+    class StatusEntry {
+        +String status
+        +String at
+    }
     class OrderItem {
-        -String orderItemId
-        -String orderId
-        -String productId
-        -Number quantity
-        -Number unitPrice
-        +getSubTotal() Number
+        +String orderItemId
+        +String productId
+        +String name
+        +Number quantity
+        +Number unitPrice
+        +Number subTotal
+        +Boolean picked
+        +String imageUrl
     }
-    
-    class Cart {
-        -String cartId
-        -String customerId
-        -String status
-        +addItem(productId, qty) boolean
-        +updateItemQty(productId, qty) boolean
-        +removeItem(productId) boolean
-        +clear() boolean
-        +getTotal() Number
+    class ShippingAddress {
+        +String fullName
+        +String street
+        +String city
+        +String postalCode
+        +String phone
     }
-    
-    class Payment {
-        -String paymentId
-        -String orderId
-        -String method
-        -Number amount
-        -String status
-        -Datetime paymentDate
-        -String transactionId
-        +confirmPayment() boolean
-    }
-    
     class Shipping {
-        -String shippingId
-        -String orderId
-        -String trackingNo
-        -String carrier
-        -String shippingAddressId
-        -String shippingMethod
-        -String status
-        -Datetime shippedAt
-        +updateStatus(status) boolean
+        +String method
+        +String methodLabel
+        +Number cost
+        +String carrier
+        +String trackingNumber
+        +String estimatedDeliveryStart
+        +String estimatedDeliveryEnd
     }
-    
-    class Address {
-        -String addressId
-        -String customerId
-        -String fullName
-        -String phone
-        -String street
-        -String city
-        -String province
-        -String postalCode
-        -boolean isDefault
+    class Payment {
+        +String paymentId
+        +String method
+        +Number amount
+        +String status
+        +String paymentDate
+        +String transactionId
     }
-    
-    Customer "1" --> "0..*" Order : places
-    Order *-- OrderItem : contains
-    Order "1" --> "1" Payment : has
-    Order "1" --> "1" Shipping : uses
-    Shipping "1" --> "1" Address : delivers to
-    Customer "1" --> "1" Cart : owns
-    Cart "1" --> "0..*" OrderItem : items
-    OrderItem "0..*" --> "1" Product : references
+    note for Order "order.json — payment/shipping/shippingAddress/items/statusHistory เป็น object ฝังในออเดอร์ ไม่ใช่ไฟล์แยก"
 
-    class Report {
-        -String reportId
-        -String reportName
-        -String periodType
-        -Date startDate
-        -Date endDate
-        -Datetime generatedAt
-        -String generatedBy
-        +generate() Object
+    User "1" --> "0..*" Order : places (customerId)
+    Order "1" *-- "1..*" OrderItem : contains
+    Order "1" *-- "0..*" StatusEntry : history
+    Order "1" *-- "1" ShippingAddress : embeds
+    Order "1" *-- "1" Shipping : embeds
+    Order "1" *-- "1" Payment : embeds
+    OrderItem "0..*" --> "1" Product : references (productId)
+
+    class PurchaseOrder {
+        +String id
+        +String createdAt
+        +String status
+        +String receivedAt
+        +List~PurchaseOrderItem~ items
+        +getPurchaseOrders() List~PurchaseOrder~
+        +createPurchaseOrder(items) PurchaseOrder
+        +receivePurchaseOrder(id) PurchaseOrder
     }
-    
+    class PurchaseOrderItem {
+        +String id
+        +String name
+        +Number qty
+        +Number unitCost
+    }
+    PurchaseOrder "1" *-- "1..*" PurchaseOrderItem : contains
+    PurchaseOrderItem "0..*" --> "1" Inventory : restocks
+
+    class Cart {
+        +String storageKey
+        +List~CartItem~ items
+        +getCart() List~CartItem~
+        +saveCart(cart) List~CartItem~
+        +addToCart(product, quantity) List~CartItem~
+        +clearCart() void
+        +mergeCartAfterLogin(userId) void
+    }
+    class CartItem {
+        +String productId
+        +String name
+        +Number price
+        +String image
+        +Number quantity
+    }
+    note for Cart "เก็บใน localStorage ฝั่งเบราว์เซอร์ (key: cart_[userId] / cart_guest) — ไม่มีไฟล์ใน DB, ดู cart.service.js"
+    Cart "1" *-- "0..*" CartItem : holds
+    CartItem "0..*" --> "1" Product : references
+
     class SalesReport {
-        -Number totalOrders
-        -Number totalSales
-        -Number averageOrderValue
-        -List~Product~ topProducts
-        +generate() Object
+        +Number totalOrders
+        +Number totalSales
+        +Number averageOrderValue
+        +List topProducts
+        +List chart
+        +getSalesReport(periodType) SalesReport
     }
-    
     class InventoryReport {
-        -Number totalItems
-        -Number totalValue
-        -Array lowStockItems
-        -Array outOfStockItems
-        +generate() Object
+        +Number totalItems
+        +Number totalValue
+        +Number lowStockCount
+        +Number outOfStockCount
+        +List lowStockItems
+        +List outOfStockItems
+        +getInventoryReport() InventoryReport
     }
-    
     class ProfitReport {
-        -Number totalRevenue
-        -Number totalCost
-        -Number grossProfit
-        -Number netProfit
-        +generate() Object
+        +Number totalRevenue
+        +Number totalCost
+        +Number grossProfit
+        +Number netProfit
+        +List chart
+        +getProfitReport(periodType) ProfitReport
     }
-    
-    Report <|-- SalesReport
-    Report <|-- InventoryReport
-    Report <|-- ProfitReport
-    
-    class ProductSearch {
-        -String keyword
-        -String categoryId
-        -Number minPrice
-        -Number maxPrice
-        -String sortBy
-        +search() List~Product~
-        +clear() void
-    }
-    
-    %% ลากเส้นเชื่อมตัวที่ลอยอยู่
-    ProductSearch ..> Product : searches
-    Report ..> Order : analyzes
+    note for SalesReport "รายงานคำนวณสด (on-the-fly) ไม่ persist — GET /api/reports/{sales,inventory,profit}"
+    SalesReport ..> Order : analyzes
+    InventoryReport ..> Inventory : analyzes
+    ProfitReport ..> Order : analyzes
+    ProfitReport ..> Inventory : uses unitCost
 ```
 
 ---
@@ -439,114 +465,108 @@ flowchart LR
 1.Customer
 ```mermaid
     sequenceDiagram
+    autoNumber
     actor Customer as ลูกค้า (Customer)
     participant UI as หน้าเว็บ React (Web UI)
-    participant US as User Service (Node.js)
-    participant PS as Product Service
-    participant CS as Cart Service
-    participant OS as Order Service
-    participant PG as Payment Gateway
+    participant LS as Local Storage (ฝั่งเบราว์เซอร์)
+    participant API as Backend (Express.js)
     participant DB as ฐานข้อมูล (JSON)
 
     %% เฟส 1: การเข้าสู่ระบบ (Login)
-    rect 
+    rect
         Customer->>UI: กรอก Email & Password
-        UI->>US: login(email, password)
-        US->>DB: ตรวจสอบข้อมูลใน users.json
-        DB-->>US: คืนค่าข้อมูล User
-        US-->>UI: ส่งสถานะ boolean (True) และข้อมูล Profile
-        UI-->>Customer: เปลี่ยนหน้าจอเข้าสู่ระบบสำเร็จ
+        UI->>API: POST /api/auth/login
+        API->>DB: ตรวจสอบข้อมูลใน user.json
+        DB-->>API: คืนค่าข้อมูล User
+        API-->>UI: คืน JWT token + ข้อมูล Profile
+        UI-->>Customer: เข้าสู่ระบบสำเร็จ
     end
 
-    %% เฟส 2: ค้นหาสินค้า (Search Product)
+    %% เฟส 2: ค้นหา/ดูสินค้า (Browse & Search)
     rect
-        Customer->>UI: พิมพ์คำค้นหา (เช่น "อาหารแมว")
-        UI->>PS: search(keyword, minPrice, maxPrice)
-        PS->>DB: ดึงข้อมูลจาก products.json
-        DB-->>PS: คืนค่าข้อมูลสินค้า
-        PS-->>UI: คืนค่ากลับเป็น Array ของสินค้า
+        Customer->>UI: เปิดหน้าสินค้า / พิมพ์คำค้นหา
+        UI->>API: GET /api/products
+        API->>DB: ดึงข้อมูลจาก product.json
+        DB-->>API: คืนค่ารายการสินค้า
+        API-->>UI: คืนค่ากลับเป็น Array ของสินค้า
+        UI->>UI: กรอง/ค้นหาฝั่ง Client (แบรนด์ / ราคา / ประเภท)
         UI-->>Customer: แสดงการ์ดสินค้าบนหน้าจอ
     end
 
-    %% เฟส 3: หยิบใส่ตะกร้า (Add to Cart)
+    %% เฟส 3: หยิบใส่ตะกร้า (เก็บฝั่ง Client — ไม่มี backend / ไม่มีไฟล์ carts)
     rect
         Customer->>UI: กดปุ่ม "เพิ่มลงตะกร้า"
-        UI->>CS: addItem(productId, qty)
-        CS->>DB: บันทึกข้อมูลลง carts.json
-        DB-->>CS: อัปเดตสำเร็จ
-        CS-->>UI: คืนค่า boolean (True)
-        UI-->>Customer: แสดง Popup แจ้งเตือน "เพิ่มสำเร็จ!"
+        UI->>LS: บันทึกตะกร้าใน localStorage (key: cart_[userId])
+        LS-->>UI: บันทึกสำเร็จ
+        UI-->>Customer: แสดง Popup "เพิ่มลงตะกร้าสำเร็จ!"
     end
 
     %% เฟส 4: สั่งซื้อและชำระเงิน (Checkout)
     rect
-        Customer->>UI: กดปุ่ม "ชำระเงิน" ในตะกร้า
-        UI->>OS: calculateTotal()
-        OS->>DB: ดึงราคาจากตะกร้ามาคำนวณ
-        DB-->>OS: ยอดรวม
-        OS-->>UI: คืนค่าราคาสุทธิเป็น Number
-        UI-->>Customer: แสดงหน้าสรุปยอดและช่องทางจ่ายเงิน
-        Customer->>UI: กดยืนยันการจ่ายเงิน (จำลอง)
-        UI->>PG: confirmPayment(method, amount)
-        PG-->>UI: คืนค่า boolean (True) ยืนยันว่าตัดเงินผ่าน
-        UI->>OS: confirmOrder()
-        OS->>DB: สร้างออเดอร์ใหม่ลง orders.json
-        DB-->>OS: บันทึกสำเร็จ
-        OS-->>UI: คืนค่า boolean (True)
-        UI->>CS: clear() ตะกร้าสินค้า
-        CS-->>UI: ล้างตะกร้าสำเร็จ
-        UI-->>Customer: แสดงหน้า "ขอบคุณที่สั่งซื้อสินค้า"
+        Customer->>UI: เปิดหน้าชำระเงิน
+        UI->>LS: อ่านตะกร้าจาก localStorage
+        LS-->>UI: คืนค่ารายการสินค้าในตะกร้า
+        UI->>UI: คำนวณ subtotal + ภาษี + ค่าจัดส่ง (ฝั่ง Client)
+        UI-->>Customer: แสดงสรุปยอดและช่องทางชำระเงิน
+        Customer->>UI: กดยืนยันการชำระเงิน (จำลอง)
+        UI->>API: POST /api/orders {items, paymentMethod, shippingAddress, shippingMethod}
+        API->>DB: อ่านราคาจาก product.json + เช็ค/ตัดสต็อกใน inventory.json
+        API->>API: จำลองชำระเงิน (สร้าง transactionId + tracking number)
+        API->>DB: สร้างออเดอร์ใหม่ลง order.json
+        DB-->>API: บันทึกสำเร็จ
+        API-->>UI: คืนค่าออเดอร์ที่สร้าง (orderId)
+        UI->>LS: ล้างตะกร้า (clearCart)
+        UI-->>Customer: ไปหน้า "ยืนยันคำสั่งซื้อ (Confirmation)"
     end
 ```
 2.Staff
 ```mermaid
     sequenceDiagram
+    autoNumber
     actor Staff as พนักงาน (Staff)
     participant UI as หน้า Dashboard (React)
-    participant US as User Service
-    participant IS as Inventory Service
-    participant OS as Order Service
+    participant API as Backend (Express.js)
     participant DB as ฐานข้อมูล (JSON)
 
     %% เฟส 1: การเข้าสู่ระบบ (Staff Login)
     rect
         Staff->>UI: กรอก Email & Password
-        UI->>US: login(email, password)
-        US->>DB: ตรวจสอบสิทธิ์ใน users.json
-        DB-->>US: คืนค่าข้อมูล (Role: Staff)
-        US-->>UI: ส่งสถานะ boolean (True) และ Token
+        UI->>API: POST /api/auth/login
+        API->>DB: ตรวจสอบสิทธิ์ใน user.json
+        DB-->>API: คืนค่าข้อมูล (Role: Staff)
+        API-->>UI: คืน JWT token (มี role) + Profile
         UI-->>Staff: พาเข้าสู่หน้า Dashboard การจัดการ
     end
 
     %% เฟส 2: ตรวจสอบและอัปเดตสต็อก (Manage Inventory)
     rect
-        Staff->>UI: พิมพ์รหัสสินค้าเพื่อดูจำนวนคงเหลือ
-        UI->>IS: ขอดูข้อมูลสต็อกปัจจุบัน
-        IS->>DB: ดึงข้อมูลจาก inventory.json
-        DB-->>IS: คืนค่าจำนวนสินค้า
-        IS-->>UI: ส่งกลับเป็น Number (qtyOnHand)
-        UI-->>Staff: แสดงตัวเลขสต็อกบนหน้าจอ
-        Staff->>UI: กรอกจำนวนสินค้าที่รับเข้าโกดัง และกดบันทึก
-        UI->>IS: adjustStock(qtyChange)
-        IS->>DB: อัปเดตตัวเลขลง inventory.json
-        DB-->>IS: บันทึกข้อมูลสำเร็จ
-        IS-->>UI: คืนค่า boolean (True)
-        UI-->>Staff: แสดง Popup แจ้งเตือน "อัปเดตสต็อกเรียบร้อย!"
+        Staff->>UI: เปิดหน้าคลังสินค้า
+        UI->>API: GET /api/inventory
+        API->>DB: ดึงข้อมูลจาก inventory.json
+        DB-->>API: คืนค่ารายการสต็อก
+        API-->>UI: คืนค่าเป็น Array ของสินค้า
+        UI-->>Staff: แสดงจำนวนสต็อกบนหน้าจอ
+        Staff->>UI: กรอกจำนวนที่ปรับ และกดบันทึก
+        UI->>API: PATCH /api/inventory/:id/adjust
+        API->>DB: อัปเดต stock ใน inventory.json
+        DB-->>API: บันทึกข้อมูลสำเร็จ
+        API-->>UI: คืนค่ารายการที่อัปเดตแล้ว
+        UI-->>Staff: แสดง Popup "อัปเดตสต็อกเรียบร้อย!"
     end
 
     %% เฟส 3: อัปเดตสถานะคำสั่งซื้อ (Update Order Status)
     rect
-        Staff->>UI: กดเข้าเมนู "ออเดอร์ที่รอจัดส่ง"
-        UI->>OS: ขอดึงรายการออเดอร์ทั้งหมด
-        OS->>DB: กวาดข้อมูลจาก orders.json
-        DB-->>OS: คืนค่าข้อมูลดิบ
-        OS-->>UI: ส่งข้อมูลกลับเป็น Array ของออเดอร์
+        Staff->>UI: กดเข้าเมนู "จัดการออเดอร์"
+        UI->>API: GET /api/orders
+        API->>DB: ดึงข้อมูลจาก order.json
+        DB-->>API: คืนค่ารายการออเดอร์
+        API-->>UI: ส่งข้อมูลกลับเป็น Array ของออเดอร์
         UI-->>Staff: วาดตารางรายการสั่งซื้อของลูกค้า
-        Staff->>UI: นำของใส่กล่อง และกดเปลี่ยนสถานะเป็น "จัดส่งแล้ว"
-        UI->>OS: changeStatus(status)
-        OS->>DB: อัปเดตสถานะออเดอร์ใน orders.json
-        DB-->>OS: บันทึกสำเร็จ
-        OS-->>UI: คืนค่า boolean (True)
+        Staff->>UI: แพ็คของและกดเปลี่ยนสถานะ (เช่น "จัดส่งแล้ว")
+        UI->>API: PATCH /api/orders/:id/status
+        API->>DB: อัปเดต status + statusHistory ใน order.json
+        DB-->>API: บันทึกสำเร็จ
+        API-->>UI: คืนค่าออเดอร์ที่อัปเดตแล้ว
         UI-->>Staff: แจ้งเตือน "อัปเดตสถานะออเดอร์เรียบร้อย"
     end
 ```
@@ -554,47 +574,51 @@ flowchart LR
 3.Manager
 ```mermaid
     sequenceDiagram
+    autoNumber
     actor Manager as ผู้จัดการ (Manager)
     participant UI as หน้า Dashboard (React)
-    participant US as User Service
-    participant PS as Product Service
-    participant RS as Report Service
+    participant API as Backend (Express.js)
     participant DB as ฐานข้อมูล (JSON)
 
     %% เฟส 1: การเข้าสู่ระบบ (Manager Login)
     rect
         Manager->>UI: กรอก Email & Password
-        UI->>US: login(email, password)
-        US->>DB: ตรวจสอบสิทธิ์ระดับบริหารใน users.json
-        DB-->>US: คืนค่าข้อมูล (Role: Manager)
-        US-->>UI: ส่งสถานะ boolean (True) และ Token
+        UI->>API: POST /api/auth/login
+        API->>DB: ตรวจสอบสิทธิ์ใน user.json
+        DB-->>API: คืนค่าข้อมูล (Role: Manager)
+        API-->>UI: คืน JWT token (มี role) + Profile
         UI-->>Manager: พาเข้าสู่หน้า Admin Dashboard
     end
 
-    %% เฟส 2: การจัดการสินค้า (Manage Catalog)
+    %% เฟส 2: การจัดการสินค้า (Manage Products)
     rect
-        Manager->>UI: กรอกข้อมูลสินค้าใหม่ (เช่น อาหารแมวสูตรใหม่)
-        UI->>PS: มัดรวมข้อมูลส่งไปบันทึก
-        PS->>DB: เพิ่มข้อมูลลง products.json
-        DB-->>PS: บันทึกสำเร็จ
-        PS-->>UI: คืนค่า boolean (True)
+        Manager->>UI: กรอกข้อมูลสินค้าใหม่
+        UI->>API: POST /api/products
+        API->>DB: เพิ่มข้อมูลลง product.json
+        DB-->>API: บันทึกสำเร็จ
+        API-->>UI: คืนค่าสินค้าที่สร้าง
         UI-->>Manager: แจ้งเตือน "เพิ่มสินค้าใหม่ลงระบบเรียบร้อย"
     end
 
     %% เฟส 3: การสร้างรายงาน (Generate Reports)
     rect
-        Manager->>UI: กดเมนู "ดูรายงานยอดขายและกำไร"
-        UI->>RS: เรียกคำสั่ง generate() [คลาส SalesReport]
-        RS->>DB: กวาดข้อมูลจาก orders.json
-        DB-->>RS: ข้อมูลรายการสั่งซื้อทั้งหมด
-        RS-->>UI: คืนค่าสถิติยอดขายเป็น Object
-        
-        UI->>RS: เรียกคำสั่ง generate() [คลาส InventoryReport]
-        RS->>DB: กวาดข้อมูลจาก inventory.json
-        DB-->>RS: ข้อมูลสต็อกสินค้าทั้งหมด
-        RS-->>UI: คืนค่าสถิติสินค้าคงคลังเป็น Object
-        
-        UI-->>Manager: นำ Object มาวาดเป็นกราฟแท่งและกราฟวงกลมบน Dashboard
+        Manager->>UI: กดเมนู "ดูรายงาน"
+        UI->>API: GET /api/reports/sales
+        API->>DB: อ่านข้อมูลจาก order.json + product.json
+        DB-->>API: ข้อมูลรายการสั่งซื้อทั้งหมด
+        API-->>UI: คืนค่าสถิติยอดขายเป็น Object
+
+        UI->>API: GET /api/reports/inventory
+        API->>DB: อ่านข้อมูลจาก inventory.json
+        DB-->>API: ข้อมูลสต็อกสินค้าทั้งหมด
+        API-->>UI: คืนค่าสถิติสินค้าคงคลังเป็น Object
+
+        UI->>API: GET /api/reports/profit
+        API->>DB: อ่านข้อมูลจาก order.json + inventory.json
+        DB-->>API: ข้อมูลยอดขายและต้นทุน
+        API-->>UI: คืนค่าสถิติกำไรเป็น Object
+
+        UI-->>Manager: วาดกราฟแท่ง / กราฟวงกลมบน Dashboard (recharts)
     end
 ```
 
@@ -621,89 +645,185 @@ flowchart LR
 #### 1. `inventory.json` (ข้อมูลคลังสินค้า)
 ไฟล์นี้ใช้สำหรับเก็บข้อมูลเชิงลึกและจำนวนสต็อกของสินค้าแต่ละรายการ
 
-| Field Name | Type | Description (รายละเอียด) |
-| :--- | :--- | :--- |
-| `id` | `string` | รหัสอ้างอิงสต็อก (เช่น DG-DRY-001) |
-| `sku` | `string` | รหัส SKU ของสินค้า |
-| `productId` | `string` | รหัสอ้างอิงไปยัง Product Master (เช่น PD-001) |
-| `name` | `string` | ชื่อสินค้า |
-| `subtitle` | `string` | คำบรรยายรอง (ถ้ามี) |
-| `unitLabel` | `string` | ป้ายกำกับหน่วยบรรจุภัณฑ์ |
-| `category` | `string` | หมวดหมู่สินค้า |
-| `supplier` | `string` | ชื่อผู้จัดจำหน่าย / ซัพพลายเออร์ |
-| `stock` | `number` | จำนวนคงเหลือในสต็อก |
-| `threshold` | `number` | จุดสั่งซื้อเพิ่ม (แจ้งเตือนเมื่อสต็อกต่ำ) |
-| `unitCost` | `number` | ต้นทุนต่อหน่วย |
-| `lastUpdated` | `string` | วันที่และเวลาที่อัปเดตล่าสุด (ISO 8601) |
-| `bestSeller` | `boolean` | สถานะสินค้าขายดี (อาจไม่มีในบางรายการ) |
-| `id-type` | `string` | ชนิดของไอดีหมวดหมู่ (เช่น dogs, cats, accessories) |
-| `specifications` | `object` | ข้อมูลจำเพาะของสินค้า (แบรนด์, ส่วนผสม, ขนาด, ฯลฯ) |
-| `image` | `string` | URL รูปภาพสินค้า |
-| `careInstructions` | `array` | คำแนะนำการเก็บรักษา (ถ้ามี) |
-| `lastAdjustment` | `object` | ประวัติการปรับสต็อกครั้งล่าสุด (ประเภท, จำนวน, เหตุผล) |
+```json
+{
+  "id": "DG-DRY-001",
+  "sku": "DG-DRY-001",
+  "productId": "PD-001",
+  "name": "Royal Canin Mini Adult",
+  "subtitle": "อาหารสุนัขชนิดแห้ง • 2 กก.",
+  "unitLabel": "1 ถุง บรรจุ 2 กก.",
+  "category": "อาหารแห้ง",
+  "supplier": "Wholesome Pet Foods",
+  "stock": 64,
+  "threshold": 20,
+  "unitCost": 520,
+  "lastUpdated": "2026-07-16T14:25:06.872Z",
+  "id-type": "dogs",
+  "specifications": {
+    "ingredients": "Chicken",
+    "type": "อาหารแห้ง",
+    "proteinContent": "27%"
+  },
+  "image": "https://www.feedmeplease.com/images/pdimg/24/1.webp",
+  "careInstructions": ["เก็บในที่แห้ง"],
+  "lastAdjustment": {
+    "type": "add",
+    "amount": 0,
+    "reason": "ปรับแก้ยอดสต็อก"
+  }
+}
+```
+> **หมายเหตุ:** `subtitle`, `unitLabel`, `supplier`, `specifications`, `careInstructions` อาจไม่มีในบางรายการ ส่วน `lastAdjustment` จะปรากฏหลังมีการปรับสต็อกครั้งแรกเท่านั้น
 
 #### 2. `order.json` (ข้อมูลคำสั่งซื้อ)
 ไฟล์นี้เก็บข้อมูลธุรกรรมการสั่งซื้อของลูกค้า การจัดส่ง และการชำระเงิน
 
-| Field Name | Type | Description (รายละเอียด) |
-| :--- | :--- | :--- |
-| `orderId` | `string` | รหัสคำสั่งซื้อ (เช่น ORD-1001) |
-| `orderNo` | `string` | เลขที่อ้างอิงคำสั่งซื้อ |
-| `customerId` | `string` | รหัสลูกค้า (อ้างอิงจาก Users) |
-| `orderDate` | `string` | วันที่และเวลาที่สั่งซื้อ (ISO 8601) |
-| `status` | `string` | สถานะคำสั่งซื้อปัจจุบัน (เช่น Delivered) |
-| `statusHistory` | `array` | ประวัติการเปลี่ยนสถานะของคำสั่งซื้อ |
-| `subtotal` | `number` | ยอดรวมราคาสินค้า |
-| `shippingAmount` | `number` | ค่าจัดส่ง |
-| `taxAmount` | `number` | จำนวนภาษี |
-| `totalAmount` | `number` | ยอดรวมสุทธิที่ต้องชำระ |
-| `items` | `array` | รายการสินค้าในคำสั่งซื้อ (productId, ชื่อ, จำนวน, ราคา, ฯลฯ) |
-| `shippingAddress`| `object` | ข้อมูลที่อยู่สำหรับการจัดส่ง |
-| `shipping` | `object` | รายละเอียดวิธีจัดส่ง ขนส่ง และหมายเลขพัสดุ |
-| `payment` | `object` | รายละเอียดการชำระเงิน (วิธี, ยอดเงิน, สถานะ, transactionId) |
+```json
+{
+  "orderId": "ORD-1001",
+  "orderNo": "ORD-1001",
+  "customerId": "CPS0002",
+  "orderDate": "2026-07-14T14:59:23.705Z",
+  "status": "Delivered",
+  "statusHistory": [
+    { "status": "Confirmed", "at": "2026-07-14T14:59:23.705Z" },
+    { "status": "Delivered", "at": "2026-07-15T03:00:07.424Z" }
+  ],
+  "courierNotes": "",
+  "flagReason": "",
+  "statusBeforeFlag": null,
+  "subtotal": 500,
+  "shippingAmount": 0,
+  "taxAmount": 35,
+  "totalAmount": 535,
+  "items": [
+    {
+      "orderItemId": "OI-PD-004-1784041163703",
+      "productId": "PD-004",
+      "name": "Kong Classic",
+      "quantity": 1,
+      "unitPrice": 500,
+      "subTotal": 500,
+      "picked": false,
+      "imageUrl": "https://m.media-amazon.com/images/I/61eVAqrR7uL.jpg"
+    }
+  ],
+  "shippingAddress": {
+    "fullName": "Dora",
+    "street": "1234",
+    "city": "Pluto",
+    "postalCode": "99999",
+    "phone": "1234567890"
+  },
+  "shipping": {
+    "method": "standard",
+    "methodLabel": "จัดส่งมาตรฐาน",
+    "cost": 0,
+    "carrier": "Kerry Express",
+    "trackingNumber": "KER-687567400",
+    "estimatedDeliveryStart": "2026-07-17T14:59:23.705Z",
+    "estimatedDeliveryEnd": "2026-07-19T14:59:23.705Z"
+  },
+  "payment": {
+    "paymentId": "PAY-ORD-1001",
+    "method": "พร้อมเพย์",
+    "amount": 535,
+    "status": "Paid",
+    "paymentDate": "2026-07-14T14:59:23.705Z",
+    "transactionId": "TXN-1784041163705-1910"
+  }
+}
+```
+> **หมายเหตุ:** `courierNotes`, `flagReason`, `statusBeforeFlag` ใช้สำหรับการจัดการปัญหา/ตีกลับคำสั่งซื้อ (ค่าเริ่มต้นเป็นค่าว่างหรือ `null`)
 
 #### 3. `product.json` (ข้อมูลหลักของสินค้า)
 ไฟล์นี้เป็น Master Data เก็บข้อมูลเบื้องต้นของสินค้าสำหรับใช้แสดงหน้าร้าน
 
-| Field Name | Type | Description (รายละเอียด) |
-| :--- | :--- | :--- |
-| `productId` | `string` | รหัสสินค้า (ใช้อ้างอิงไปยัง Inventory) |
-| `name` | `string` | ชื่อสินค้า |
-| `description` | `string` | คำอธิบายสินค้า |
-| `price` | `number` | ราคาขายหน้าร้าน |
-| `category` | `string` | หมวดหมู่สินค้า |
-| `status` | `string` | สถานะของสินค้า (เช่น Active) |
-| `imageUrl` | `string` | URL รูปภาพสินค้า (ถ้ามี) |
+```json
+{
+  "productId": "PD-001",
+  "name": "Royal Canin Mini Adult",
+  "description": "อาหารสุนัขชนิดแห้ง • 2 กก.",
+  "price": 800,
+  "category": "อาหารแห้ง",
+  "status": "Active",
+  "imageUrl": "https://www.feedmeplease.com/images/pdimg/24/1.webp"
+}
+```
+> **หมายเหตุ:** `imageUrl` มีเฉพาะบางรายการ (ถ้ามี)
 
 #### 4. `purchaseOrders.json` (ใบสั่งซื้อสินค้าเข้าสต็อก)
 ไฟล์นี้ใช้บันทึกข้อมูลการสั่งซื้อของเข้ามาเติมในคลังสินค้า
 
-| Field Name | Type | Description (รายละเอียด) |
-| :--- | :--- | :--- |
-| `id` | `string` | รหัสใบสั่งซื้อ/ใบรับสินค้าเข้าสต็อก (เช่น PO-8821) |
-| `createdAt` | `string` | วันที่และเวลาที่สร้างรายการรับเข้า (ISO 8601) |
-| `status` | `string` | สถานะการรับของ (เช่น Received) |
-| `items` | `array` | รายการสินค้าที่รับเข้า (id, ชื่อ, จำนวนที่รับเข้า, ต้นทุนต่อหน่วย) |
-| `receivedAt` | `string` | วันที่และเวลาที่ได้รับสินค้าจริง (ISO 8601) |
+```json
+{
+  "id": "PO-8821",
+  "createdAt": "2026-07-15T04:39:12.698Z",
+  "status": "Received",
+  "items": [
+    {
+      "id": "PD-031",
+      "name": "ปืนหายาก",
+      "qty": 1,
+      "unitCost": 100
+    }
+  ],
+  "receivedAt": "2026-07-15T04:39:19.009Z"
+}
+```
 
 #### 5. `user.json` (ข้อมูลผู้ใช้งานระบบ)
 ไฟล์นี้เก็บข้อมูลของผู้ใช้งานทั้งหมด ทั้งลูกค้า (Customer), พนักงาน (Staff) และผู้จัดการ (Manager)
 
-| Field Name | Type | Description (รายละเอียด) |
-| :--- | :--- | :--- |
-| `id` | `string` | รหัสผู้ใช้งานระบบ (เช่น PS0001, CPS0001) |
-| `prefix` | `string` | คำนำหน้าชื่อ (มีเฉพาะพนักงาน) |
-| `firstName` | `string` | ชื่อจริง |
-| `lastName` | `string` | นามสกุล |
-| `email` | `string` | อีเมลสำหรับการล็อกอินและติดต่อ |
-| `phone` | `string` | เบอร์โทรศัพท์ |
-| `password` | `string` | รหัสผ่าน |
-| `role` | `string` | บทบาทในระบบ (Manager, Staff, Customer) |
-| `status` | `string` | สถานะบัญชีผู้ใช้ (เช่น ACTIVE, LEAVE) |
-| `idCard` | `string` | เลขบัตรประจำตัวประชาชน (เฉพาะพนักงาน) |
-| `bloodGroup` | `string` | กรุ๊ปเลือด (เฉพาะพนักงาน) |
-| `profileImage` | `string` | URL รูปโปรไฟล์ |
-| `emergencyContact` | `object` | ข้อมูลผู้ติดต่อฉุกเฉิน (ชื่อ, เบอร์, ความสัมพันธ์) (เฉพาะพนักงาน) |
-| `addresses` | `array` | รายการที่อยู่ (เฉพาะลูกค้า) |
+**ตัวอย่างพนักงาน / ผู้จัดการ (Staff / Manager):**
+```json
+{
+  "id": "PS0003",
+  "prefix": "นางสาว",
+  "firstName": "เบอร์นิส",
+  "lastName": "ไวท์",
+  "email": "staff2@petstop.com",
+  "phone": "0879551123",
+  "idCard": "1234567890234",
+  "role": "Staff",
+  "status": "ACTIVE",
+  "bloodGroup": "A",
+  "password": "Pet0034",
+  "profileImage": "http://localhost:4000/uploads/Profile/User-1783952929600.jpg",
+  "emergencyContact": {
+    "name": "ซีซาร์ คิง",
+    "phone": "0869511112",
+    "relationship": "พี่สาว"
+  }
+}
+```
+
+**ตัวอย่างลูกค้า (Customer):**
+```json
+{
+  "id": "CPS0001",
+  "firstName": "เจน",
+  "lastName": "โด",
+  "email": "jane.doe@example.com",
+  "phone": "ยังไม่ได้ระบุ",
+  "password": "jane1122",
+  "role": "Customer",
+  "status": "ACTIVE",
+  "profileImage": "http://localhost:4000/uploads/Profile/Profile-1783848529667.jpg",
+  "addresses": [
+    {
+      "fullName": "เจน โด",
+      "street": "67 Goon Mar Solar system",
+      "city": "Galaxy",
+      "postalCode": "10101",
+      "phone": "0981234569",
+      "id": 1783846422411,
+      "isDefault": false
+    }
+  ]
+}
+```
+> **หมายเหตุ:** `prefix`, `idCard`, `bloodGroup`, `emergencyContact` มีเฉพาะพนักงานและผู้จัดการ ส่วน `addresses` มีเฉพาะลูกค้า
 
 ---
