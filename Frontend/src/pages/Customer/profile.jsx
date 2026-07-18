@@ -223,7 +223,7 @@ function Profile() {
                                 <button onClick={() => setIsEditing(true)} className="text-sm font-medium text-black hover:text-gray-600 underline transition">แก้ไข</button>
                             ) : (
                                 <div className="flex gap-3">
-                                    <button onClick={handleCancel} className="text-sm font-medium text-gray-700 hover:text-gray-700 transition">ยกเลิก</button>
+                                    <button onClick={handleCancel} className="text-sm font-medium text-gray-700 hover:text-gray-700 transition hover:underline">ยกเลิก</button>
                                     <button onClick={handleSave} className="text-sm font-medium bg-primary text-black px-4 py-1.5 rounded-lg hover:bg-secondary transition">บันทึก</button>
                                 </div>
                             )}

@@ -256,7 +256,6 @@ function ManageUsers() {
                                         <button
                                             onClick={() => handleFireUser(user)}
                                             className="p-2 bg-red-50 hover:bg-red-100 rounded-lg text-red-600 shadow-sm transition-colors border border-red-100" 
-                                            title="ไล่ออก"
                                         >
                                             <UserMinus size={18} />
                                         </button>
@@ -348,7 +347,7 @@ function ManageUsers() {
                                             disabled={!isEditMode || selectedUser.role === 'Manager'} 
                                             value={selectedUser.role}
                                             onChange={(e) => setSelectedUser({...selectedUser, role: e.target.value})}
-                                            className={`w-full p-2.5 border rounded-lg outline-none ${(!isEditMode || selectedUser.role === 'Manager') ? 'bg-gray-50 border-gray-200 text-gray-500 cursor-not-allowed' : 'bg-white border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary'}`}
+                                            className={`w-full p-2.5 border rounded-lg outline-none ${(!isEditMode || selectedUser.role === 'Manager') ? 'bg-gray-200 border-gray-200 text-gray-700 cursor-not-allowed' : 'bg-other border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary'}`}
                                         >
                                             <option value="Staff">Staff</option>
                                             {/* พิ่มบรรทัดนี้กลับมา เพื่อให้มันแสดงผลและเลือกได้ */}
@@ -357,7 +356,7 @@ function ManageUsers() {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">สถานะ</label>
-                                        <select disabled={!isEditMode} value={selectedUser.status} onChange={(e) => setSelectedUser({...selectedUser, status: e.target.value})} className={`w-full p-2.5 border rounded-lg outline-none ${isEditMode ? 'bg-white border-gray-300 focus:border-primary' : 'bg-gray-50 border-gray-200 text-gray-500 cursor-not-allowed'}`}>
+                                        <select disabled={!isEditMode} value={selectedUser.status} onChange={(e) => setSelectedUser({...selectedUser, status: e.target.value})} className={`w-full p-2.5 border rounded-lg outline-none ${isEditMode ? 'bg-other border-gray-300 focus:border-primary' : 'bg-gray-200 border-gray-200 text-gray-500 cursor-not-allowed'}`}>
                                             <option value="ACTIVE">ACTIVE</option>
                                             <option value="LEAVE">LEAVE</option>
                                         </select>
@@ -370,7 +369,7 @@ function ManageUsers() {
                                                 disabled={!isEditMode}
                                                 onChange={(e) => setSelectedUser({...selectedUser, password: e.target.value})}
                                                 placeholder={isEditMode ? "กรอกรหัสผ่านใหม่เพื่อทำการเปลี่ยน" : "********"}
-                                                className={`w-full p-2.5 pr-10 border rounded-lg outline-none ${isEditMode ? 'bg-white border-gray-300 focus:border-primary' : 'bg-gray-50 border-gray-200 text-gray-500 cursor-not-allowed' }`}
+                                                className={`w-full p-2.5 pr-10 border rounded-lg outline-none ${isEditMode ? 'bg-other border-gray-300 focus:border-primary' : 'bg-gray-200 border-gray-200 text-gray-500 cursor-not-allowed' }`}
                                             />
                                             {/* ปุ่มสลับรหัสผ่าน (จะกดได้ก็ต่อเมื่ออยู่ในโหมดแก้ไข) */}
                                             <button 
@@ -390,15 +389,15 @@ function ManageUsers() {
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-sm text-gray-600 mb-1">ชื่อ-นามสกุล</label>
-                                            <input type="text" disabled={!isEditMode} value={selectedUser.emergencyContact?.name || ''} onChange={(e) => setSelectedUser({...selectedUser, emergencyContact: {...selectedUser.emergencyContact, name: e.target.value}})} className={`w-full p-2.5 text-sm border rounded-lg outline-none ${isEditMode ? 'bg-white border-gray-300 focus:border-primary'  : 'bg-transparent border-gray-200 text-gray-500 cursor-not-allowed' }`} />
+                                            <input type="text" disabled={!isEditMode} value={selectedUser.emergencyContact?.name || ''} onChange={(e) => setSelectedUser({...selectedUser, emergencyContact: {...selectedUser.emergencyContact, name: e.target.value}})} className={`w-full p-2.5 text-sm border rounded-lg outline-none ${isEditMode ? 'bg-background border-gray-300 focus:border-primary'  : ' bg-background border-gray-200 text-gray-500 cursor-not-allowed' }`} />
                                         </div>
                                         <div>
                                             <label className="block text-sm text-gray-600 mb-1">เบอร์โทรศัพท์</label>
-                                            <input type="text" disabled={!isEditMode} value={selectedUser.emergencyContact?.phone || ''} onChange={(e) => setSelectedUser({...selectedUser, emergencyContact: {...selectedUser.emergencyContact, phone: e.target.value}})} className={`w-full p-2.5 text-sm border rounded-lg outline-none ${isEditMode ? 'bg-white border-gray-300 focus:border-primary' : 'bg-transparent border-gray-200 text-gray-500 cursor-not-allowed'}`} />
+                                            <input type="text" disabled={!isEditMode} value={selectedUser.emergencyContact?.phone || ''} onChange={(e) => setSelectedUser({...selectedUser, emergencyContact: {...selectedUser.emergencyContact, phone: e.target.value}})} className={`w-full p-2.5 text-sm border rounded-lg outline-none ${isEditMode ? 'bg-background border-gray-300 focus:border-primary' : 'bg-background border-gray-200 text-gray-500 cursor-not-allowed'}`} />
                                         </div>
                                         <div>
                                             <label className="block text-sm text-gray-600 mb-1">ความสัมพันธ์</label>
-                                            <input type="text" disabled={!isEditMode} value={selectedUser.emergencyContact?.relationship || ''} onChange={(e) => setSelectedUser({...selectedUser, emergencyContact: {...selectedUser.emergencyContact, relationship: e.target.value}})} className={`w-full p-2.5 text-sm border rounded-lg outline-none ${isEditMode ? 'bg-white border-gray-300 focus:border-primary' : 'bg-transparent border-gray-200 text-gray-500 cursor-not-allowed'}`} />
+                                            <input type="text" disabled={!isEditMode} value={selectedUser.emergencyContact?.relationship || ''} onChange={(e) => setSelectedUser({...selectedUser, emergencyContact: {...selectedUser.emergencyContact, relationship: e.target.value}})} className={`w-full p-2.5 text-sm border rounded-lg outline-none ${isEditMode ? 'bg-background border-gray-300 focus:border-primary' : 'bg-background border-gray-200 text-gray-500 cursor-not-allowed'}`} />
                                         </div>
                                     </div>
                                 </div>
@@ -523,15 +522,15 @@ function ManageUsers() {
                                     <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                                         <div>
                                             <label className="block text-sm text-gray-700 font-medium mb-1">ชื่อ-นามสกุล</label>
-                                            <input type="text" value={newUser.emergencyContact.name} onChange={(e) => setNewUser({...newUser, emergencyContact: {...newUser.emergencyContact, name: e.target.value}})} className="w-full p-2.5 border border-gray-300 rounded-lg outline-none focus:border-primary" />
+                                            <input type="text" value={newUser.emergencyContact.name} onChange={(e) => setNewUser({...newUser, emergencyContact: {...newUser.emergencyContact, name: e.target.value}})} className="w-full p-2.5 border bg-background border-gray-300 rounded-lg outline-none focus:border-primary" />
                                         </div>
                                         <div>
                                             <label className="block text-sm text-gray-700 font-medium mb-1">เบอร์โทรศัพท์</label>
-                                            <input type="text" value={newUser.emergencyContact.phone} onChange={(e) => setNewUser({...newUser, emergencyContact: {...newUser.emergencyContact, phone: e.target.value}})} className="w-full p-2.5 border border-gray-300 rounded-lg outline-none focus:border-primary" />
+                                            <input type="text" value={newUser.emergencyContact.phone} onChange={(e) => setNewUser({...newUser, emergencyContact: {...newUser.emergencyContact, phone: e.target.value}})} className="w-full p-2.5 border bg-background border-gray-300 rounded-lg outline-none focus:border-primary" />
                                         </div>
                                         <div>
                                             <label className="block text-sm text-gray-700 font-medium mb-1">ความสัมพันธ์</label>
-                                            <input type="text" value={newUser.emergencyContact.relationship} onChange={(e) => setNewUser({...newUser, emergencyContact: {...newUser.emergencyContact, relationship: e.target.value}})} className="w-full p-2.5 border border-gray-300 rounded-lg outline-none focus:border-primary" />
+                                            <input type="text" value={newUser.emergencyContact.relationship} onChange={(e) => setNewUser({...newUser, emergencyContact: {...newUser.emergencyContact, relationship: e.target.value}})} className="w-full p-2.5 border bg-background border-gray-300 rounded-lg outline-none focus:border-primary" />
                                         </div>
                                     </div>
                                 </div>

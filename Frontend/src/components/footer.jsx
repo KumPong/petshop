@@ -47,9 +47,9 @@ function Footer () {
                     <h3 className='text-lg font-semibold mb-4 border-b border-primary/30 pb-2 inline-block'>Quick Links</h3>
                     <ul className='space-y-2 text-sm'>
                         <li><a href="/" className='hover:text-primary transition'>Home</a></li>
-                        <li><a href="/shop" className='hover:text-primary transition'>Shop All</a></li>
-                        <li><a href="/about" className='hover:text-primary transition'>About Us</a></li>
-                        <li><a href="/contact" className='hover:text-primary transition'>Contact</a></li>
+                        <li><a href="/products" className='hover:text-primary transition'>Shop All</a></li>
+                        <li><a className='hover:text-primary transition'>About Us</a></li>
+                        <li><a className='hover:text-primary transition'>Contact</a></li>
                     </ul>
                 </div>
 

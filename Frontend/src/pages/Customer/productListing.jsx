@@ -54,7 +54,7 @@ function ProductListing({ selectedSegment = 'all' }) {
             <h1 className="text-3xl font-bold">{title}</h1>
             <div className="flex items-center gap-2">
               <span className="text-gray-600">จัดเรียง:</span>
-              <select value={sort} onChange={(e) => setSort(e.target.value)} className="border rounded-md px-3 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-primary">
+              <select value={sort} onChange={(e) => setSort(e.target.value)} className="border rounded-md px-3 py-1 bg-other focus:outline-none focus:ring-1 focus:ring-primary">
                 <option value="all">ทั้งหมด</option>
                 <option value="price-asc">ราคา: ต่ำไปสูง</option>
                 <option value="price-desc">ราคา: สูงไปต่ำ</option>

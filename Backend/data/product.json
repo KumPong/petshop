@@ -239,14 +239,5 @@
     "price": 1300,
     "category": "สายรัดอก",
     "status": "Active"
-  },
-  {
-    "productId": "PD-031",
-    "name": "goddora",
-    "description": "ggez",
-    "price": 100000,
-    "category": "ของเล่น",
-    "status": "Active",
-    "imageUrl": "http://localhost:4000/uploads/Products/Product-1784218969913-863455265.jpeg"
   }
 ]

@@ -178,10 +178,10 @@ function Inventory() {
           <h2 className="text-lg font-semibold text-gray-900">รายการสินค้า</h2>
           <button
             onClick={() => setShowFilters((v) => !v)}
-            className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm ${
+            className={`flex items-center bg-background gap-2 rounded-lg border px-4 py-2 text-sm ${
               showFilters
-                ? 'border-primary bg-primary/30 text-gray-900'
-                : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                ? 'border-primary bg-background hover:bg-secondary hover:text-gray-900 text-gray-900'
+                : 'border-gray-200 text-gray-600 hover:bg-secondary hover:text-gray-900'
             }`}
           >
             <SlidersHorizontal size={16} />
@@ -199,7 +199,7 @@ function Inventory() {
                   setCategoryFilter(e.target.value);
                   setPage(1);
                 }}
-                className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700"
+                className="rounded-lg border  bg-background border-gray-200 px-3 py-2 text-sm text-gray-700"
               >
                 {categoryOptions.map((c) => (
                   <option key={c} value={c}>
@@ -217,7 +217,7 @@ function Inventory() {
                   setStatusFilter(e.target.value);
                   setPage(1);
                 }}
-                className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700"
+                className="rounded-lg border bg-background border-gray-200 px-3 py-2 text-sm text-gray-700"
               >
                 {STATUS_OPTIONS.map((s) => (
                   <option key={s} value={s}>
@@ -243,7 +243,7 @@ function Inventory() {
             {pagedProducts.map((p) => {
               const pill = STATUS_PILL[p.status];
               return (
-              <tr key={p.id} className="border-t border-gray-100">
+              <tr key={p.id} className="border-t bg-background border-gray-100">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     {p.image ? (

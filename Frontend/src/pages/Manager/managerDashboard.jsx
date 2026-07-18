@@ -260,7 +260,6 @@ function ManagerDashboard() {
                 <div className="bg-other rounded-2xl p-5 shadow-sm border border-gray-200">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="font-semibold text-gray-700">สินค้าขายดี</h2>       
-                        <button className="text-xs text-[#5c6b3a] hover:underline">ดูทั้งหมด →</button>
                     </div>
                     <table className="w-full text-sm">
                         <thead>

@@ -72,7 +72,7 @@ function CustomerDashboard() {
       <section className="container mx-auto py-12 px-4">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold">Best Seller</h2>
-          <Link to="/products" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-primary hover:underline">Explore All</Link>
+          <Link to="/products" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-gray-500 hover:underline">Explore All</Link>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
           {bestSellers.map((item) => (

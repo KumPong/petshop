@@ -666,24 +666,5 @@
     "lastUpdated": "2026-07-01T00:00:00.000Z",
     "id-type": "accessories",
     "image": "https://tailybuddy.com/products/8979/mesh-gotham.jpg"
-  },
-  {
-    "id": "PD-031",
-    "sku": "PD-031",
-    "productId": "PD-031",
-    "name": "goddora",
-    "category": "ของเล่น",
-    "stock": 1,
-    "threshold": 10,
-    "lastUpdated": "2026-07-16T16:23:50.774Z",
-    "image": "http://localhost:4000/uploads/Products/Product-1784218969913-863455265.jpeg",
-    "unitCost": 5,
-    "id-type": "accessories",
-    "specifications": {
-      "ไม่บอก": ""
-    },
-    "careInstructions": [
-      "ยุ่ง"
-    ]
   }
 ]

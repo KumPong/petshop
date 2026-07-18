@@ -223,7 +223,7 @@ function Tracking() {
         <div className="mt-8 flex justify-center">
           <Link
             to="/"
-            className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="flex items-center gap-2 rounded-full border border-gray-200 bg-other px-5 py-3 text-sm font-medium text-gray-700 hover:bg-secondary hover:text-gray-900"
           >
             <Home size={16} />
             กลับสู่หน้าหลัก
