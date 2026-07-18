@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import CustomerSidebar from "../../components/customerSidebar";
-import { getUserProfile, updateUserProfile, uploadProfileImage } from "../../services/auth.service";
+import { getUserProfile, updateUserProfile, uploadProfileImage, getUserAddresses } from "../../services/auth.service";
 import Swal from "sweetalert2";
 
 function Profile() {
@@ -23,11 +23,32 @@ function Profile() {
                 // API User
                 const data = await getUserProfile(token);
 
+                // เช็กเบอร์โทร: ถ้าไม่มีเบอร์ ให้ไปดึงจาก "ที่อยู่ค่าเริ่มต้น"
+                let displayPhone = data.phone;
+
+                if (!displayPhone || displayPhone.trim() === '' || displayPhone === 'ยังไม่ได้ระบุ') {
+                    try {
+                        const addresses = await getUserAddresses(token);
+
+                        // หาตัวที่เป็น isDefault === true
+                        const defaultAddress = addresses.find(addr => addr.isDefault === true);
+
+                        if (defaultAddress && defaultAddress.phone) {
+                            displayPhone = defaultAddress.phone;
+                        } else {
+                            displayPhone = 'ยังไม่ได้ระบุ';
+                        }
+                    } catch (addrError) {
+                        console.error("ไม่สามารถดึงเบอร์โทรที่ิอยู่ได้", addrError);
+                        displayPhone = 'ยังไม่ได้ระบุ';
+                    }
+                }
+
                 const profileData = {
                     firstName: data.firstName,
                     lastName: data.lastName,
                     email: data.email, // ดึง email มา
-                    phone: data.phone || 'ยังไม่ได้ระบุ',
+                    phone: displayPhone,
                     profileImage: data.profileImage
                 };
 
@@ -80,7 +101,7 @@ function Profile() {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
                 email: formData.email,
-                phone: formData.phone
+                phone: formData.phone === 'ยังไม่ได้ระบุ' ? '' : formData.phone
             });
 
             setProfile(formData);
@@ -249,7 +270,14 @@ function Profile() {
                             <div>
                                 <label className="block text-sm text-gray-700 mb-2">เบอร์โทรศัพท์</label>
                                 {isEditing ? (
-                                    <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full bg-background border border-gray-200 px-4 py-2.5 rounded-lg text-black focus:ring-2 focus:ring-primary outline-none" />
+                                    <input 
+                                        type="text" 
+                                        name="phone" 
+                                        value={formData.phone === 'ยังไม่ได้ระบุ' ? '' : formData.phone} 
+                                        onChange={handleChange}
+                                        placeholder="08X-XXX-XXXX" 
+                                        className="w-full bg-background border border-gray-200 px-4 py-2.5 rounded-lg text-black focus:ring-2 focus:ring-primary outline-none" 
+                                    />
                                 ) : (
                                     <div className="w-full bg-background px-4 py-3 rounded-lg text-black">{profile.phone}</div>
                                 )}
