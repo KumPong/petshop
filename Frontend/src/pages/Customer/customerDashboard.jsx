@@ -25,7 +25,7 @@ function CustomerDashboard() {
         <div className="absolute inset-0 bg-black opacity-40"></div>
         <div className="relative z-10 text-center">
           <h1 className="text-5xl font-bold mb-4">Quality Time for Your Best Friend</h1>
-          <p className="text-lg mb-8">Discover our exclusive range of organic treats and eco-friendly toys designed for lasting happiness</p>
+          <p className="text-lg mb-8">ค้นพบความพิเศษของขนมออร์แกนิกและของเล่นที่เป็นมิตรต่อสิ่งแวดล้อม ที่คัดสรรมาเพื่อความสุขที่ยาวนาน</p>
         </div>
       </section>
 
@@ -58,11 +58,11 @@ function CustomerDashboard() {
           <div className="md:col-span-1 space-y-8">
             <div className="bg-secondary rounded-lg shadow-md p-6">
               <h3 className="text-xl font-semibold mb-2">Nutritious Bites</h3>
-              <p className="text-gray-700">Premium food</p>
+              <p className="text-gray-700">อาหารเกรดพรีเมียม</p>
             </div>
             <div className="bg-other rounded-lg shadow-md p-6">
               <h3 className="text-xl font-semibold mb-2">Cozy Corners</h3>
-              <p className="text-gray-700">Find the perfect bed for naps</p>
+              <p className="text-gray-700">ค้นหาที่นอนที่เหมาะที่สุดสำหรับการงีบหลับ</p>
             </div>
           </div>
         </div>
