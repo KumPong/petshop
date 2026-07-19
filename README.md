@@ -114,7 +114,7 @@
 
 | หมวด | เทคโนโลยี | รายละเอียด |
 | :--- | :--- | :--- |
-| **Frontend** | React, HTML/CSS/JavaScript | พัฒนาส่วนแสดงผลและโต้ตอบกับผู้ใช้งาน |
+| **Frontend** | React, Tailwindcss | พัฒนาส่วนแสดงผลและโต้ตอบกับผู้ใช้งาน |
 | **Backend** | Node.js (Express.js) | จัดการระบบหลังบ้านและสร้าง API |
 | **Database** | Local Storage (JSON) | ใช้เป็นที่จัดเก็บข้อมูลจำลองของระบบ |
 | **Design** | Figma | ออกแบบ UI/UX และ Prototype |
