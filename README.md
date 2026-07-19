@@ -114,7 +114,7 @@
 
 | หมวด | เทคโนโลยี | รายละเอียด |
 | :--- | :--- | :--- |
-| **Frontend** | React, HTML/CSS/JavaScript | พัฒนาส่วนแสดงผลและโต้ตอบกับผู้ใช้งาน |
+| **Frontend** | React, Tailwind | พัฒนาส่วนแสดงผลและโต้ตอบกับผู้ใช้งาน |
 | **Backend** | Node.js (Express.js) | จัดการระบบหลังบ้านและสร้าง API |
 | **Database** | Local Storage (JSON) | ใช้เป็นที่จัดเก็บข้อมูลจำลองของระบบ |
 | **Design** | Figma | ออกแบบ UI/UX และ Prototype |
@@ -543,12 +543,6 @@ classDiagram
         DB-->>API: คืนค่ารายการสต็อก
         API-->>UI: คืนค่าเป็น Array ของสินค้า
         UI-->>Staff: แสดงจำนวนสต็อกบนหน้าจอ
-        Staff->>UI: กรอกจำนวนที่ปรับ และกดบันทึก
-        UI->>API: PATCH /api/inventory/:id/adjust
-        API->>DB: อัปเดต stock ใน inventory.json
-        DB-->>API: บันทึกข้อมูลสำเร็จ
-        API-->>UI: คืนค่ารายการที่อัปเดตแล้ว
-        UI-->>Staff: แสดง Popup "อัปเดตสต็อกเรียบร้อย!"
     end
 
     %% เฟส 3: อัปเดตสถานะคำสั่งซื้อ (Update Order Status)
