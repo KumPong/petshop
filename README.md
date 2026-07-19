@@ -521,7 +521,7 @@ classDiagram
     sequenceDiagram
     autoNumber
     actor Staff as พนักงาน (Staff)
-    participant UI as หน้า Dashboard (React)
+    participant UI as หน้า Staff (React)
     participant API as Backend (Express.js)
     participant DB as ฐานข้อมูล (JSON)
 
@@ -532,33 +532,54 @@ classDiagram
         API->>DB: ตรวจสอบสิทธิ์ใน user.json
         DB-->>API: คืนค่าข้อมูล (Role: Staff)
         API-->>UI: คืน JWT token (มี role) + Profile
-        UI-->>Staff: พาเข้าสู่หน้า Dashboard การจัดการ
+        UI-->>Staff: พาเข้าสู่หน้า Dashboard
     end
 
-    %% เฟส 2: ตรวจสอบและอัปเดตสต็อก (Manage Inventory)
+    %% เฟส 2: ติดตามสต็อก (อ่านอย่างเดียว — Staff ปรับสต็อกเองไม่ได้)
     rect
         Staff->>UI: เปิดหน้าคลังสินค้า
         UI->>API: GET /api/inventory
         API->>DB: ดึงข้อมูลจาก inventory.json
         DB-->>API: คืนค่ารายการสต็อก
         API-->>UI: คืนค่าเป็น Array ของสินค้า
-        UI-->>Staff: แสดงจำนวนสต็อกบนหน้าจอ
+        UI->>UI: คำนวณสถานะ (ปกติ / ใกล้หมด / หมด) ฝั่ง Client
+        UI-->>Staff: แสดงสต็อก + แจ้งเตือนสินค้าใกล้หมด
     end
 
-    %% เฟส 3: อัปเดตสถานะคำสั่งซื้อ (Update Order Status)
+    %% เฟส 3: ดูรายการคำสั่งซื้อ (Order list)
     rect
-        Staff->>UI: กดเข้าเมนู "จัดการออเดอร์"
+        Staff->>UI: เปิดหน้า "จัดการออเดอร์"
         UI->>API: GET /api/orders
         API->>DB: ดึงข้อมูลจาก order.json
         DB-->>API: คืนค่ารายการออเดอร์
         API-->>UI: ส่งข้อมูลกลับเป็น Array ของออเดอร์
-        UI-->>Staff: วาดตารางรายการสั่งซื้อของลูกค้า
-        Staff->>UI: แพ็คของและกดเปลี่ยนสถานะ (เช่น "จัดส่งแล้ว")
-        UI->>API: PATCH /api/orders/:id/status
-        API->>DB: อัปเดต status + statusHistory ใน order.json
-        DB-->>API: บันทึกสำเร็จ
-        API-->>UI: คืนค่าออเดอร์ที่อัปเดตแล้ว
-        UI-->>Staff: แจ้งเตือน "อัปเดตสถานะออเดอร์เรียบร้อย"
+        UI-->>Staff: วาดตาราง + กรองตามสถานะ (รอตรวจสอบ / กำลังเตรียม / กำลังจัดส่ง / ส่งถึงแล้ว / มีปัญหา)
+    end
+
+    %% เฟส 4: ดำเนินการออเดอร์ทีละขั้น (Order verify)
+    rect
+        Staff->>UI: เปิดออเดอร์ที่ต้องจัดการ
+        UI->>API: GET /api/orders/:id
+        API->>DB: อ่านออเดอร์จาก order.json
+        DB-->>API: คืนค่าออเดอร์
+        API-->>UI: แสดงรายละเอียด + timeline สถานะ
+
+        loop เดินสถานะทีละขั้น (Confirmed → Processing → Packed → Shipped → Delivered)
+            Staff->>UI: กดยืนยันขั้นถัดไป (ตอน Processing ติ๊ก picked รายชิ้น)
+            UI->>API: PATCH /api/orders/:id/status {status: next, pickedItems?}
+            API->>DB: อัปเดต status + statusHistory ใน order.json
+            DB-->>API: บันทึกสำเร็จ
+            API-->>UI: คืนค่าออเดอร์ที่อัปเดตแล้ว
+            UI-->>Staff: อัปเดต timeline + แจ้งเตือน
+        end
+
+        opt พบปัญหา (Flag / ยกเลิก Flag)
+            Staff->>UI: กด "แจ้งปัญหา" พร้อมระบุเหตุผล
+            UI->>API: PATCH /api/orders/:id/status {status: 'Flagged', flagReason}
+            API->>DB: บันทึก flagReason + statusBeforeFlag ใน order.json
+            DB-->>API: บันทึกสำเร็จ
+            API-->>UI: คืนค่าออเดอร์ (Flagged)
+        end
     end
 ```
 
