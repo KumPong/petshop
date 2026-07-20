@@ -134,80 +134,14 @@
 
 ## <a id="use-case"></a>🗝️ Use Case Diagram
 
-```mermaid
-flowchart LR
-    %% Actors
-    Customer([Customer])
-    Staff([Staff])
-    Manager([Manager])
+### ลูกค้า (Customer)
+[![Use Case - Customer](docs/usecase-customer.png)](docs/usecase-customer.png)
 
-    %% Customer Subgraph
-    subgraph Customer_Functions [ฟังก์ชั่นสำหรับลูกค้า]
-        direction TB
-        C1(สมัครสมาชิก)
-        C2(เข้าสู่ระบบ)
-        C3(ค้นหาสินค้า)
-        C4(ดูรายละเอียดสินค้า)
-        C5(เพิ่มสินค้าลงตะกร้า)
-        C6("จัดการตะกร้าสินค้า<br/>(แก้ไข/ลบ/ดูรายการ)")
-        C7(สั่งซื้อสินค้า)
-        C8(ชำระเงิน)
-        C9(ติดตามสถานะคำสั่งซื้อ)
-        C10(ประวัติการสั่งซื้อ)
-        
-        C_Ext1("ตัวกรองการค้นหา<br/>- แบรนด์<br/>- ราคา<br/>- ประเภท")
-        C_Ext2(ยืนยันคำสั่งซื้อ)
-        C_Ext3(เลือกช่องทางชำระเงิน)
-        
-        C3 -.-> C_Ext1
-        C7 -.-> C_Ext2
-        C8 -.-> C_Ext3
-    end
+### พนักงาน (Staff)
+[![Use Case - Staff](docs/usecase-staff.png)](docs/usecase-staff.png)
 
-    %% External Services
-    subgraph External_Services [บริการภายนอก]
-        direction TB
-        E1("ระบบชำระเงินออนไลน์<br/>(เช่น Credit card / PromptPay)")
-        E2("ระบบขนส่ง<br/>(เช่น EMS / Kerry / Flash)")
-    end
-        
-    C8 -.-> E1
-    C9 -.-> E2
-
-    %% Staff Subgraph
-    subgraph Staff_Functions [ฟังก์ชั่นสำหรับพนักงาน]
-        direction TB
-        S1(เข้าสู่ระบบ)
-        S2(ดูรายการคำสั่งซื้อ)
-        S3(ตรวจสอบและยืนยันคำสั่งซื้อ)
-        S4(จัดเตรียมสินค้า / แพ็คสินค้า)
-        S5(อัพเดตสถานะคำสั่งซื้อ)
-        S6(จัดการสต๊อกสินค้า)
-    end
-
-    %% Manager Subgraph
-    subgraph Manager_Functions [ฟังก์ชั่นสำหรับเมเนเจอร์]
-        direction TB
-        M0(เข้าสู่ระบบ)
-        M1("ดูแดชบอร์ดภาพรวม<br/>(Dashboard)<br/><br/>ยอดขายรวม<br/>สินค้าขายดี<br/>คำสั่งซื้อรอจัดส่ง<br/>สต๊อกใกล้หมด")
-        M2("จัดการสินค้า<br/>(เพิ่ม / แก้ไข / ลบ)")
-        M3("จัดการหมวดหมู่สินค้า<br/>(เพิ่ม / แก้ไข / ลบ)")
-        M4("จัดการผู้ใช้ระบบ<br/>(เพิ่ม / แก้ไข / ลบ)")
-        M5("รายงานยอดขาย<br/>(รายวัน / รายเดือน / รายไตรมาส)")
-        M6(รายงานสินค้าคงเหลือ)
-        
-        M1 -.-> M2
-        M1 -.-> M3
-        M1 -.-> M4
-        M1 -.-> M5
-        M1 -.-> M6
-    end
-
-    %% Actor Connections
-    Customer --> C1 & C2 & C3 & C4 & C5 & C6 & C7 & C8 & C9 & C10
-    Staff --> S1 & S2 & S3 & S4 & S5 & S6
-    Manager --> M1 & M0
-```
+### ผู้จัดการ (Manager)
+[![Use Case - Manager](docs/usecase-manager.png)](docs/usecase-manager.png)
 
 ---
 
