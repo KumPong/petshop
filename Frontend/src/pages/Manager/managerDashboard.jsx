@@ -301,7 +301,7 @@ function ManagerDashboard() {
 
                 {/* Critical Stock Levels */}
                 <div className="bg-other rounded-2xl p-5 shadow-sm border border-gray-100">
-                    <h2 className="font-semibold text-gray-700 mb-4">สินค้าสต็อกวิกฤต</h2>
+                    <h2 className="font-semibold text-gray-700 mb-4">สินค้าใกล้หมด</h2>
                     <div className="space-y-3">
                         {lowStockItems.slice(0, 5).map((item, idx) => {
                             const status = getStockStatus(item);

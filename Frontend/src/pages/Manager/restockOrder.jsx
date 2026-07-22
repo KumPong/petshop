@@ -298,7 +298,7 @@ function RestockOrder() {
               {item.image ? (
                 <img src={item.image} alt={item.name} className="mb-4 h-14 w-14 rounded-lg object-cover" />
               ) : (
-                <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg bg-white text-gray-300">
+                <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg bg-other text-gray-300">
                   <ImageIcon size={22} />
                 </span>
               )}
@@ -484,7 +484,7 @@ function RestockOrder() {
 
       {showProductModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-          <div className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
+          <div className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-other shadow-xl">
             <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
               <h3 className="text-2xl font-semibold text-gray-900">
                 เลือกสินค้าที่จะเพิ่ม
@@ -508,13 +508,13 @@ function RestockOrder() {
                   value={productSearch}
                   onChange={(e) => setProductSearch(e.target.value)}
                   placeholder="ค้นหาด้วยชื่อหรือ SKU..."
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-lg border border-gray-200 bg-[#FEFAE0] py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="rounded-lg border border-gray-200 bg-[#FEFAE0] px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 {categoryOptions.map((c) => (
                   <option key={c} value={c}>
@@ -567,7 +567,7 @@ function RestockOrder() {
                           {money(p.unitCost)}
                         </p>
                       </div>
-                      <div className="flex items-center gap-3 rounded-full bg-gray-100 px-2 py-1">
+                      <div className="flex items-center gap-3 rounded-full bg-[#FEFAE0] px-2 py-1">
                         <button
                           onClick={() => changeSelection(p.id, -1)}
                           className="text-gray-500 hover:text-gray-800"
