@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Calendar, Package, MapPin, Truck, CircleCheck, Clock, Copy, ListOrdered, Image as ImageIcon, Home } from 'lucide-react';
-import { getOrder, getOrders } from '../../services/order.service.js';
+import { Calendar, Package, MapPin, Truck, CircleCheck, Clock, Copy, ListOrdered, Image as ImageIcon, Home, PackageCheck } from 'lucide-react';
+import Swal from 'sweetalert2';
+import { getOrder, getOrders, updateOrderStatus } from '../../services/order.service.js';
 
 const THAI_MONTHS_SHORT = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 
@@ -29,6 +30,7 @@ function Tracking() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [confirming, setConfirming] = useState(false);
 
   // มี orderId ใน URL -> ดึงออเดอร์นั้นตรงๆ, ไม่มี (เช่นจากลิงก์ "ติดตามสินค้า" ใน navbar) -> โชว์ออเดอร์ล่าสุดของตัวเอง
   // (ต้อง login เพราะ backend เช็ค customerId จาก token — ไม่มี token เรียก getOrders() ไม่ได้เลย เช็คตัดไว้ก่อนกันขึ้น error ทั่วไป)
@@ -67,6 +69,47 @@ function Tracking() {
     navigator.clipboard.writeText(order.shipping.trackingNumber);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
+  };
+
+  // ลูกค้ากดปิดจ๊อบเอง: Shipped -> Delivered (Staff ไม่ต้องมากดให้อีก)
+  // backend เช็คซ้ำอีกชั้นว่าเป็นเจ้าของออเดอร์และสถานะเป็น Shipped จริง กันยิง API ตรงๆ
+  const confirmReceipt = async () => {
+    if (confirming) return;
+
+    const { isConfirmed } = await Swal.fire({
+      title: 'ยืนยันการรับสินค้า',
+      text: 'คุณได้รับสินค้าครบถ้วนแล้วใช่ไหม? เมื่อยืนยันแล้วคำสั่งซื้อจะเปลี่ยนเป็น "จัดส่งสำเร็จ"',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'ได้รับสินค้าแล้ว',
+      cancelButtonText: 'ยังไม่ได้รับ',
+      confirmButtonColor: '#4A5D23',
+      customClass: { popup: '!bg-background rounded-3xl' },
+    });
+    if (!isConfirmed) return;
+
+    setConfirming(true);
+    try {
+      const updated = await updateOrderStatus(order.orderId, { status: 'Delivered' });
+      setOrder(updated);
+      Swal.fire({
+        title: 'ขอบคุณที่ใช้บริการ',
+        text: 'ยืนยันการรับสินค้าเรียบร้อยแล้ว',
+        icon: 'success',
+        confirmButtonColor: '#4A5D23',
+        customClass: { popup: '!bg-background rounded-3xl' },
+      });
+    } catch {
+      Swal.fire({
+        title: 'ยืนยันไม่สำเร็จ',
+        text: 'เกิดข้อผิดพลาดในการยืนยันรับสินค้า กรุณาลองใหม่อีกครั้ง',
+        icon: 'error',
+        confirmButtonColor: '#4A5D23',
+        customClass: { popup: '!bg-background rounded-3xl' },
+      });
+    } finally {
+      setConfirming(false);
+    }
   };
 
   if (loading) {
@@ -111,6 +154,26 @@ function Tracking() {
             {order.shipping.statusLabel}
           </span>
         </div>
+
+        {/* พัสดุถึงมือแล้วให้ลูกค้ากดปิดออเดอร์เอง — โชว์เฉพาะตอนกำลังจัดส่งและต้อง login (guest ที่เปิดด้วยเลขออเดอร์กดไม่ได้) */}
+        {order.status === 'Shipped' && sessionStorage.getItem('token') && (
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-primary bg-other px-6 py-5">
+            <div className="flex items-start gap-3">
+              <PackageCheck size={20} className="mt-0.5 shrink-0 text-gray-700" />
+              <div>
+                <p className="font-semibold text-gray-900">ได้รับสินค้าแล้วหรือยัง?</p>
+                <p className="text-sm text-gray-500">กดยืนยันเมื่อได้รับสินค้าครบถ้วน เพื่อปิดคำสั่งซื้อนี้</p>
+              </div>
+            </div>
+            <button
+              onClick={confirmReceipt}
+              disabled={confirming}
+              className="rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-gray-900 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {confirming ? 'กำลังยืนยัน...' : 'ยืนยันรับสินค้า'}
+            </button>
+          </div>
+        )}
 
         <div className="grid grid-cols-3 gap-6">
           <div className="col-span-2 rounded-2xl bg-other p-6 shadow-sm">

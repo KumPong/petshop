@@ -120,17 +120,21 @@ export default function StaffDashboard() {
                     label="สินค้าสต็อกต่ำ"
                     value={lowStock.length}
                 />
+                {/* สองการ์ดนี้ใช้ฐานเวลาคนละอันโดยตั้งใจ — อันนี้นับวันที่ "ลูกค้ากดรับของ" (statusHistory.Delivered)
+                    ส่วนยอดขายนับวันที่ "ชำระเงิน" (orderDate) จึงกำกับ sub ไว้ให้ชัด กันอ่านแล้วเข้าใจว่าไม่ตรงกัน */}
                 <StatCard
                     icon={<ShoppingBag size={20} className="text-[#5c6b3a]" />}
                     label="จัดส่งสำเร็จวันนี้"
                     value={completedToday.length}
-                    sub="วันนี้"
+                    sub="ลูกค้ากดรับของวันนี้"
                     subColor="text-gray-500"
                 />
                 <StatCard
                     icon={<TrendingUp size={20} className="text-[#5c6b3a]" />}
                     label="ยอดขายวันนี้"
                     value={formatBaht(revenueToday)}
+                    sub="จากออเดอร์ที่ชำระเงินวันนี้"
+                    subColor="text-gray-500"
                 />
             </div>
 

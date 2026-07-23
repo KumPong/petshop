@@ -220,7 +220,7 @@
     "orderNo": "ORD-1004",
     "customerId": "CPS0002",
     "orderDate": "2026-07-16T14:45:04.077Z",
-    "status": "Shipped",
+    "status": "Delivered",
     "statusHistory": [
       {
         "status": "Confirmed",
@@ -237,6 +237,10 @@
       {
         "status": "Shipped",
         "at": "2026-07-16T14:55:16.609Z"
+      },
+      {
+        "status": "Delivered",
+        "at": "2026-07-23T08:02:43.020Z"
       }
     ],
     "courierNotes": "",
@@ -316,8 +320,8 @@
     "statusBeforeFlag": null,
     "subtotal": 2900,
     "shippingAmount": 0,
-    "taxAmount": 203.0,
-    "totalAmount": 3103.0,
+    "taxAmount": 203,
+    "totalAmount": 3103,
     "items": [
       {
         "orderItemId": "OI-PD-001-1712576702602",
@@ -359,7 +363,7 @@
     "payment": {
       "paymentId": "PAY-ORD-1005",
       "method": "บัตรเครดิต",
-      "amount": 3103.0,
+      "amount": 3103,
       "status": "Paid",
       "paymentDate": "2024-11-10T10:30:00.000Z",
       "transactionId": "TXN-1314737675475-1392"
@@ -398,8 +402,8 @@
     "statusBeforeFlag": null,
     "subtotal": 4900,
     "shippingAmount": 0,
-    "taxAmount": 343.0,
-    "totalAmount": 5243.0,
+    "taxAmount": 343,
+    "totalAmount": 5243,
     "items": [
       {
         "orderItemId": "OI-PD-009-1762862560130",
@@ -441,7 +445,7 @@
     "payment": {
       "paymentId": "PAY-ORD-1006",
       "method": "บัตรเครดิต",
-      "amount": 5243.0,
+      "amount": 5243,
       "status": "Paid",
       "paymentDate": "2025-05-15T14:00:00.000Z",
       "transactionId": "TXN-9172008481827-9918"
@@ -480,8 +484,8 @@
     "statusBeforeFlag": null,
     "subtotal": 7000,
     "shippingAmount": 150,
-    "taxAmount": 490.0,
-    "totalAmount": 7640.0,
+    "taxAmount": 490,
+    "totalAmount": 7640,
     "items": [
       {
         "orderItemId": "OI-PD-002-1737126245210",
@@ -523,7 +527,7 @@
     "payment": {
       "paymentId": "PAY-ORD-1007",
       "method": "บัตรเครดิต",
-      "amount": 7640.0,
+      "amount": 7640,
       "status": "Paid",
       "paymentDate": "2025-11-20T09:45:00.000Z",
       "transactionId": "TXN-6101166370472-5817"
@@ -562,8 +566,8 @@
     "statusBeforeFlag": null,
     "subtotal": 6600,
     "shippingAmount": 0,
-    "taxAmount": 462.0,
-    "totalAmount": 7062.0,
+    "taxAmount": 462,
+    "totalAmount": 7062,
     "items": [
       {
         "orderItemId": "OI-PD-013-1742702650172",
@@ -605,7 +609,7 @@
     "payment": {
       "paymentId": "PAY-ORD-1008",
       "method": "บัตรเครดิต",
-      "amount": 7062.0,
+      "amount": 7062,
       "status": "Paid",
       "paymentDate": "2026-02-10T16:15:00.000Z",
       "transactionId": "TXN-1678385789305-6542"
@@ -644,8 +648,8 @@
     "statusBeforeFlag": null,
     "subtotal": 6600,
     "shippingAmount": 150,
-    "taxAmount": 462.0,
-    "totalAmount": 7212.0,
+    "taxAmount": 462,
+    "totalAmount": 7212,
     "items": [
       {
         "orderItemId": "OI-PD-015-1754411130255",
@@ -687,7 +691,7 @@
     "payment": {
       "paymentId": "PAY-ORD-1009",
       "method": "บัตรเครดิต",
-      "amount": 7212.0,
+      "amount": 7212,
       "status": "Paid",
       "paymentDate": "2026-05-05T11:00:00.000Z",
       "transactionId": "TXN-4915281991202-4043"

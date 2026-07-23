@@ -8,11 +8,12 @@ const STATUS_FLOW = ['Confirmed', 'Processing', 'Packed', 'Shipped', 'Delivered'
 
 // action หลักของแต่ละสถานะ — ปุ่มเดียวพาไปสถานะถัดไปเสมอ ไม่มีช่องให้พิมพ์ tracking/สถานะเองมั่วๆ
 // เลขพัสดุมีอยู่แล้วตั้งแต่ตอน checkout (shipping.trackingNumber) ไม่ต้อง gen ใหม่ตอนแพ็ค
+// ไม่มี action ของ 'Shipped' โดยตั้งใจ — ขั้นสุดท้าย (Shipped -> Delivered) ให้ "ลูกค้า" กดยืนยันรับสินค้าเอง
+// จากหน้า Tracking แทน Staff จบหน้าที่ตอนส่งมอบให้ขนส่งแล้ว
 const STATUS_ACTION = {
   Confirmed: { label: 'ยืนยันความถูกต้อง', next: 'Processing', Icon: ShieldCheck },
   Processing: { label: 'แพ็คเสร็จแล้ว', next: 'Packed', Icon: PackageCheck },
   Packed: { label: 'ส่งมอบให้ขนส่งแล้ว', next: 'Shipped', Icon: Truck },
-  Shipped: { label: 'จัดส่งสำเร็จแล้ว', next: 'Delivered', Icon: CheckCircle2 },
 };
 
 const TIMELINE_LABELS = {
@@ -282,6 +283,22 @@ function OrderVerify() {
               >
                 <action.Icon size={18} /> {saving ? 'กำลังบันทึก...' : action.label}
               </button>
+              <button
+                onClick={() => setShowFlagModal(true)}
+                disabled={saving}
+                className="flex items-center justify-center gap-2 rounded-xl border border-red-300 px-6 py-4 font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
+              >
+                <Flag size={18} /> พบปัญหา
+              </button>
+            </div>
+          )}
+
+          {/* ส่งมอบขนส่งแล้ว = จบหน้าที่ Staff รอลูกค้ากดยืนยันรับสินค้าเองจากหน้า Tracking */}
+          {order.status === 'Shipped' && (
+            <div className="flex gap-4">
+              <div className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 py-4 text-sm text-gray-500">
+                <Truck size={18} /> รอลูกค้ายืนยันรับสินค้า — ระบบจะปิดออเดอร์ให้อัตโนมัติ
+              </div>
               <button
                 onClick={() => setShowFlagModal(true)}
                 disabled={saving}

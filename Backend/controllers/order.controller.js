@@ -298,9 +298,10 @@ export async function createOrder(req, res) {
 // ไม่มีข้อไหนพูดถึงยกเลิกเลย น่าจะเป็นสิทธิ์ของลูกค้าจากหน้า Order History แทน คนละ endpoint/scope)
 export async function updateOrderStatus(req, res) {
   const authUser = getAuthUser(req);
-  if (!authUser || (authUser.role !== 'Staff' && authUser.role !== 'Manager')) {
-    return res.status(403).json({ message: 'เฉพาะ Staff/Manager เท่านั้นที่อัปเดตสถานะคำสั่งซื้อได้' });
+  if (!authUser) {
+    return res.status(401).json({ message: 'กรุณาเข้าสู่ระบบก่อนอัปเดตสถานะคำสั่งซื้อ' });
   }
+  const isStaff = authUser.role === 'Staff' || authUser.role === 'Manager';
 
   const { id } = req.params;
   const { status, courierNotes, pickedItems, flagReason } = req.body;
@@ -320,6 +321,18 @@ export async function updateOrderStatus(req, res) {
     return res.status(404).json({ message: `ไม่พบคำสั่งซื้อ orderId "${id}"` });
   }
 
+  // ลูกค้ากดยืนยันรับสินค้าเองได้จากหน้า Tracking — สิทธิ์แคบมากโดยตั้งใจ: ต้องเป็นเจ้าของออเดอร์,
+  // ปิดจ๊อบได้เฉพาะ Shipped -> Delivered เท่านั้น (ขั้นอื่นยังเป็นของ Staff) เพื่อไม่ให้ลูกค้าข้ามขั้นตอน
+  // หรือแก้สถานะย้อนหลังได้เอง Staff จึงไม่ต้องมากดปิดออเดอร์ให้อีก
+  const isCustomerConfirmingReceipt =
+    !isStaff && order.customerId === authUser.id && status === 'Delivered' && order.status === 'Shipped';
+
+  if (!isStaff && !isCustomerConfirmingReceipt) {
+    return res.status(403).json({
+      message: 'ลูกค้ายืนยันได้เฉพาะ "ได้รับสินค้าแล้ว" ตอนพัสดุอยู่ระหว่างจัดส่งเท่านั้น',
+    });
+  }
+
   // เก็บ/เคลียร์ statusBeforeFlag ฝั่ง server เอง ไม่เชื่อค่าจาก client เพื่อกันของปลอม
   if (status === 'Flagged') {
     if (order.status !== 'Flagged') {
@@ -337,11 +350,15 @@ export async function updateOrderStatus(req, res) {
     }
   }
 
-  if (typeof courierNotes === 'string') {
-    order.courierNotes = courierNotes;
-  }
-  if (Array.isArray(pickedItems)) {
-    order.items = order.items.map((item) => ({ ...item, picked: pickedItems.includes(item.orderItemId) }));
+  // field ฝั่งปฏิบัติงาน (โน้ตถึงขนส่ง/รายการที่หยิบแล้ว) เป็นของ Staff เท่านั้น — ลูกค้าที่กดยืนยันรับของ
+  // ส่งค่าพวกนี้แนบมาก็ไม่มีผล กันแก้ข้อมูลหลังบ้านผ่าน endpoint เดียวกัน
+  if (isStaff) {
+    if (typeof courierNotes === 'string') {
+      order.courierNotes = courierNotes;
+    }
+    if (Array.isArray(pickedItems)) {
+      order.items = order.items.map((item) => ({ ...item, picked: pickedItems.includes(item.orderItemId) }));
+    }
   }
 
   order.status = status;
