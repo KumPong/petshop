@@ -271,7 +271,7 @@ function Navbar() {
                                     {searchResults.map((product) => (
                                         <li key={product.productId || product.id}>
                                             <Link
-                                                to={`/product/${product.productId || product.id}`}
+                                                to={`/products/${product.productId || product.id}`}
                                                 className="flex justify-between items-center px-4 py-3 hover:bg-background transition-colors border-b border-gray-200 last:border-0"
                                                 onClick={() => setIsSeartchOpen(false)}
                                             >
